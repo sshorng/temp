@@ -1,0 +1,2008 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會考作文互動講義 - 實戰演練篇</title>
+    
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 引入 React 與 ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- 引入 Babel 以解析 JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.4); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(245, 158, 11, 0.6); }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px) rotate(-2deg); } 75% { transform: translateX(6px) rotate(2deg); } }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-800 font-sans overflow-hidden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- SVG 圖標生成器 (取代 lucide-react) ---
+        const createIcon = (svgContent) => ({ className = "w-6 h-6", ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} dangerouslySetInnerHTML={{ __html: svgContent }} {...props} />
+        );
+
+        const Compass = createIcon('<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>');
+        const Anchor = createIcon('<circle cx="12" cy="5" r="3"/><line x1="12" x2="12" y1="8" y2="22"/><line x1="5" x2="19" y1="12" y2="12"/><path d="M2 15a10 10 0 0 0 20 0"/>');
+        const MapIcon = createIcon('<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/>');
+        const Award = createIcon('<circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>');
+        const Star = createIcon('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>');
+        const Shield = createIcon('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>');
+        const Swords = createIcon('<polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/>');
+        const Sparkles = createIcon('<path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>');
+        const MessageSquare = createIcon('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>');
+        const Monitor = createIcon('<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>');
+        const Check = createIcon('<polyline points="20 6 9 17 4 12"/>');
+        const X = createIcon('<line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/>');
+        const ChevronRight = createIcon('<polyline points="9 18 15 12 9 6"/>');
+        const ChevronLeft = createIcon('<polyline points="15 18 9 12 15 6"/>');
+        const ChevronUp = createIcon('<polyline points="18 15 12 9 6 15"/>');
+        const ChevronDown = createIcon('<polyline points="6 9 12 15 18 9"/>');
+        const BookOpen = createIcon('<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>');
+        const PenTool = createIcon('<path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="m2 2 7.586 7.586"/><circle cx="11" cy="11" r="2"/>');
+        const Navigation = createIcon('<polygon points="3 11 22 2 13 21 11 13 3 11"/>');
+        const Search = createIcon('<circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/>');
+        const FastForward = createIcon('<polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/>');
+        const UserCheck = createIcon('<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/>');
+        const Globe = createIcon('<circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>');
+        const MousePointerClick = createIcon('<path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/>');
+        const Menu = createIcon('<line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>');
+
+        // --- 資料與常數 ---
+        const LESSONS = [
+        { id: 5, title: "第五島：取材模組", subtitle: "雙軌故事摘要術", icon: <BookOpen className="w-5 h-5" />, badge: "故事圖鑑" },
+        { id: 6, title: "第六島：情境開頭", subtitle: "大隊接力破題實戰", icon: <Compass className="w-5 h-5" />, badge: "破題羅盤" },
+        { id: 7, title: "第七島：豹尾之勁", subtitle: "首尾呼應的餘韻", icon: <Anchor className="w-5 h-5" />, badge: "終焉船錨" },
+        { id: 8, title: "第八島：文字顯微鏡", subtitle: "五感細節的擴寫", icon: <MapIcon className="w-5 h-5" />, badge: "細節透鏡" },
+        { id: 9, title: "第九島：化妝術", subtitle: "長篇修辭鑑賞", icon: <Sparkles className="w-5 h-5" />, badge: "修辭寶石" },
+        { id: 10, title: "第十島：沙盤推演", subtitle: "五段式結構重組", icon: <Swords className="w-5 h-5" />, badge: "戰術沙盤" },
+        { id: 11, title: "第十一島：他山之石", subtitle: "神仙回饋的藝術", icon: <MessageSquare className="w-5 h-5" />, badge: "同儕之盾" },
+        { id: 12, title: "第十二島：AI助教", subtitle: "精準詠唱與改寫", icon: <Monitor className="w-5 h-5" />, badge: "智慧核心" }
+        ];
+
+        const LEVEL_THRESHOLDS = [
+        { level: 1, title: "見習水手", minXp: 0 },
+        { level: 2, title: "文字掌舵手", minXp: 500 },
+        { level: 3, title: "結構航海士", minXp: 1000 },
+        { level: 4, title: "修辭大副", minXp: 1500 },
+        { level: 5, title: "傳奇寫作船長", minXp: 2000 }
+        ];
+
+        // --- 共用 UI 元件 ---
+        const QuestTitle = ({ children, step, title, totalSteps = 6 }) => (
+        <div className="mb-8">
+            <div className="flex items-center gap-3 mb-3">
+            <span className="bg-amber-600 text-white text-sm font-black px-4 py-1.5 rounded-full tracking-wider shadow-sm">
+                任務 {step} / {totalSteps}
+            </span>
+            <span className="text-amber-800 font-bold text-lg">{title}</span>
+            </div>
+            <h3 className="text-2xl md:text-3xl font-black text-slate-800 pb-3 border-b-2 border-amber-200 flex items-center drop-shadow-sm leading-tight">
+            {children}
+            </h3>
+        </div>
+        );
+
+        const TeacherHint = ({ children }) => (
+        <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-2xl mb-8 shadow-sm relative overflow-hidden group hover:bg-blue-100 transition-colors">
+            <div className="absolute -right-6 -top-6 opacity-5 group-hover:scale-110 transition-transform duration-500"><BookOpen className="w-32 h-32" /></div>
+            <div className="flex flex-col md:flex-row items-start gap-4 relative z-10">
+            <div className="bg-blue-600 text-white text-sm font-black px-4 py-2 rounded-lg whitespace-nowrap shadow-md mt-1 flex items-center gap-2">
+                <PenTool className="w-4 h-4"/> 老師引導
+            </div>
+            <div className="text-blue-900 font-medium leading-relaxed text-lg pt-1">{children}</div>
+            </div>
+        </div>
+        );
+
+        const BackButton = ({ onClick }) => (
+        <button onClick={onClick} className="mb-6 self-start text-slate-400 hover:text-amber-600 font-bold flex items-center gap-1 transition-colors bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
+            <ChevronLeft className="w-5 h-5" /> 回到上一關
+        </button>
+        );
+
+        const SuccessCard = ({ message, onReset }) => (
+        <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-400 p-8 md:p-10 rounded-3xl shadow-xl mt-8 text-center animate-fade-in-up relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-20 rounded-bl-full pointer-events-none"></div>
+            <div className="w-24 h-24 bg-gradient-to-br from-amber-500 to-yellow-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg border-4 border-white transform hover:rotate-12 transition-transform">
+            <Award className="w-12 h-12 text-white" />
+            </div>
+            <h4 className="text-3xl font-black text-amber-900 mb-4">暖身成功！寫作觀念已打通 🔥</h4>
+            <p className="text-amber-800 font-bold mb-8 text-xl leading-relaxed max-w-2xl mx-auto">{message}</p>
+            
+            <div className="bg-white p-8 rounded-2xl border-2 border-amber-300 shadow-inner mb-8 max-w-2xl mx-auto">
+            <h5 className="text-2xl font-black text-slate-800 mb-4 flex items-center justify-center gap-3">
+                <BookOpen className="w-8 h-8 text-amber-600 animate-bounce" />
+                準備好大顯身手了嗎？
+            </h5>
+            <p className="text-slate-600 font-medium text-lg leading-relaxed">
+                網頁的任務只是幫你搭好鷹架。<br/>
+                現在請趁著手感正熱，翻開<strong className="text-amber-700 mx-1">實體講義</strong>，用筆尖在紙上完成這一堂課真正的長篇寫作挑戰吧！
+            </p>
+            </div>
+
+            <div className="flex justify-center">
+            <button onClick={onReset} className="px-8 py-4 rounded-xl font-bold text-amber-700 bg-amber-100 hover:bg-amber-200 transition-colors border-2 border-transparent hover:border-amber-300 shadow-sm text-lg">
+                重新回顧本島觀念
+            </button>
+            </div>
+        </div>
+        );
+
+        // --- 全新多樣化寫作遊戲引擎 ---
+
+        // 1. 元素標記摘要遊戲 (Keyword Tagging Game) - 隱藏虛線，全文本點擊
+        const TaggingGame = ({ taiwanStory, globalStory, onComplete }) => {
+        const [activeTag, setActiveTag] = useState(null);
+        const [taggedSegments, setTaggedSegments] = useState({ taiwan: {}, global: {} });
+        const [isSuccess, setIsSuccess] = useState(false);
+
+        const TAGS = [
+            { id: 'who', label: 'WHO (人物)', bg: 'bg-blue-200', border: 'border-blue-400', text: 'text-blue-900', color: 'bg-blue-500' },
+            { id: 'what', label: 'WHAT (困境)', bg: 'bg-red-200', border: 'border-red-400', text: 'text-red-900', color: 'bg-red-500' },
+            { id: 'how', label: 'HOW (行動)', bg: 'bg-green-200', border: 'border-green-400', text: 'text-green-900', color: 'bg-green-500' },
+            { id: 'insight', label: '體悟 (價值)', bg: 'bg-purple-200', border: 'border-purple-400', text: 'text-purple-900', color: 'bg-purple-500' }
+        ];
+
+        const handleSegmentClick = (storyKey, index) => {
+            if (isSuccess) return;
+            if (!activeTag) {
+            alert("請先在上方點選一支「螢光筆(標籤)」，再來塗色句子喔！");
+            return;
+            }
+            setTaggedSegments(prev => {
+            const currentStoryTags = { ...prev[storyKey] };
+            if (currentStoryTags[index] === activeTag) {
+                delete currentStoryTags[index]; 
+            } else {
+                currentStoryTags[index] = activeTag;
+            }
+            return { ...prev, [storyKey]: currentStoryTags };
+            });
+        };
+
+        const handleVerify = () => {
+            const requiredTags = ['who', 'what', 'how', 'insight'];
+
+            const checkStory = (storyData, taggedData) => {
+            return requiredTags.every(tag => {
+                const segIndex = storyData.segments.findIndex(s => s.id === tag);
+                return taggedData[segIndex] === tag;
+            }) && Object.values(taggedData).filter(t => t).length === 4;
+            };
+
+            const isTwCorrect = checkStory(taiwanStory, taggedSegments.taiwan);
+            const isGlCorrect = checkStory(globalStory, taggedSegments.global);
+
+            if (isTwCorrect || isGlCorrect) {
+            setIsSuccess(true);
+            } else {
+            alert("標記的位置或數量不太對喔！請確認人物、困境、行動與體悟分別是哪一句話！");
+            setTaggedSegments({ taiwan: {}, global: {} }); 
+            }
+        };
+
+        const forceSkip = () => {
+            setIsSuccess(true);
+            setTimeout(onComplete, 500);
+        };
+
+        const renderStory = (storyKey, storyData) => {
+            return (
+            <div className={`p-6 md:p-8 rounded-2xl border-2 transition-all ${Object.keys(taggedSegments[storyKey]).length > 0 ? 'bg-amber-50/50 border-amber-300 shadow-md scale-[1.01]' : 'bg-white border-slate-200 hover:border-amber-200 hover:shadow-sm'}`}>
+                <h4 className="font-black text-xl text-slate-800 mb-4 flex items-center gap-2 border-b-2 border-slate-100 pb-3">
+                {storyKey === 'taiwan' ? <UserCheck className="w-6 h-6 text-blue-600" /> : <Globe className="w-6 h-6 text-emerald-600" />} 
+                {storyData.name}
+                </h4>
+                <div className="text-lg leading-[2.5rem] text-slate-700 text-justify cursor-default">
+                {storyData.segments.map((seg, index) => {
+                    const isTagged = taggedSegments[storyKey][index];
+                    const tagDef = TAGS.find(t => t.id === isTagged);
+                    const segmentStyles = tagDef 
+                    ? `${tagDef.bg} ${tagDef.text} font-bold shadow-sm rounded-md px-1.5 py-0.5 mx-0.5 cursor-pointer border border-transparent transition-all`
+                    : 'hover:bg-slate-200 cursor-pointer rounded px-1 py-0.5 mx-0.5 transition-colors';
+
+                    return (
+                    <span 
+                        key={index}
+                        onClick={() => handleSegmentClick(storyKey, index)}
+                        className={segmentStyles}
+                    >
+                        {seg.text}
+                    </span>
+                    );
+                })}
+                </div>
+            </div>
+            );
+        };
+
+        return (
+            <div className="bg-slate-100/50 p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm animate-fade-in-up">
+            
+            {!isSuccess ? (
+                <div className="bg-white p-6 rounded-2xl border-2 border-amber-200 mb-8 shadow-sm relative z-10">
+                <p className="font-bold text-amber-800 mb-4 flex items-center gap-2 text-lg">
+                    <MousePointerClick className="w-6 h-6 text-amber-600" /> 
+                    請選出最有感觸的一篇故事。先點擊螢光筆，再點選文章句子進行塗色：
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {TAGS.map(tag => (
+                    <button
+                        key={tag.id}
+                        onClick={() => setActiveTag(tag.id)}
+                        className={`p-3 rounded-xl font-black border-2 transition-all ${activeTag === tag.id ? `${tag.bg} ${tag.border} ${tag.text} scale-[1.05] shadow-md` : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+                    >
+                        {tag.label}
+                    </button>
+                    ))}
+                </div>
+                </div>
+            ) : (
+                <div className="p-6 rounded-xl bg-green-50 border-2 border-green-500 text-green-800 font-bold text-xl flex items-center justify-center gap-3 w-full mb-8 shadow-md animate-fade-in-up">
+                <Check className="w-8 h-8" /> 摘要精準！故事結構已完美存入你的寫作資料庫。
+                </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {renderStory('taiwan', taiwanStory)}
+                {renderStory('global', globalStory)}
+            </div>
+
+            {!isSuccess ? (
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <button 
+                    onClick={handleVerify}
+                    className={`flex-1 w-full py-4 font-black text-xl rounded-xl shadow-md transition-all flex justify-center items-center gap-3 ${
+                    Object.keys(taggedSegments.taiwan).length > 0 || Object.keys(taggedSegments.global).length > 0 ? 'bg-slate-800 hover:bg-slate-700 text-amber-400' : 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                    }`}
+                >
+                    驗證摘要邏輯 <Check className="w-6 h-6" />
+                </button>
+                <button onClick={forceSkip} className="px-4 py-2 text-slate-400 hover:text-slate-600 font-bold flex items-center gap-1 transition-colors whitespace-nowrap">
+                    <FastForward className="w-4 h-4" /> 老師跳關
+                </button>
+                </div>
+            ) : (
+                <button onClick={() => { setIsSuccess(false); onComplete(); }} className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-900 font-black text-xl rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex justify-center items-center gap-2">
+                前往下一關 <ChevronRight className="w-6 h-6" />
+                </button>
+            )}
+            </div>
+        );
+        };
+
+
+        const HighlightTextGame = ({ paragraph, targetInstruction, correctIds, onComplete }) => {
+        const [selectedIds, setSelectedIds] = useState([]);
+        const [isSuccess, setIsSuccess] = useState(false);
+
+        const toggleSelect = (id) => {
+            if (isSuccess) return;
+            setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+        };
+
+        const handleCheck = () => {
+            const isCorrect = correctIds.every(id => selectedIds.includes(id)) && selectedIds.length === correctIds.length;
+            if (isCorrect) {
+            setIsSuccess(true);
+            setTimeout(onComplete, 3000);
+            } else {
+            alert("好像標記錯位置了喔！請仔細閱讀文章，尋找符合提示的關鍵字詞。");
+            setSelectedIds([]);
+            }
+        };
+
+        const forceSkip = () => {
+            setIsSuccess(true);
+            onComplete();
+        };
+
+        return (
+            <div className="bg-white p-6 md:p-10 rounded-3xl border-2 border-amber-200 shadow-md animate-fade-in-up">
+            <div className="flex items-center gap-3 mb-6 bg-slate-100 p-4 rounded-xl border border-slate-200">
+                <Search className="w-6 h-6 text-amber-600 shrink-0" />
+                <span className="font-bold text-lg text-slate-700">任務指令：{targetInstruction}</span>
+            </div>
+            
+            <div className="text-lg md:text-xl leading-[2.5rem] text-slate-800 font-medium bg-[#faf8f5] p-8 rounded-2xl border-2 border-slate-200 mb-8 shadow-inner text-justify cursor-default">
+                {paragraph.map((segment, index) => (
+                <span 
+                    key={segment.id || index}
+                    onClick={() => toggleSelect(segment.id)}
+                    className={`cursor-pointer transition-all duration-200 rounded px-1 py-0.5 mx-0.5 ${
+                    selectedIds.includes(segment.id) 
+                        ? 'bg-amber-300 text-amber-900 shadow-sm font-bold' 
+                        : 'hover:bg-amber-100 text-slate-800'
+                    }`}
+                >
+                    {segment.text}
+                </span>
+                ))}
+            </div>
+
+            {!isSuccess ? (
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <button 
+                    onClick={handleCheck}
+                    className="flex-1 w-full py-4 font-black text-xl rounded-xl shadow-md transition-all flex justify-center items-center gap-3 bg-slate-800 hover:bg-slate-700 text-amber-400"
+                >
+                    確認標記 <Check className="w-6 h-6" />
+                </button>
+                <button onClick={forceSkip} className="px-4 py-2 text-slate-400 hover:text-slate-600 font-bold flex items-center gap-1 transition-colors whitespace-nowrap">
+                    <FastForward className="w-4 h-4" /> 老師跳關
+                </button>
+                </div>
+            ) : (
+                <div className="p-6 rounded-xl bg-green-50 border-2 border-green-500 text-green-800 font-bold text-xl flex items-center justify-center gap-3 animate-fade-in-up">
+                <Check className="w-8 h-8" /> 鷹眼大師！完全命中！準備進入下一關...
+                </div>
+            )}
+            </div>
+        );
+        };
+
+        const OpenCompareGame = ({ template, masterVersion, masterExplanation, onComplete }) => {
+        const [inputs, setInputs] = useState({});
+        const [showMaster, setShowMaster] = useState(false);
+
+        const isAllFilled = template.filter(t => typeof t === 'object').every(t => inputs[t.id] && inputs[t.id].trim().length >= (t.minLength || 5));
+
+        const handleSubmit = () => {
+            if (isAllFilled) setShowMaster(true);
+            else alert("請發揮你的創意，把每個空格都填滿吧！（每個空格請至少輸入5個字喔）");
+        };
+
+        const forceSkip = () => {
+            setShowMaster(true);
+        };
+
+        return (
+            <div className="bg-white p-6 md:p-10 rounded-3xl border-2 border-amber-200 shadow-md animate-fade-in-up">
+            <div className="mb-6 font-bold text-slate-500 text-lg">✏️ 這是你的文章骨架：</div>
+            <div className="text-xl leading-[3rem] text-slate-700 font-medium bg-[#faf8f5] p-8 rounded-2xl border-2 border-slate-200 mb-8 shadow-inner">
+                {template.map((part, i) => {
+                if (typeof part === 'string') return <span key={i} className="mx-1">{part}</span>;
+                return (
+                    <div key={i} className="inline-flex flex-col mx-2 relative group">
+                    <input
+                        type="text"
+                        value={inputs[part.id] || ''}
+                        onChange={(e) => setInputs({...inputs, [part.id]: e.target.value})}
+                        placeholder={part.placeholder}
+                        disabled={showMaster}
+                        className={`bg-transparent border-b-4 focus:border-amber-600 outline-none px-2 py-1 text-amber-900 font-bold text-center min-w-[200px] transition-colors placeholder:text-amber-200 placeholder:font-normal ${showMaster ? 'border-slate-300 text-slate-500 bg-slate-100 rounded-t-md' : 'border-amber-400'}`}
+                        style={{ width: `${Math.max(part.placeholder.length * 16, (inputs[part.id]?.length || 0) * 22)}px` }}
+                    />
+                    {!showMaster && (
+                        <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm font-bold text-amber-600 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                        {part.hint}
+                        </span>
+                    )}
+                    </div>
+                );
+                })}
+            </div>
+
+            {!showMaster ? (
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <button 
+                    onClick={handleSubmit}
+                    className={`flex-1 w-full py-5 font-black text-xl rounded-xl shadow-md transition-all flex justify-center items-center gap-3 ${
+                    isAllFilled ? 'bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-900 hover:shadow-lg' : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                    }`}
+                >
+                    儲存段落，觀摩大師寫法 <Navigation className="w-6 h-6" />
+                </button>
+                <button onClick={forceSkip} className="px-4 py-2 text-slate-400 hover:text-slate-600 font-bold flex items-center gap-1 transition-colors whitespace-nowrap">
+                    <FastForward className="w-4 h-4" /> 老師跳關
+                </button>
+                </div>
+            ) : (
+                <div className="animate-fade-in-up mt-10">
+                <div className="mb-4 font-black text-amber-800 text-xl flex items-center gap-2">
+                    <Sparkles className="w-6 h-6" /> 大師的示範版本：
+                </div>
+                <div className="bg-amber-50 p-8 rounded-2xl border-2 border-amber-300 text-lg leading-loose text-slate-800 shadow-sm text-justify">
+                    {masterVersion}
+                </div>
+                <div className="mt-6 bg-slate-100 p-6 rounded-xl border border-slate-200 text-slate-700 font-medium leading-relaxed">
+                    <strong className="text-slate-800 block mb-2 text-lg">🤔 鑑賞與反思：</strong>
+                    {masterExplanation}
+                </div>
+                <button 
+                    onClick={onComplete}
+                    className="w-full mt-8 py-5 font-black text-xl rounded-xl shadow-md transition-all flex justify-center items-center gap-3 bg-slate-800 hover:bg-slate-700 text-amber-400 hover:shadow-lg"
+                >
+                    吸收養分，前往下一關 <ChevronRight className="w-6 h-6" />
+                </button>
+                </div>
+            )}
+            </div>
+        );
+        };
+
+        const ScenarioChoiceGame = ({ scenario, options, explanationText, onComplete }) => {
+        const [selectedId, setSelectedId] = useState(null);
+        const [showExplanation, setShowExplanation] = useState(false);
+        const [isCorrect, setIsCorrect] = useState(false);
+
+        const handleSelect = (option) => {
+            setSelectedId(option.id);
+            setShowExplanation(true);
+            if (option.isCorrect) {
+            setIsCorrect(true);
+            setTimeout(onComplete, 4000); 
+            } else {
+            setIsCorrect(false);
+            }
+        };
+
+        return (
+            <div className="bg-white p-6 md:p-8 rounded-3xl border-2 border-slate-200 shadow-sm animate-fade-in-up">
+            <div className="bg-slate-800 text-amber-50 p-8 rounded-2xl mb-8 shadow-md">
+                <h4 className="font-bold text-amber-400 mb-4 text-xl border-b border-slate-600 pb-3">請閱讀以下寫作情境：</h4>
+                <p className="text-xl leading-loose text-justify">{scenario}</p>
+            </div>
+
+            <div className="space-y-6 mb-6">
+                <p className="font-black text-slate-600 text-lg mb-2">面對這個段落，大師會選擇哪一種寫法？</p>
+                {options.map(opt => (
+                <button
+                    key={opt.id}
+                    onClick={() => handleSelect(opt)}
+                    disabled={showExplanation && isCorrect}
+                    className={`w-full p-8 rounded-2xl text-left border-2 transition-all shadow-sm relative overflow-hidden group ${
+                    selectedId === opt.id 
+                        ? (opt.isCorrect ? 'bg-green-50 border-green-500 text-green-900' : 'bg-red-50 border-red-400 text-red-900')
+                        : 'bg-white border-slate-200 hover:border-amber-400 hover:bg-amber-50 text-slate-700'
+                    }`}
+                >
+                    <div className="flex gap-6 items-start">
+                    <span className={`font-black text-3xl mt-1 ${selectedId === opt.id ? (opt.isCorrect ? 'text-green-600' : 'text-red-500') : 'text-slate-300 group-hover:text-amber-400 transition-colors'}`}>
+                        {opt.id}.
+                    </span>
+                    <span className={`font-medium text-lg leading-loose text-justify ${selectedId === opt.id && opt.isCorrect ? 'font-bold' : ''}`}>
+                        {opt.text}
+                    </span>
+                    </div>
+                </button>
+                ))}
+            </div>
+            
+            {!showExplanation && (
+                <div className="flex justify-end">
+                <button onClick={onComplete} className="px-4 py-2 text-slate-400 hover:text-slate-600 font-bold flex items-center gap-1 transition-colors">
+                    <FastForward className="w-4 h-4" /> 老師跳關
+                </button>
+                </div>
+            )}
+
+            {showExplanation && (
+                <div className={`p-8 rounded-2xl border-l-8 shadow-md animate-fade-in-up ${isCorrect ? 'bg-green-50 border-green-500' : 'bg-red-50 border-red-500'}`}>
+                <h5 className={`font-black mb-4 flex items-center gap-3 text-2xl ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                    {isCorrect ? <Check className="w-8 h-8" /> : <X className="w-8 h-8" />}
+                    {isCorrect ? '精準的品味！即將進入下一關...' : '這段文字還有進步空間喔！'}
+                </h5>
+                <p className={`text-xl leading-relaxed ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>{isCorrect ? explanationText.correct : explanationText.wrong}</p>
+                {!isCorrect && (
+                    <div className="flex items-center gap-4 mt-6">
+                    <button 
+                        className="px-8 py-3 bg-red-100 hover:bg-red-200 text-red-800 font-bold rounded-xl transition-colors text-lg"
+                        onClick={() => setShowExplanation(false)}
+                    >
+                        再讀一次，重新選擇
+                    </button>
+                    <button onClick={onComplete} className="text-slate-400 hover:text-slate-600 font-bold flex items-center gap-1 transition-colors">
+                        <FastForward className="w-4 h-4" /> 強制過關
+                    </button>
+                    </div>
+                )}
+                </div>
+            )}
+            </div>
+        );
+        };
+
+        const OrderParagraphsGame = ({ items, correctOrder, onComplete }) => {
+        const [currentOrder, setCurrentOrder] = useState([...items]);
+
+        const move = (index, direction) => {
+            const newOrder = [...currentOrder];
+            if (direction === 'up' && index > 0) {
+            [newOrder[index], newOrder[index - 1]] = [newOrder[index - 1], newOrder[index]];
+            } else if (direction === 'down' && index < newOrder.length - 1) {
+            [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
+            }
+            setCurrentOrder(newOrder);
+        };
+
+        const checkOrder = () => {
+            const isCorrect = currentOrder.every((item, i) => item.id === correctOrder[i]);
+            if (isCorrect) onComplete();
+            else alert("文章的邏輯順序還不對喔！請再調整看看！");
+        };
+
+        return (
+            <div className="bg-white p-6 md:p-10 rounded-3xl border-2 border-amber-200 shadow-sm animate-fade-in-up">
+            <div className="space-y-5 mb-10">
+                {currentOrder.map((item, index) => (
+                <div key={item.id} className="flex items-start justify-between bg-slate-50 p-6 rounded-2xl border-2 border-slate-200 shadow-sm transition-transform hover:scale-[1.01] hover:border-amber-300 group">
+                    <div className="flex gap-5">
+                    <span className="w-12 h-12 shrink-0 rounded-full bg-slate-200 group-hover:bg-amber-200 text-slate-600 group-hover:text-amber-800 flex items-center justify-center text-xl font-black shadow-inner transition-colors mt-1">
+                        {index + 1}
+                    </span>
+                    <span className="font-medium text-slate-700 text-lg leading-relaxed text-justify">
+                        {item.text}
+                    </span>
+                    </div>
+                    <div className="flex flex-col gap-2 shrink-0 ml-6">
+                    <button onClick={() => move(index, 'up')} disabled={index === 0} className="p-3 bg-white rounded-lg border border-slate-300 disabled:opacity-30 hover:bg-slate-100 shadow-sm transition-colors">
+                        <ChevronUp className="w-6 h-6 text-slate-600" />
+                    </button>
+                    <button onClick={() => move(index, 'down')} disabled={index === currentOrder.length - 1} className="p-3 bg-white rounded-lg border border-slate-300 disabled:opacity-30 hover:bg-slate-100 shadow-sm transition-colors">
+                        <ChevronDown className="w-6 h-6 text-slate-600" />
+                    </button>
+                    </div>
+                </div>
+                ))}
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <button onClick={checkOrder} className="flex-1 w-full py-5 bg-slate-800 hover:bg-slate-700 text-amber-400 font-black text-2xl rounded-xl shadow-md transition-colors flex justify-center items-center gap-3">
+                驗證邏輯順序 <Check className="w-7 h-7" />
+                </button>
+                <button onClick={onComplete} className="px-4 py-2 text-slate-400 hover:text-slate-600 font-bold flex items-center gap-1 transition-colors whitespace-nowrap">
+                <FastForward className="w-4 h-4" /> 老師跳關
+                </button>
+            </div>
+            </div>
+        );
+        };
+
+        const MakeoverMatchGame = ({ beforeTitle = "改造前 (素顏句)", afterTitle = "改造後 (大師句)", beforeItems, afterItems, onComplete }) => {
+        const [selectedBefore, setSelectedBefore] = useState(null);
+        const [selectedAfter, setSelectedAfter] = useState(null);
+        const [matched, setMatched] = useState([]);
+        const [errorLine, setErrorLine] = useState(false);
+
+        useEffect(() => {
+            if (selectedBefore && selectedAfter) {
+            if (selectedBefore.matchId === selectedAfter.matchId) {
+                setMatched(prev => [...prev, selectedBefore.matchId]);
+                setSelectedBefore(null);
+                setSelectedAfter(null);
+                if (matched.length + 1 === beforeItems.length) {
+                setTimeout(onComplete, 600);
+                }
+            } else {
+                setErrorLine(true);
+                setTimeout(() => {
+                setSelectedBefore(null);
+                setSelectedAfter(null);
+                setErrorLine(false);
+                }, 600);
+            }
+            }
+        }, [selectedBefore, selectedAfter, beforeItems.length, onComplete]);
+
+        return (
+            <div className="bg-white p-6 md:p-8 rounded-3xl border-2 border-amber-200 shadow-sm animate-fade-in-up">
+            <div className="flex flex-col lg:flex-row justify-between gap-8 mb-6">
+                <div className="flex-1 space-y-4">
+                <h4 className="font-black text-slate-500 text-center mb-6 bg-slate-100 py-3 rounded-xl text-lg">{beforeTitle}</h4>
+                {beforeItems.map(item => {
+                    const isMatched = matched.includes(item.matchId);
+                    const isSelected = selectedBefore?.id === item.id;
+                    return (
+                    <button
+                        key={item.id}
+                        disabled={isMatched}
+                        onClick={() => setSelectedBefore(item)}
+                        className={`w-full p-5 rounded-xl text-left border-2 transition-all shadow-sm leading-relaxed ${
+                        isMatched ? 'bg-slate-50 border-slate-200 text-slate-400 opacity-50' : 
+                        isSelected ? 'bg-amber-100 border-amber-500 text-amber-900 scale-[1.02] shadow-md' : 
+                        errorLine && selectedBefore?.id === item.id ? 'bg-red-50 border-red-400 text-red-700 animate-shake' :
+                        'bg-white border-slate-300 hover:border-amber-300 text-slate-700 font-medium hover:shadow-md'
+                        }`}
+                    >
+                        {item.text}
+                    </button>
+                    );
+                })}
+                </div>
+                <div className="hidden lg:flex flex-col justify-center text-amber-300">
+                <ChevronRight className="w-12 h-12 animate-pulse" />
+                </div>
+                <div className="flex-1 space-y-4">
+                <h4 className="font-black text-amber-800 text-center mb-6 bg-amber-100 py-3 rounded-xl text-lg">{afterTitle}</h4>
+                {afterItems.map(item => {
+                    const isMatched = matched.includes(item.matchId);
+                    const isSelected = selectedAfter?.id === item.id;
+                    return (
+                    <button
+                        key={item.id}
+                        disabled={isMatched}
+                        onClick={() => setSelectedAfter(item)}
+                        className={`w-full p-5 rounded-xl text-left border-2 transition-all shadow-sm leading-relaxed ${
+                        isMatched ? 'bg-green-50 border-green-300 text-green-700 opacity-50' : 
+                        isSelected ? 'bg-amber-100 border-amber-500 text-amber-900 scale-[1.02] shadow-md' : 
+                        errorLine && selectedAfter?.id === item.id ? 'bg-red-50 border-red-400 text-red-700 animate-shake' :
+                        'bg-white border-slate-300 hover:border-amber-300 text-slate-800 font-bold hover:shadow-md'
+                        }`}
+                    >
+                        {item.text}
+                    </button>
+                    );
+                })}
+                </div>
+            </div>
+            <div className="flex justify-end">
+                <button onClick={onComplete} className="px-4 py-2 text-slate-400 hover:text-slate-600 font-bold flex items-center gap-1 transition-colors">
+                <FastForward className="w-4 h-4" /> 老師跳關
+                </button>
+            </div>
+            </div>
+        );
+        };
+
+        const CategorizeGame = ({ questions, categories, onComplete }) => {
+        const [currentIndex, setCurrentIndex] = useState(0);
+        const [shake, setShake] = useState(false);
+
+        const currentQ = questions[currentIndex];
+
+        const handleSelect = (category) => {
+            if (category === currentQ.answer) {
+            if (currentIndex < questions.length - 1) setCurrentIndex(prev => prev + 1);
+            else onComplete();
+            } else {
+            setShake(true);
+            setTimeout(() => setShake(false), 500);
+            }
+        };
+
+        return (
+            <div className="bg-white p-6 md:p-8 rounded-3xl border-2 border-amber-200 shadow-sm animate-fade-in-up text-center relative">
+            <div className="mb-6 flex justify-between items-center bg-slate-100 px-6 py-3 rounded-full">
+                <span className="font-black text-slate-500 tracking-wider">鑑賞鑑定站</span>
+                <span className="font-bold text-amber-600 bg-amber-100 px-4 py-1.5 rounded-full shadow-sm">
+                進度：{currentIndex + 1} / {questions.length}
+                </span>
+            </div>
+            
+            <div className={`text-xl md:text-2xl font-bold text-slate-800 mb-10 p-10 bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl border-2 border-slate-200 shadow-inner min-h-[160px] flex items-center justify-center leading-relaxed transition-all ${shake ? 'animate-shake border-red-400 bg-red-50 text-red-700' : ''}`}>
+                {currentQ.text}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {categories.map(cat => (
+                <button 
+                    key={cat} 
+                    onClick={() => handleSelect(cat)}
+                    className="py-5 px-6 bg-white hover:bg-amber-50 text-slate-700 hover:text-amber-900 font-black text-xl rounded-xl border-2 border-slate-300 hover:border-amber-400 shadow-sm transition-all hover:-translate-y-1"
+                >
+                    {cat}
+                </button>
+                ))}
+            </div>
+
+            <div className="flex justify-end">
+                <button onClick={onComplete} className="px-4 py-2 text-slate-400 hover:text-slate-600 font-bold flex items-center gap-1 transition-colors">
+                <FastForward className="w-4 h-4" /> 老師跳關
+                </button>
+            </div>
+            </div>
+        );
+        };
+
+
+        // --- 主要 App 框架 ---
+
+        function App() {
+        const [activeLesson, setActiveLesson] = useState(5);
+        const [xp, setXp] = useState(0);
+        const [badges, setBadges] = useState([]);
+        const [xpPopup, setXpPopup] = useState(null);
+        const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+        useEffect(() => {
+            const savedData = localStorage.getItem('writing-quest-v19');
+            if (savedData) {
+            try {
+                const parsed = JSON.parse(savedData);
+                setXp(parsed.xp || 0);
+                setBadges(parsed.badges || []);
+            } catch (e) {
+                console.error("Failed to parse saved data", e);
+            }
+            }
+        }, []);
+
+        useEffect(() => {
+            localStorage.setItem('writing-quest-v19', JSON.stringify({ xp, badges }));
+        }, [xp, badges]);
+
+        const triggerXpPopup = (amount, message) => {
+            setXpPopup({ amount, message, id: Date.now() });
+            setTimeout(() => setXpPopup(null), 2500);
+        };
+
+        const handleIslandComplete = (lessonId) => {
+            if (!badges.includes(lessonId)) {
+            setBadges(prev => [...prev, lessonId]);
+            setXp(prev => prev + 300);
+            triggerXpPopup(300, "實力大躍進！獲得勳章");
+            }
+        };
+
+        const handleStepProgress = () => {
+            setXp(prev => prev + 50);
+            triggerXpPopup(50, "練習完成");
+        };
+
+        const currentLevelInfo = LEVEL_THRESHOLDS.slice().reverse().find(t => xp >= t.minXp) || LEVEL_THRESHOLDS[0];
+        const nextLevelInfo = LEVEL_THRESHOLDS.find(t => t.minXp > xp);
+        const xpProgress = nextLevelInfo 
+            ? ((xp - currentLevelInfo.minXp) / (nextLevelInfo.minXp - currentLevelInfo.minXp)) * 100 
+            : 100;
+
+        const renderLessonGame = () => {
+            const isCompleted = badges.includes(activeLesson);
+            const props = { onComplete: () => handleIslandComplete(activeLesson), onStepComplete: handleStepProgress, isCompleted };
+            
+            switch (activeLesson) {
+            case 5: return <Lesson5Campaign {...props} />;
+            case 6: return <Lesson6Campaign {...props} />;
+            case 7: return <Lesson7Campaign {...props} />;
+            case 8: return <Lesson8Campaign {...props} />;
+            case 9: return <Lesson9Campaign {...props} />;
+            case 10: return <Lesson10Campaign {...props} />;
+            case 11: return <Lesson11Campaign {...props} />;
+            case 12: return <Lesson12Campaign {...props} />;
+            default: return <div>請選擇島嶼</div>;
+            }
+        };
+
+        return (
+            <div className="flex h-screen bg-slate-900 font-sans overflow-hidden relative">
+            {xpPopup && (
+                <div key={xpPopup.id} className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 animate-bounce pointer-events-none">
+                <div className="bg-gradient-to-r from-yellow-400 to-amber-500 text-yellow-900 px-8 py-4 rounded-full font-black shadow-2xl flex items-center gap-3 text-xl border-4 border-white">
+                    <Star className="w-8 h-8 fill-current" />
+                    {xpPopup.message} +{xpPopup.amount} XP
+                </div>
+                </div>
+            )}
+
+            {/* 左側：航海地圖 Sidebar */}
+            <div className={`bg-slate-800 text-slate-300 shadow-2xl flex flex-col z-30 transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-80 md:w-80 border-r border-slate-700' : 'w-0 overflow-hidden border-transparent'}`}>
+                <div className="w-80 flex flex-col h-full shrink-0">
+                <div className="p-8 bg-slate-900 border-b border-slate-700 relative overflow-hidden">
+                    <div className="absolute opacity-5 -top-4 -right-4"><MapIcon className="w-40 h-40" /></div>
+                    <h1 className="text-3xl font-black text-amber-400 flex items-center gap-3 relative z-10 tracking-wider">
+                    寫作大航海
+                    </h1>
+                    <p className="text-slate-400 text-base mt-2 font-medium relative z-10 tracking-widest">實體講義前導暖身營</p>
+                </div>
+                
+                <div className="p-6 border-b border-slate-700 bg-slate-800/80">
+                    <div className="flex justify-between items-end mb-3">
+                    <div>
+                        <div className="text-xs text-amber-500 font-black tracking-widest mb-1">Lv.{currentLevelInfo.level}</div>
+                        <div className="text-xl font-bold text-white">{currentLevelInfo.title}</div>
+                    </div>
+                    <div className="text-right">
+                        <div className="text-3xl font-black text-amber-400">{xp}</div>
+                        <div className="text-xs text-slate-400 font-bold tracking-wider">XP 總經驗值</div>
+                    </div>
+                    </div>
+                    <div className="h-4 bg-slate-700 rounded-full overflow-hidden mt-3 relative border border-slate-600">
+                    <div 
+                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-300 transition-all duration-700 ease-out"
+                        style={{ width: `${xpProgress}%` }}
+                    />
+                    </div>
+                </div>
+
+                <nav className="flex-1 overflow-y-auto py-6 custom-scrollbar">
+                    <ul className="space-y-3 px-4">
+                    {LESSONS.map(lesson => {
+                        const isUnlocked = badges.includes(lesson.id);
+                        const isActive = activeLesson === lesson.id;
+                        return (
+                        <li key={lesson.id}>
+                            <button
+                            onClick={() => setActiveLesson(lesson.id)}
+                            className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-left transition-all duration-300 ${
+                                isActive 
+                                ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 shadow-lg scale-[1.02]' 
+                                : 'bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white'
+                            }`}
+                            >
+                            <div className={`p-2 rounded-xl shadow-inner ${isActive ? 'bg-amber-400/50' : 'bg-slate-900'}`}>
+                                {lesson.icon}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className={`font-black text-lg truncate ${isActive ? 'text-slate-900' : 'text-slate-200'}`}>
+                                {lesson.title}
+                                </div>
+                                <div className={`text-xs font-bold truncate mt-1 ${isActive ? 'text-amber-900/80' : 'text-slate-500'}`}>
+                                {lesson.subtitle}
+                                </div>
+                            </div>
+                            {isUnlocked && <Check className={`w-6 h-6 ${isActive ? 'text-slate-900' : 'text-green-400'}`} />}
+                            </button>
+                        </li>
+                        );
+                    })}
+                    </ul>
+                </nav>
+                </div>
+            </div>
+
+            {/* 主內容區 */}
+            <div className="flex-1 flex flex-col relative bg-[#f4f1ea] overflow-hidden transition-all duration-300">
+                
+                {/* Toggle Sidebar Button */}
+                <div className="absolute top-4 left-4 md:top-6 md:left-6 z-40">
+                <button
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                    className="p-3 bg-white/90 backdrop-blur-sm border-2 border-slate-200 shadow-lg rounded-2xl text-slate-600 hover:text-amber-600 hover:border-amber-400 hover:bg-amber-50 transition-all group focus:outline-none"
+                    title={isSidebarOpen ? "收起側邊欄" : "展開側邊欄"}
+                >
+                    {isSidebarOpen ? <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" /> : <Menu className="w-6 h-6 group-hover:scale-110 transition-transform" />}
+                </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-4 md:p-10 pt-24 md:pt-24 custom-scrollbar relative">
+                <div className="max-w-5xl mx-auto pb-20">
+                    {renderLessonGame()}
+                </div>
+                </div>
+            </div>
+            </div>
+        );
+        }
+
+        // ==========================================
+        // 島嶼戰役 (長篇實戰互動版) - 每個模組皆為關卡挑戰
+        // ==========================================
+
+        function Lesson5Campaign({ onComplete, onStepComplete, isCompleted }) {
+        const [step, setStep] = useState(isCompleted ? 5 : 1);
+        const handleReset = () => setStep(1);
+
+        const THEMES = [
+            {
+            title: "家庭親情",
+            taiwan: {
+                name: "江振誠 (國際名廚)",
+                segments: [
+                { text: "國際名廚" },
+                { id: 'who', text: "江振誠", isKeyword: true },
+                { text: "在法國求學打拼時，面臨" },
+                { id: 'what', text: "語言不通與高壓廚房的雙重折磨", isKeyword: true },
+                { text: "，無數個崩潰的深夜裡，支撐他撐下去的始終是母親越洋電話裡的溫暖嗓音。為了重現記憶中母親的味道，他將" },
+                { id: 'how', text: "台灣在地食材與法式料理手法巧妙融合", isKeyword: true },
+                { text: "，創作出震驚世界味蕾的菜色。他意識到，最頂級的美味從來不是來自昂貴的食材，而是" },
+                { id: 'insight', text: "源自於對家人最純粹的思念與愛的傳承", isKeyword: true },
+                { text: "。" }
+                ]
+            },
+            global: {
+                name: "李安 (奧斯卡最佳導演)",
+                segments: [
+                { text: "奧斯卡最佳導演" },
+                { id: 'who', text: "李安", isKeyword: true },
+                { text: "在成名前，曾歷經長達六年" },
+                { id: 'what', text: "沒有任何拍攝機會的失業低潮", isKeyword: true },
+                { text: "，全靠妻子微薄的薪水維持家計。在最自我懷疑想要改行的時候，妻子的一句「不要忘記你的夢想」讓他得以繼續" },
+                { id: 'how', text: "在無數個深夜裡堅持創作劇本", isKeyword: true },
+                { text: "。這段沉潛的歲月讓他領悟，" },
+                { id: 'insight', text: "家人的信任是追夢路上最堅實的後盾", isKeyword: true },
+                { text: "，唯有將感激化為養分，才能拍出動人故事。" }
+                ]
+            }
+            },
+            {
+            title: "學習堅持",
+            taiwan: {
+                name: "林昀儒 (台灣桌球好手)",
+                segments: [
+                { text: "被譽為沉默刺客的台灣桌球好手" },
+                { id: 'who', text: "林昀儒", isKeyword: true },
+                { text: "，從小就被寄予厚望，但他先天的" },
+                { id: 'what', text: "體格條件並不突出", isKeyword: true },
+                { text: "，在力量上往往難以與歐美選手抗衡。面對這項劣勢，他選擇了最孤獨的訓練方式，每天進行" },
+                { id: 'how', text: "上萬次的枯燥揮拍", isKeyword: true },
+                { text: "，將休息時間壓縮到極致。他用無數的汗水證明，所謂的天才，不過是把" },
+                { id: 'insight', text: "「堅持」這件小事做到別人無法企及的極致", isKeyword: true },
+                { text: "罷了。" }
+                ]
+            },
+            global: {
+                name: "大谷翔平 (美國職棒巨星)",
+                segments: [
+                { text: "美國職棒巨星" },
+                { id: 'who', text: "大谷翔平", isKeyword: true },
+                { text: "為了邁向" },
+                { id: 'what', text: "競爭極度激烈的頂級球員之路", isKeyword: true },
+                { text: "，在高中時期便畫下了一張密密麻麻的九宮格目標表。除了嚴格的體能訓練，他更將" },
+                { id: 'how', text: "「撿垃圾」與「對人微笑」", isKeyword: true },
+                { text: "列為必修課。這份近乎苦行僧般的自律讓他深信，別人丟棄的垃圾就是運氣，只要" },
+                { id: 'insight', text: "把微小的事情做到完美，就能累積深厚底蘊", isKeyword: true },
+                { text: "。" }
+                ]
+            }
+            },
+            {
+            title: "友誼合作",
+            taiwan: {
+                name: "李洋與王齊麟 (奧運金牌)",
+                segments: [
+                { text: "台灣羽球男雙" },
+                { id: 'who', text: "李洋與王齊麟", isKeyword: true },
+                { text: "在歷經奧運奪金的高峰後，隨即陷入了長達數年的" },
+                { id: 'what', text: "低潮期與默契摩擦", isKeyword: true },
+                { text: "。面對外界的看衰，他們選擇" },
+                { id: 'how', text: "坐下來坦誠溝通，放下個人的固執", isKeyword: true },
+                { text: "，重新調整彼此在球場上的跑位與防守策略。這段經歷讓他們深刻體會到，真正的搭檔不是不吵架，而是" },
+                { id: 'insight', text: "在對方墜入谷底時願意伸出雙手，用信任共同撐起球場", isKeyword: true },
+                { text: "。" }
+                ]
+            },
+            global: {
+                name: "賈伯斯與沃茲尼克 (蘋果創辦人)",
+                segments: [
+                { text: "蘋果公司創辦人" },
+                { id: 'who', text: "賈伯斯與沃茲尼克", isKeyword: true },
+                { text: "在車庫創業初期，兩人性格與專長迥異，面對" },
+                { id: 'what', text: "如何將複雜的電路板推銷給一般大眾的巨大難題", isKeyword: true },
+                { text: "，他們完美發揮了彼此的優勢，" },
+                { id: 'how', text: "由沃茲尼克負責將技術化為現實，賈伯斯則將機器包裝成產品", isKeyword: true },
+                { text: "。這次的合作讓他們明白，互補的特質並非衝突的來源，而是激發創新的催化劑，" },
+                { id: 'insight', text: "唯有找到能讓彼此閃耀的夥伴才能發揮巨大能量", isKeyword: true },
+                { text: "。" }
+                ]
+            }
+            },
+            {
+            title: "挑戰挫折",
+            taiwan: {
+                name: "郭婞淳 (台灣舉重金牌)",
+                segments: [
+                { text: "舉重國手" },
+                { id: 'who', text: "郭婞淳", isKeyword: true },
+                { text: "在備戰亞運期間，不慎被沉重的槓鈴砸中右大腿，造成" },
+                { id: 'what', text: "肌肉百分之七十斷裂", isKeyword: true },
+                { text: "，險些終結運動生涯。面對這幾乎毀滅性的打擊，她沒有選擇退役，而是每天" },
+                { id: 'how', text: "強忍著撕裂般的劇痛進行復健", isKeyword: true },
+                { text: "，甚至在輪椅上持續練習上半身力量。這段低谷讓她體會到，所有的挫折都是" },
+                { id: 'insight', text: "上天為了讓她承擔更大責任而給予的考驗", isKeyword: true },
+                { text: "，最終她成功在奧運奪金。" }
+                ]
+            },
+            global: {
+                name: "黃仁勳 (輝達創辦人)",
+                segments: [
+                { text: "輝達創辦人" },
+                { id: 'who', text: "黃仁勳", isKeyword: true },
+                { text: "在創業初期推出的第一款產品遭遇市場慘敗，公司" },
+                { id: 'what', text: "瀕臨破產邊緣", isKeyword: true },
+                { text: "。在走投無路之際，他" },
+                { id: 'how', text: "放下身段主動向競爭對手尋求合作", isKeyword: true },
+                { text: "，並大膽改變產品的研發策略。這次經驗使他明白，勇敢承認失敗並非軟弱，而是" },
+                { id: 'insight', text: "重新看清方向的契機", isKeyword: true },
+                { text: "，唯有保持謙卑才能開創科技帝國。" }
+                ]
+            }
+            }
+        ];
+
+        return (
+            <div className="w-full flex flex-col">
+            {step > 1 && step < 5 && <BackButton onClick={() => setStep(step - 1)} />}
+            
+            {step >= 1 && step <= 4 && (
+                <div>
+                <QuestTitle step={step} title={`面向練習：${THEMES[step-1].title}`} totalSteps={4}>
+                    名人故事的微型解剖
+                </QuestTitle>
+                <TeacherHint>
+                    寫作時，名人故事不該是流水帳，必須提煉出「人物、困境、行動、體悟」四個核心。<br/>
+                    <strong>請點選下方的螢光筆，在文章中點擊尋找這四個隱藏的關鍵詞句！</strong>
+                </TeacherHint>
+                <TaggingGame 
+                    taiwanStory={THEMES[step-1].taiwan}
+                    globalStory={THEMES[step-1].global}
+                    onComplete={() => { 
+                    onStepComplete(); 
+                    if (step === 4 && !isCompleted) onComplete();
+                    setStep(step + 1); 
+                    }}
+                />
+                </div>
+            )}
+
+            {step === 5 && <SuccessCard message="你已經掌握了四個面向的強大故事庫，快去紙本上將這些故事與你的個人經驗雙軌結合吧！" onReset={handleReset} />}
+            </div>
+        );
+        }
+
+        function Lesson6Campaign({ onComplete, onStepComplete, isCompleted }) {
+        const [step, setStep] = useState(isCompleted ? 7 : 1);
+        const handleReset = () => setStep(1);
+
+        return (
+            <div className="w-full flex flex-col">
+            {step > 1 && step < 7 && <BackButton onClick={() => setStep(step - 1)} />}
+            
+            {step === 1 && (
+                <div>
+                <QuestTitle step={1} title="鑑賞之眼 (一)">拯救平庸的流水帳</QuestTitle>
+                <TeacherHint>
+                    文章的第一印象決定生死！許多同學在考試時，第一段總是習慣寫沒畫面的流水帳。請幫這位同學選出最好的修改方向。
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="寫作題目：『一場難忘的比賽』。學生的初稿：『我參加過很多次大隊接力，但最讓我難忘的是國三上學期的校慶，因為那是我們班最後一次比賽，大家都很緊張。』"
+                    options={[
+                    { id: 'A', text: "加點成語比較高級：『我參加過無數次大隊接力，但最難忘的是國三校慶。我們班同心協力，大家都七上八下、忐忑不安，希望能拔得頭籌。』", isCorrect: false },
+                    { id: 'B', text: "用聽覺與畫面切入：『「砰！」震耳欲聾的起跑槍聲在操場上空炸開，漫天的塵土伴隨著全場的嘶吼聲瞬間沸騰。我站在第四棒的接力區，緊握的雙手中全是濕冷的汗水。』", isCorrect: true },
+                    { id: 'C', text: "從天氣慢慢寫起：『校慶那天，天氣非常炎熱，萬里無雲。我站在操場上準備跑大隊接力，心裡覺得很緊張，希望等一下不要跑太慢拖累大家。』", isCorrect: false }
+                    ]}
+                    explanationText={{
+                    correct: "太棒了！B選項完全拋棄了『很緊張』這種流水帳，直接用『起跑槍聲』和『濕冷的汗水』讓讀者身歷其境。這就是情境破題法！",
+                    wrong: "如果只是塞滿成語，文章會顯得老氣且沒有真實感；如果是從『天氣炎熱』慢慢寫起，則會顯得囉唆且抓不到重點。"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(2); }}
+                />
+                </div>
+            )}
+
+            {step === 2 && (
+                <div>
+                <QuestTitle step={2} title="鑑賞之眼 (二)">設定核心主旨</QuestTitle>
+                <TeacherHint>
+                    情境開頭的最後一句話，必須是「點明主旨」的關鍵句（也就是這篇文章你想傳達的核心精神）。
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="延續上一題的大隊接力場景，你站在接力區流著手汗。接下來你要接哪一句話，最能展現『即使害怕也要勇敢承擔』的深刻立意？"
+                    options={[
+                    { id: 'A', text: "不管怎樣，我等一下一定要跑很快，這樣我們班才能拿到冠軍，讓導師請喝飲料。", isCorrect: false },
+                    { id: 'B', text: "看著隊友咬牙狂奔的扭曲臉龐，我知道，這根沉甸甸的接力棒一旦交到我手中，我就沒有逃避的權利，只能迎風狂奔。", isCorrect: true },
+                    { id: 'C', text: "大隊接力真是一項考驗團隊合作的運動，只要我們班團結一致，就沒有什麼困難可以打敗我們。", isCorrect: false }
+                    ]}
+                    explanationText={{
+                    correct: "非常有深度！B選項將『接力棒』具象化為『無法逃避的責任』，成功點出了『勇敢承擔』的主旨，讓文章不再只是單純的賽跑紀錄。",
+                    wrong: "A選項太過現實且功利，缺乏文學的昇華；C選項則是標準的『說教式八股文』，閱卷老師已經看過幾萬遍了。"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(3); }}
+                />
+                </div>
+            )}
+
+            {step === 3 && (
+                <div>
+                <QuestTitle step={3} title="文本雷達 (一)">尋找感官切入點</QuestTitle>
+                <TeacherHint>
+                    一個具有「大將之風」的情境開頭，會像電影鏡頭一樣，直接帶讀者進入畫面。
+                </TeacherHint>
+                <HighlightTextGame 
+                    targetInstruction="請點擊標記出這個段落中，最具體、最有畫面感的「感官切入」關鍵句。"
+                    paragraph={[
+                    { id: 'f1', text: "期中考終於結束了，沉悶的教室裡瀰漫著一股即將解脫的躁動，大家都在交頭接耳。" },
+                    { id: 'c1', text: "「嗶——」一聲尖銳刺耳的哨音突然劃破了體育館悶熱的空氣，" },
+                    { id: 'f5', text: "我猛然回過神來。" },
+                    { id: 'c2', text: "一滴冰冷的汗水正沿著我的鼻尖緩緩滑落，最後重重地砸在光亮刺眼的木地板上。" },
+                    { id: 'f7', text: "抬起頭，計分板上那排血紅色的數字冷酷地顯示著我們落後十分。" },
+                    { id: 'f10', text: "對手的防守陣型像是一座無法翻越的鋼鐵高山，我們已經退無可退，只能咬緊牙關放手一搏。" }
+                    ]}
+                    correctIds={['c1', 'c2']}
+                    onComplete={() => { onStepComplete(); setStep(4); }}
+                />
+                </div>
+            )}
+
+            {step === 4 && (
+                <div>
+                <QuestTitle step={4} title="文本雷達 (二)">尋找主旨收束點</QuestTitle>
+                <TeacherHint>
+                    在營造完緊張的氣氛後，優秀的作者會在第一段結尾把鏡頭拉回主角內心，點出整篇文章的靈魂。
+                </TeacherHint>
+                <HighlightTextGame 
+                    targetInstruction="延續大隊接力的場景，請標記出負責「點明核心主旨」的關鍵短語。"
+                    paragraph={[
+                    { id: 'f1', text: "烈日當空，紅色的PU跑道散發著刺鼻的塑膠味。跑道旁的加油聲猶如海嘯般一波波襲來，震得我耳膜發疼。" },
+                    { id: 'f5', text: "看著前方第三棒的同學因為體力透支而踉蹌的腳步，我的心瞬間提到了嗓子眼。" },
+                    { id: 'f7', text: "我知道，當那根沾滿汗水的接力棒遞到我手中時，" },
+                    { id: 'c1', text: "我接下的不再只是勝負，而是全班三十個人這三年來絕不認輸的青春執念。" }
+                    ]}
+                    correctIds={['c1']}
+                    onComplete={() => { onStepComplete(); setStep(5); }}
+                />
+                </div>
+            )}
+
+            {step === 5 && (
+                <div>
+                <QuestTitle step={5} title="開放式微整形 (一)">擴寫感官細節</QuestTitle>
+                <TeacherHint>
+                    現在換你來當導演！請在下方的句型骨架中，填入大於5個字的具體描寫，把接力賽的緊張感寫出來。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "炙熱的陽光無情地烘烤著操場，空氣中瀰漫著 ", { id: 'smell', placeholder: '形容周圍的氣味或觸覺', hint: '例如：刺鼻的橡膠味與汗水蒸發的悶熱', minLength: 5 },
+                    "。我微蹲在最後一棒的接力區，雙眼死死盯著前方，胸腔裡的心臟像是 ", { id: 'sound', placeholder: '形容心跳的聲音與感受', hint: '例如：被裝上馬達的戰鼓，瘋狂擂動', minLength: 5 },
+                    "，提醒著我即將到來的決戰。"
+                    ]}
+                    masterVersion="炙熱的陽光無情地烘烤著操場，空氣中瀰漫著【刺鼻的塑膠味與汗水蒸發後的沉悶黏膩】。我微蹲在最後一棒的接力區，雙眼死死盯著前方，胸腔裡的心臟像是【一面被重鎚瘋狂敲擊的戰鼓，發出震耳欲聾的轟鳴】，提醒著我即將到來的決戰。"
+                    masterExplanation="你看！當我們把抽象的緊張情緒換成「刺鼻的塑膠味」、「震耳欲聾的戰鼓轟鳴」，整個畫面是不是瞬間立體了起來？"
+                    onComplete={() => { onStepComplete(); setStep(6); }}
+                />
+                </div>
+            )}
+
+            {step === 6 && (
+                <div>
+                <QuestTitle step={6} title="開放式微整形 (二)">賦予深刻意義</QuestTitle>
+                <TeacherHint>
+                    情境營造完了，現在請把這根「平凡的接力棒」賦予它不平凡的「主旨意義」，完成第一段的收尾。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "當看見隊友咬緊牙關、滿臉通紅地朝我狂奔而來時，我屏住呼吸，緩緩向後伸出右手。這交接的不只是一根沉甸甸的鋁製接力棒，更是 ", { id: 'theme1', placeholder: '點出班級團隊的意義', hint: '例如：全班這一個月來流下的汗水', minLength: 5 },
+                    "。這一次，我告訴自己，無論如何都必須 ", { id: 'theme2', placeholder: '點出你個人的決心', hint: '例如：帶著這份信任衝破終點線', minLength: 5 }, "。"
+                    ]}
+                    masterVersion="當看見隊友咬緊牙關、滿臉通紅地朝我狂奔而來時，我屏住呼吸，緩緩向後伸出右手。這交接的不只是一根沉甸甸的鋁製接力棒，更是【全班三十個人在無數個黃昏裡流下的汗水與期盼】。這一次，我告訴自己，無論如何都必須【扛起這份沉重的信任，化作撕裂狂風的利刃衝破終點線】。"
+                    masterExplanation="透過將「接力棒」轉化為「全班的期盼與信任」，文章的主旨瞬間從「個人賽跑」昇華為「團隊承擔」，立意層次大躍進！"
+                    onComplete={() => { if(!isCompleted) onComplete(); setStep(7); }}
+                />
+                </div>
+            )}
+
+            {step === 7 && <SuccessCard message="你已經掌握了情境開頭的黃金公式，接下來就換你在紙本上大展身手了！" onReset={handleReset} />}
+            </div>
+        );
+        }
+
+        function Lesson7Campaign({ onComplete, onStepComplete, isCompleted }) {
+        const [step, setStep] = useState(isCompleted ? 7 : 1);
+        const handleReset = () => setStep(1);
+
+        return (
+            <div className="w-full flex flex-col">
+            {step > 1 && step < 7 && <BackButton onClick={() => setStep(step - 1)} />}
+            
+            {step === 1 && (
+                <div>
+                <QuestTitle step={1} title="鑑賞之眼 (一)">避開說教的結尾</QuestTitle>
+                <TeacherHint>
+                    延續大隊接力的故事。結果你「掉棒」了，班上輸了比賽。在文章的最後一段，哪一種結尾最令人反感？
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="你因為掉棒而害班上輸了接力賽。在文章結尾，哪一種寫法是閱卷老師最不喜歡的『NG說教』？"
+                    options={[
+                    { id: 'A', text: "「總而言之，失敗為成功之母。我們不應該因為一次的掉棒就放棄，大家一起加油，明年再把冠軍拿回來吧！」", isCorrect: true },
+                    { id: 'B', text: "「看著夕陽下空蕩蕩的紅色PU跑道，我輕輕撫摸著膝蓋上的擦傷。痛楚依舊，但我知道，這是我成長的印記。」", isCorrect: false },
+                    { id: 'C', text: "「那根冰冷的鋁製接力棒雖然掉在了地上，但全班跑過來擁抱我的那一刻，我接住了另一種更溫暖的力量。」", isCorrect: false }
+                    ]}
+                    explanationText={{
+                        correct: "判斷正確！A選項就是標準的『小學生喊口號』結尾，充滿了『失敗為成功之母』這種陳腔濫調，完全沒有文學美感。",
+                    wrong: "這個結尾其實寫得很好喔！它運用了『情境呼應』或『物件轉化』，留下了很棒的文學餘韻。請尋找那個在『喊口號說大道理』的選項。"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(2); }}
+                />
+                </div>
+            )}
+
+            {step === 2 && (
+                <div>
+                <QuestTitle step={2} title="鑑賞之眼 (二)">尋找完美的豹尾</QuestTitle>
+                <TeacherHint>
+                    最高級的結尾，是回到第一段的「情境畫面（例如操場、接力棒）」，但賦予它經過整篇文章洗禮後「新的意義」。
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="你的開頭寫了『刺鼻的PU跑道』與『沉甸甸的接力棒』。經歷掉棒的挫折後，你要怎麼寫結尾來『首尾呼應』？"
+                    options={[
+                    { id: 'A', text: "經過了這次的教訓，我每天晚上都去操場練習跑步，終於在下一次的考試中跑了第一名，真是開心。", isCorrect: false },
+                    { id: 'B', text: "所以說，人生就像一場大隊接力，有時候會順利，有時候會掉棒，我們要用平常心去面對它。", isCorrect: false },
+                    { id: 'C', text: "夕陽的餘暉將紅色的PU跑道染得更加深邃。那根曾在泥地裡翻滾的接力棒，此刻正安靜地躺在教室的展示櫃裡。它不再是失敗的恥辱，而是提醒我們曾經並肩作戰過的最美勳章。", isCorrect: true }
+                    ]}
+                    explanationText={{
+                    correct: "太優美了！C選項完美地『情境呼應』了跑道與接力棒，並將『掉棒的失敗』昇華為『並肩作戰的勳章』。不喊口號，卻力量十足。",
+                    wrong: "A選項變成了流水帳的流水帳；B選項雖然試圖講道理，但過於直白淺顯，缺乏畫面的餘韻。"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(3); }}
+                />
+                </div>
+            )}
+
+            {step === 3 && (
+                <div>
+                <QuestTitle step={3} title="文本雷達 (一)">解構情境呼應</QuestTitle>
+                <TeacherHint>
+                    精彩的「首尾呼應」通常會包含：前半部「畫面的重現」，後半部「立意的昇華」。
+                </TeacherHint>
+                <HighlightTextGame 
+                    targetInstruction="請點擊標記出這個結尾段落中，屬於「重現開頭場景(情境呼應)」的關鍵句。"
+                    paragraph={[
+                    { id: 'f1', text: "喧鬧的操場終於歸於平靜，只剩下幾隻麻雀在草地上跳躍。" },
+                    { id: 'f3', text: "我獨自一人站在那條曾讓我跌倒的第四棒接力區，" },
+                    { id: 'c1', text: "晚風吹散了空氣中殘留的刺鼻塑膠味。" },
+                    { id: 'f4', text: "走過這一趟充滿自責與懊悔的旅程，看著膝蓋上逐漸結痂的傷口，我終於明白，真正的勇敢不是永遠不跌倒。而是在重重摔了一跤後，你依然有勇氣笑著走向下一個起跑線。" }
+                    ]}
+                    correctIds={['c1']}
+                    onComplete={() => { onStepComplete(); setStep(4); }}
+                />
+                </div>
+            )}
+
+            {step === 4 && (
+                <div>
+                <QuestTitle step={4} title="文本雷達 (二)">解構立意昇華</QuestTitle>
+                <TeacherHint>
+                    延續上一題，光有畫面還不夠，結尾必須收束在一個有深度的觀點上，讓讀者讀完後能有所反思。
+                </TeacherHint>
+                <HighlightTextGame 
+                    targetInstruction="請點擊標記出這個結尾段落中，屬於「立意昇華(說明核心觀點)」的關鍵短語。"
+                    paragraph={[
+                    { id: 'f1', text: "喧鬧的操場終於歸於平靜，只剩下幾隻麻雀在草地上跳躍。我獨自一人站在那條曾讓我跌倒的第四棒接力區，晚風吹散了空氣中殘留的刺鼻塑膠味。" },
+                    { id: 'f2', text: "走過這一趟充滿自責與懊悔的旅程，看著膝蓋上逐漸結痂的傷口，" },
+                    { id: 'c1', text: "我終於明白，真正的勇敢不是永遠不跌倒。而是在重重摔了一跤後，你依然有勇氣拍拍身上的塵土，笑著走向下一個起跑線。" }
+                    ]}
+                    correctIds={['c1']}
+                    onComplete={() => { onStepComplete(); setStep(5); }}
+                />
+                </div>
+            )}
+
+            {step === 5 && (
+                <div>
+                <QuestTitle step={5} title="開放式微整形 (一)">重現開頭的場景</QuestTitle>
+                <TeacherHint>
+                    現在換你動筆！第一段我們寫了「刺鼻的跑道」與「戰鼓般的心跳」。在最後一段，請用你的話重新描繪這個場景（通常時間會改變，比如變成黃昏或賽後）。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "夕陽的餘暉將整座操場染成一片橘紅，原本喧鬧的 ", { id: 'scene', placeholder: '重新描繪PU跑道的場景', hint: '例如：刺鼻的PU跑道此刻顯得格外空曠寧靜', minLength: 5 },
+                    "。我低頭看著自己微微發抖的雙手，那種 ", { id: 'heartbeat', placeholder: '呼應第一段戰鼓般的心跳', hint: '例如：戰鼓般狂躁的心跳聲已經平息', minLength: 5 }, "。"
+                    ]}
+                    masterVersion="夕陽的餘暉將整座操場染成一片橘紅，原本喧鬧的【刺鼻PU跑道此刻顯得格外空曠且寧靜，只剩下微風拂過樹梢的沙沙聲】。我低頭看著自己微微發抖的雙手，那種【如戰鼓般狂躁、幾乎要衝破胸膛的心跳聲已經逐漸平息】。"
+                    masterExplanation="透過重寫「跑道」與「心跳」，但將狀態從「緊繃刺鼻」轉變為「空曠平息」，成功創造了強烈的首尾對比與呼應感！"
+                    onComplete={() => { onStepComplete(); setStep(6); }}
+                />
+                </div>
+            )}
+
+            {step === 6 && (
+                <div>
+                <QuestTitle step={6} title="開放式微整形 (二)">昇華挫折的意義</QuestTitle>
+                <TeacherHint>
+                    最後一步，請把掉棒的「失敗」，轉化為成長的「養分」，為這篇文章畫下完美的句點。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "雖然那根沉甸甸的接力棒最終掉落在了泥地裡，但全班跑過來擁抱我的那一刻，我才明白，真正的團隊精神不是 ", { id: 'negative', placeholder: '不是什麼？(打破迷思)', hint: '例如：不是完美無缺的交接與奪冠', minLength: 5 },
+                    "；而是 ", { id: 'positive', placeholder: '而是什麼？(昇華的體悟)', hint: '例如：是在有人跌倒時，願意陪他一起承擔摔跤的痛楚', minLength: 5 }, "。這份重量，將成為我青春裡最珍貴的印記。"
+                    ]}
+                    masterVersion="雖然那根沉甸甸的接力棒最終掉落在了泥地裡，但全班跑過來擁抱我的那一刻，我才明白，真正的團隊精神不是【永遠維持著完美無缺的交接與對勝利的執著】；而是【在有人失誤跌倒時，所有人依然願意伸出雙手，陪他一起承擔摔跤的痛楚與遺憾】。這份重量，將成為我青春裡最珍貴的印記。"
+                    masterExplanation="使用「不是...而是...」的句型，是非常強大的立意昇華技巧。它能打破世俗的迷思（只看重輸贏），提出你個人深刻的見解（看重陪伴與承擔），這就是拿六級分的關鍵！"
+                    onComplete={() => { if(!isCompleted) onComplete(); setStep(7); }}
+                />
+                </div>
+            )}
+
+            {step === 7 && <SuccessCard message="首尾呼應的技術已經深深烙印在你的腦海裡，去紙本上把它寫出來吧！" onReset={handleReset} />}
+            </div>
+        );
+        }
+
+        function Lesson8Campaign({ onComplete, onStepComplete, isCompleted }) {
+        const [step, setStep] = useState(isCompleted ? 7 : 1);
+        const handleReset = () => setStep(1);
+
+        return (
+            <div className="w-full flex flex-col">
+            {step > 1 && step < 7 && <BackButton onClick={() => setStep(step - 1)} />}
+            
+            {step === 1 && (
+                <div>
+                <QuestTitle step={1} title="鑑賞之眼 (一)">拒絕空泛的形容詞</QuestTitle>
+                <TeacherHint>
+                    寫作最怕變成「形容詞懶人包」。遇到「疲勞」的情境，讀者感受不到你的累，除非你讓他們「看到」。
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="你想形容在豔陽下爬山『非常累』的感覺，哪一句寫得最好？"
+                    options={[
+                    { id: 'A', text: "爬了兩個小時的山後，我真的覺得超級無敵累，全身都沒有力氣，快要死掉了。", isCorrect: false },
+                    { id: 'B', text: "我的體力已經到了極限，雙腳發軟，只能坐在路邊的石頭上休息，真的好辛苦。", isCorrect: false },
+                    { id: 'C', text: "我癱坐在長滿青苔的石階上，胸口像破舊的拉風箱般劇烈起伏，滑落的汗水刺痛了我的雙眼，連抬起一根手指都覺得沉重。", isCorrect: true }
+                    ]}
+                    explanationText={{
+                    correct: "漂亮！C選項完全沒有用到『累』這個字，卻透過『劇烈起伏(視覺/動作)』和『汗水刺痛(觸覺)』，讓讀者身歷其境，這就是 Show, Don't Tell。",
+                    wrong: "你還是只用了『累』或『沒力氣』這種抽象的詞彙。試著描寫你『身體的反應』，例如呼吸的頻率、流汗的感覺！"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(2); }}
+                />
+                </div>
+            )}
+
+            {step === 2 && (
+                <div>
+                <QuestTitle step={2} title="鑑賞之眼 (二)">捕捉風景的靈魂</QuestTitle>
+                <TeacherHint>
+                    描寫風景時，如果你只寫「風景很美、空氣很好」，在閱卷老師眼中就是一篇沒有記憶點的普通文章。
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="你想描寫『雨後清晨的山林』，試圖傳達一種清新、充滿生機的感覺。哪一個段落的細節描寫最成功？"
+                    options={[
+                    { id: 'A', text: "下過雨後的山裡真的很漂亮，樹木都變得很綠，空氣聞起來也非常清新，讓人覺得心情很好，這真是一個美麗的早晨。", isCorrect: false },
+                    { id: 'B', text: "大雨洗去了山林累積的塵埃，翠綠的葉尖上還掛著搖搖欲墜的晶瑩水珠。猛吸一口氣，微涼的空氣中揉合了濕潤的泥土味與淡淡的青草香，遠方偶爾傳來幾聲清脆的鳥啼。", isCorrect: true },
+                    { id: 'C', text: "清晨的山林猶如人間仙境，美不勝收，宛如一幅巧奪天工的山水畫，讓人流連忘返，深深陶醉在大自然的鬼斧神工之中。", isCorrect: false }
+                    ]}
+                    explanationText={{
+                    correct: "無可挑剔！B選項同時啟動了視覺（晶瑩水珠）、嗅覺（泥土味、青草香）和聽覺（清脆鳥啼），建構了一個可以走進去的立體空間。",
+                    wrong: "A選項全都是「漂亮、清新」等空泛形容詞；C選項則是犯了「堆疊成語」的毛病，讀起來很華麗，但腦海中完全沒有具體的畫面產生。"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(3); }}
+                />
+                </div>
+            )}
+
+            {step === 3 && (
+                <div>
+                <QuestTitle step={3} title="文本雷達 (一)">解剖情緒懶人包</QuestTitle>
+                <TeacherHint>
+                    我們來看看大師如何用「具體的動作」來取代「抽象的悲傷」。
+                </TeacherHint>
+                <HighlightTextGame 
+                    targetInstruction="請點擊標記出這個段落中，具體描寫「身體反應與觸覺」的關鍵字詞。(提示：尋找喉嚨與眼眶的描寫)"
+                    paragraph={[
+                    { id: 'f1', text: "得知外公離開的那一瞬間，整個世界彷彿被按下了靜音鍵。" },
+                    { id: 'f2', text: "我呆立在病房門口，心裡覺得非常難過，" },
+                    { id: 'c1', text: "喉嚨深處像是被硬生生塞了一團乾燥的棉花，" },
+                    { id: 'f3', text: "咽不下一口口水，也發不出任何微弱的聲音。" },
+                    { id: 'c2', text: "眼眶周圍傳來一陣酸澀的灼熱感，" },
+                    { id: 'c3', text: "但我只能死死咬住下唇，直到舌尖嚐到一絲淡淡的血腥味。" }
+                    ]}
+                    correctIds={['c1', 'c2', 'c3']}
+                    onComplete={() => { onStepComplete(); setStep(4); }}
+                />
+                </div>
+            )}
+
+            {step === 4 && (
+                <div>
+                <QuestTitle step={4} title="文本雷達 (二)">尋找食物的五感</QuestTitle>
+                <TeacherHint>
+                    描寫美食是會考常見的題材。好吃的食物不能只有「美味」兩個字，必須色香味俱全。
+                </TeacherHint>
+                <HighlightTextGame 
+                    targetInstruction="這是一段描寫『滷肉飯』的文字。請標記出同時包含「嗅覺」與「味覺」描寫的關鍵字詞。"
+                    paragraph={[
+                    { id: 'f1', text: "放學後，我總會走到巷口那家老麵攤，點一碗熱騰騰的滷肉飯。" },
+                    { id: 'f2', text: "老闆娘熟練地從黑色大滷鍋中舀起一勺深褐色的滷汁，" },
+                    { id: 'c1', text: "一股濃郁的醬油鹹香混合著紅蔥頭的氣味撲鼻而來，" },
+                    { id: 'f3', text: "我大口扒下，" },
+                    { id: 'c2', text: "肥瘦相間的肉燥在舌尖化開，留下滿滿的膠質與甘甜。" },
+                    { id: 'f4', text: "這碗看似平凡的滷肉飯，是我每天最期待的幸福時刻。" }
+                    ]}
+                    correctIds={['c1', 'c2']}
+                    onComplete={() => { onStepComplete(); setStep(5); }}
+                />
+                </div>
+            )}
+
+            {step === 5 && (
+                <div>
+                <QuestTitle step={5} title="開放式微整形 (一)">用五感燉一碗牛肉麵</QuestTitle>
+                <TeacherHint>
+                    我們來練習寫「吃東西」！請運用你的五感（視覺、聽覺、味覺），把一碗平凡的牛肉麵寫成人間美味。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "剛端上桌的紅燒牛肉麵，表面浮著一層 ", { id: 'visual', placeholder: '視覺顏色與細節', hint: '例如：金黃色的誘人油脂與翠綠蔥花', minLength: 5 },
+                    "。我迫不及待地喝了一口湯， ", { id: 'feel', placeholder: '觸覺與溫度的感受', hint: '例如：滾燙的熱流瞬間滑過食道', minLength: 5 },
+                    "，濃郁的八角與牛骨香氣立刻在口腔中四溢。大口咬下帶筋牛腩，那種 ", { id: 'taste', placeholder: '味覺與口感的具體描寫', hint: '例如：入口即化的綿密與狂野鮮甜', minLength: 5 }, "，瞬間撫慰了我這一天下來的疲憊。"
+                    ]}
+                    masterVersion="剛端上桌的紅燒牛肉麵，表面浮著一層【閃爍著金黃色澤的誘人牛油與大把翠綠的蔥花】。我迫不及待地喝了一口湯，【滾燙的熱流瞬間如暖流般滑過乾燥的食道】，濃郁的八角與牛骨香氣立刻在口腔中四溢。大口咬下帶筋牛腩，那種【入口即化的綿密膠質與吸飽濃郁湯汁的狂野鮮甜】，瞬間撫慰了我這一天下來的疲憊。"
+                    masterExplanation="這就是所謂的『感官放大鏡』！當你精準地寫出『金黃色澤的牛油』、『滑過食道的熱流』、『入口即化的膠質』，這碗麵就瞬間擁有了撫慰人心的靈魂！"
+                    onComplete={() => { onStepComplete(); setStep(6); }}
+                />
+                </div>
+            )}
+
+            {step === 6 && (
+                <div>
+                <QuestTitle step={6} title="開放式微整形 (二)">放大恐懼的細節</QuestTitle>
+                <TeacherHint>
+                    寫作題目「一個可怕的夜晚」。請不要寫「我很害怕」，試著用聽覺與身體反應，放大你在黑暗中的恐懼。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "突然間，整棟屋子陷入了一片死寂的漆黑。我縮在棉被裡，只聽見窗外 ", { id: 'sound', placeholder: '令人不安的聽覺描寫', hint: '例如：狂風撕扯鐵皮屋頂的刺耳聲響', minLength: 5 },
+                    "。黑暗中，我的想像力開始無限放大，感覺房間角落似乎 ", { id: 'visual', placeholder: '黑暗中產生的錯覺(視覺)', hint: '例如：有一雙冰冷的眼睛正死死盯著我', minLength: 5 },
+                    "。我的掌心 ", { id: 'body', placeholder: '恐懼時的身體反應', hint: '例如：不斷冒出冷汗，連呼吸都變得小心翼翼', minLength: 5 }, "，深怕發出一點聲音就會打破這脆弱的安全感。"
+                    ]}
+                    masterVersion="突然間，整棟屋子陷入了一片死寂的漆黑。我縮在棉被裡，只聽見窗外【狂風猶如野獸般瘋狂撕扯著鐵皮屋頂，發出令人牙酸的嘎吱聲】。黑暗中，我的想像力開始無限放大，感覺房間角落似乎【潛伏著某種不知名的黑色陰影，正隨著窗外搖曳的樹枝緩緩逼近】。我的掌心【不受控制地滲出黏膩的冷汗，整個背部僵硬得像一塊木板】，深怕發出一點聲音就會打破這脆弱的安全感。"
+                    masterExplanation="透過聽覺的『嘎吱聲』、視覺錯覺的『黑色陰影』以及觸覺的『黏膩冷汗』，不用出現任何一個『怕』字，讀者就能完全感受到那種令人窒息的恐懼氛圍。"
+                    onComplete={() => { if(!isCompleted) onComplete(); setStep(7); }}
+                />
+                </div>
+            )}
+
+            {step === 7 && <SuccessCard message="你已經成功啟動了五感放大鏡，文字再也不會乾巴巴的了！" onReset={handleReset} />}
+            </div>
+        );
+        }
+
+        function Lesson9Campaign({ onComplete, onStepComplete, isCompleted }) {
+        const [step, setStep] = useState(isCompleted ? 7 : 1);
+        const handleReset = () => setStep(1);
+
+        return (
+            <div className="w-full flex flex-col">
+            {step > 1 && step < 7 && <BackButton onClick={() => setStep(step - 1)} />}
+            
+            {step === 1 && (
+                <div>
+                <QuestTitle step={1} title="鑑賞之眼 (一)">為意義而修辭</QuestTitle>
+                <TeacherHint>
+                    修辭就像化妝，化得好能凸顯五官，化太濃（為賦新辭強說愁）反而像妖怪。請選出運用修辭最自然、最適切的句子。
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="你想表達『生氣對自己沒有好處，反而會傷到自己』的道理。哪一個修辭句寫得最棒？"
+                    options={[
+                    { id: 'A', text: "憤怒是一把失控的烈火，往往在燙傷別人之前，就先將自己的理智燒得灰飛煙滅。", isCorrect: true },
+                    { id: 'B', text: "我那如火山爆發般石破天驚的憤怒，像驚濤駭浪的海嘯，席捲了我那如汪洋孤舟般載浮載沉的心靈。", isCorrect: false },
+                    { id: 'C', text: "生氣就像吃大便一樣，不但很臭，而且會讓肚子痛，千萬不要生氣。", isCorrect: false }
+                    ]}
+                    explanationText={{
+                    correct: "極佳的品味！這個『烈火』的譬喻非常貼切，精準地傳達了『生氣會傷害自己』的意義，文字簡潔有力。",
+                    wrong: "B選項堆疊了太多浮誇的成語，顯得很矯情（為賦新辭強說愁）；C選項的譬喻則太過俗氣不雅觀喔。"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(2); }}
+                />
+                </div>
+            )}
+
+            {step === 2 && (
+                <div>
+                <QuestTitle step={2} title="鑑賞之眼 (二)">尋找最生動的轉化</QuestTitle>
+                <TeacherHint>
+                    「轉化（擬物/擬人）」能讓死板的概念活起來，賦予它們動作或情緒。
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="你想描寫『時間的無情流逝，讓父母老去』。哪一個轉化法用得最深刻？"
+                    options={[
+                    { id: 'A', text: "時間過得很快，像箭一樣飛走，我們長大了，父母也老了，我們要好好把握光陰。", isCorrect: false },
+                    { id: 'B', text: "時間是一位冷酷無情的小偷，在我們不注意時，悄悄偷走了父母黑色的髮絲與挺直的脊背。", isCorrect: true },
+                    { id: 'C', text: "時間滴答滴答的走，不為任何人停留，歲月不饒人，大家都變老了。", isCorrect: false }
+                    ]}
+                    explanationText={{
+                    correct: "完美的擬人化！把時間比擬為『冷酷的小偷』，並加上『偷走髮絲與脊背』的動作，畫面感與感慨都非常強烈。",
+                    wrong: "A是陳腔濫調的譬喻（光陰似箭）；C只是普通的直述句，沒有轉化法的驚豔感。"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(3); }}
+                />
+                </div>
+            )}
+
+            {step === 3 && (
+                <div>
+                <QuestTitle step={3} title="文本雷達 (一)">尋找轉化的寶石</QuestTitle>
+                <TeacherHint>
+                    在閱讀大師作品時，我們常會被那些賦予無生命事物「人類動作」的句子驚豔。
+                </TeacherHint>
+                <HighlightTextGame 
+                    targetInstruction="請點擊標記出這個段落中，使用了「轉化法(擬人)」的關鍵字句。(提示：注意『寒風』的動作)"
+                    paragraph={[
+                    { id: 'f1', text: "城市的霓虹燈依舊閃爍，街道上車水馬龍，熱鬧非凡。" },
+                    { id: 'f2', text: "站在這片繁華之中，我的心卻像是一口枯竭的古井，發出空洞的回音。" },
+                    { id: 'c1', text: "深夜的寒風像一位嚴厲的導師，毫不留情地掌摑著我的臉頰，" },
+                    { id: 'f3', text: "強迫我從悲傷中保持清醒。" }
+                    ]}
+                    correctIds={['c1']}
+                    onComplete={() => { onStepComplete(); setStep(4); }}
+                />
+                </div>
+            )}
+
+            {step === 4 && (
+                <div>
+                <QuestTitle step={4} title="開放式配對">化平庸為神奇</QuestTitle>
+                <TeacherHint>
+                    平庸的敘述總是缺乏想像力。請把左邊的「平庸直述句」，配對到右邊大師運用修辭改寫的「完妝句」。
+                </TeacherHint>
+                <MakeoverMatchGame 
+                    beforeTitle="平庸直述 (素顏)"
+                    afterTitle="修辭完妝 (大師)"
+                    beforeItems={[
+                    { id: 'b1', matchId: 'm1', text: "我最喜歡的季節是秋天，因為天氣很涼爽，風景很漂亮。" },
+                    { id: 'b2', matchId: 'm2', text: "那次失敗讓我學到很多，雖然過程很痛苦，但我不會放棄。" },
+                    { id: 'b3', matchId: 'm3', text: "雖然外面跨年的人很多很熱鬧，但我自己一個人在房間覺得很孤單。" }
+                    ]}
+                    afterItems={[
+                    { id: 'a2', matchId: 'm2', text: "挫折就像一顆粗糙的磨刀石，雖然會磨去我們一層皮肉，卻能讓生命的刀刃更加鋒利。 (譬喻)" },
+                    { id: 'a3', matchId: 'm3', text: "漫天絢爛的煙火在窗外炸開，周圍是震耳欲聾的歡呼聲，我卻只聽見自己心中那空洞而巨大的寂寞回音。 (映襯)" },
+                    { id: 'a1', matchId: 'm1', text: "當微涼的秋風掃過喧囂的街道，捲起一片片金黃色的落葉，我總會想起那個充滿桂花香的溫暖午後。 (轉化)" }
+                    ]}
+                    onComplete={() => { onStepComplete(); setStep(5); }}
+                />
+                </div>
+            )}
+
+            {step === 5 && (
+                <div>
+                <QuestTitle step={5} title="開放式微整形 (一)">抽象概念具象化</QuestTitle>
+                <TeacherHint>
+                    遇到「拖延症」、「壓力」、「勇氣」這類抽象名詞，請試著用「譬喻法」，為它們找一個具體的夥伴。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "隨著會考的日子一天天逼近，那股無形的升學壓力，就像是 ", { id: 'metaphor1', placeholder: '譬喻成一個具體的重物或怪物', hint: '一顆巨石？一團烏雲？', minLength: 5 },
+                    "，死死地壓在我的胸口，讓我幾乎無法喘息。每當我試圖逃避，它就會化作 ", { id: 'metaphor2', placeholder: '譬喻成某種糾纏的動作或事物', hint: '帶刺的藤蔓？無孔不入的幽靈？', minLength: 5 },
+                    "，將我緊緊纏繞，提醒著我那些尚未完成的目標。"
+                    ]}
+                    masterVersion="隨著會考的日子一天天逼近，那股無形的升學壓力，就像是【一塊吸飽了雨水的巨大海綿】，死死地壓在我的胸口，讓我幾乎無法喘息。每當我試圖逃避，它就會化作【滿地悄悄蔓延生長的帶刺荊棘】，將我緊緊纏繞，提醒著我那些尚未完成的目標。"
+                    masterExplanation="大師的寫法沒有停留在「壓力很大」，而是利用「吸滿水的海綿」和「帶刺的荊棘」這兩個極度具體的意象，讓讀者彷彿也感受到了那種沉重與刺痛感。這就是高級的譬喻！"
+                    onComplete={() => { onStepComplete(); setStep(6); }}
+                />
+                </div>
+            )}
+
+            {step === 6 && (
+                <div>
+                <QuestTitle step={6} title="開放式微整形 (二)">打造強烈映襯</QuestTitle>
+                <TeacherHint>
+                    「映襯」就是把相反的東西放在一起。我們來練習寫「在貧窮中感受到的富足」。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "我們家的客廳不大，牆壁上甚至還有 ", { id: 'poor', placeholder: '描寫環境貧困或老舊的視覺', hint: '例如：斑駁剝落的壁癌與水痕', minLength: 5 },
+                    "。晚餐的餐桌上沒有大魚大肉，只有 ", { id: 'food', placeholder: '描寫簡單粗糙的食物', hint: '例如：幾盤簡單的炒青菜與煎蛋', minLength: 5 },
+                    "。然而，當全家人圍坐在一起，聽著爸爸講述工作趣事時，那種 ", { id: 'rich', placeholder: '描寫內心極度富足的感受', hint: '例如：流淌在空氣中的溫馨與笑聲', minLength: 5 }, "，卻讓我擁有了全世界最無價的財富。"
+                    ]}
+                    masterVersion="我們家的客廳不大，牆壁上甚至還有【幾道因為漏水而斑駁剝落的泛黃壁癌】。晚餐的餐桌上沒有大魚大肉，只有【媽媽用粗糙雙手端出的幾盤廉價燙青菜與菜脯蛋】。然而，當全家人圍坐在一起，聽著爸爸講述工作趣事時，那種【毫無保留的爽朗笑聲與流淌在燈光下的純粹溫暖】，卻讓我擁有了全世界最無價的財富。"
+                    masterExplanation="透過外在環境的「斑駁、廉價」與內心感受的「爽朗、無價」形成強烈對比，這就是映襯法創造出的情感張力！"
+                    onComplete={() => { if(!isCompleted) onComplete(); setStep(7); }}
+                />
+                </div>
+            )}
+
+            {step === 7 && <SuccessCard message="你已經具備了點石成金的修辭功力，快去紙本上為你的文章化上精緻的妝容吧！" onReset={handleReset} />}
+            </div>
+        );
+        }
+
+        function Lesson10Campaign({ onComplete, onStepComplete, isCompleted }) {
+        const [step, setStep] = useState(isCompleted ? 7 : 1);
+        const handleReset = () => setStep(1);
+
+        return (
+            <div className="w-full flex flex-col">
+            {step > 1 && step < 7 && <BackButton onClick={() => setStep(step - 1)} />}
+            
+            {step === 1 && (
+                <div>
+                <QuestTitle step={1} title="鑑賞之眼 (一)">考場倒數危機處理</QuestTitle>
+                <TeacherHint>
+                    沙盤推演最重要的，就是知道在極端狀況下該做什麼取捨。考場上時間就是分數！
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="考場鐘響倒數只剩最後 4 分鐘！你才剛寫完第四段（大道理），卻發現第五段（結尾）一個字都還沒寫。此時你的作戰策略是什麼？"
+                    options={[
+                    { id: 'A', text: "放棄寫結尾。把剩下的時間拿來仔細檢查前面四段有沒有寫錯字，因為錯別字會被扣分。", isCorrect: false },
+                    { id: 'B', text: "立刻放棄想新點子，用最快的速度寫下兩句話，直接重申第一段的場景與主旨，確保文章『有頭有尾』，安全下莊。", isCorrect: true },
+                    { id: 'C', text: "趕快開始腦力激盪，想一個超級華麗、前所未見的譬喻法，慢慢雕琢出一個讓人驚豔的最後一段。", isCorrect: false }
+                    ]}
+                    explanationText={{
+                    correct: "完全正確的危機處理！會考作文的底線是『結構完整』。沒有結尾的文章（未完卷）分數會受到重創。在最後關頭，『寫完』比『寫得華麗』更重要一百倍！",
+                    wrong: "絕對是大忌！沒有結尾的文章結構不完整，分數會被直接打入四級分以下。考場上絕對不能追求華麗而犧牲了結構的完整性。"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(2); }}
+                />
+                </div>
+            )}
+
+            {step === 2 && (
+                <div>
+                <QuestTitle step={2} title="鑑賞之眼 (二)">段落內部邏輯判斷</QuestTitle>
+                <TeacherHint>
+                    不只整篇文章要排版，單一「段落」也有邏輯！好的說理段落通常是：主題句 ➡️ 說理/舉例 ➡️ 結論。
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="你想寫一個段落論述『失敗並不可怕』。以下哪一種段落結構的安排最符合邏輯？"
+                    options={[
+                    { id: 'A', text: "先寫『我以前騎腳踏車常摔倒』，再寫『所以失敗並不可怕』，最後寫『因為失敗可以累積經驗』。", isCorrect: false },
+                    { id: 'B', text: "先破題『失敗並不可怕』，接著舉例『就像我初學腳踏車時的瘀青換來了自由』，最後總結『因此我不再害怕挫折』。", isCorrect: true },
+                    { id: 'C', text: "先寫『因此我不再害怕挫折』，再寫『因為失敗可以累積經驗』，最後才寫『失敗並不可怕』。", isCorrect: false }
+                    ]}
+                    explanationText={{
+                    correct: "邏輯非常清晰！先用『主題句』破題，接著用『具體經驗』來佐證，最後再漂亮地『收束總結』。這就是標準的論述段落結構。",
+                    wrong: "這樣的順序會讓讀者覺得思緒跳躍、缺乏組織。記住『總—分—總』的原則，先講重點，再給細節！"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(3); }}
+                />
+                </div>
+            )}
+
+            {step === 3 && (
+                <div>
+                <QuestTitle step={3} title="排兵布陣 (一)">長篇結構藍圖重組</QuestTitle>
+                <TeacherHint>
+                    會考作文就像蓋房子，骨架不能歪！請幫這篇題目為「那一刻，我長大了」的文章，排定最標準的「五段式」起承轉合順序。
+                </TeacherHint>
+                <OrderParagraphsGame 
+                    items={[
+                    { id: '3', text: '【轉(心靈轉折)】直到那天深夜，我起身上廁所，看見媽媽還戴著老花眼鏡在客廳幫我縫補制服的背影，一股強烈的羞愧感瞬間湧上心頭。' },
+                    { id: '5', text: '【合(昇華呼應)】現在遇到困難，我不再把錯推給那場大雨。因為我懂了，不逃避自己的軟弱，就是長大最真實的模樣。' },
+                    { id: '1', text: '【起(情境破題)】大雨滂沱的午後，我站在考場外，手裡捏著那張不及格的考卷，任憑雨水打濕了我的鞋尖。那一刻，我覺得整個世界都在嘲笑我。' },
+                    { id: '2', text: '【承(現實敘事)】回到家後，我原本打算把考卷藏起來，甚至在飯桌上對父母發脾氣，試圖用憤怒來掩飾自己的心虛與失敗。' },
+                    { id: '4', text: '【合(社會思辨)】我突然明白，原來長大不是年齡數字的增加，而是學會「承擔責任」，勇敢面對不完美的自己，不再將過錯怪罪於他人。' }
+                    ]}
+                    correctOrder={['1', '2', '3', '4', '5']}
+                    onComplete={() => { onStepComplete(); setStep(4); }}
+                />
+                </div>
+            )}
+
+            {step === 4 && (
+                <div>
+                <QuestTitle step={4} title="排兵布陣 (二)">立意層次配對</QuestTitle>
+                <TeacherHint>
+                    立意有三層：A(現實具體)、B(心靈情感)、C(社會哲理)。請把左邊的立意層次，配對右邊正確深度的句子。
+                </TeacherHint>
+                <MakeoverMatchGame 
+                    beforeTitle="立意層次"
+                    afterTitle="寫出的句子"
+                    beforeItems={[
+                    { id: 'b1', matchId: 'm1', text: "A層次 (現實具體描述)" },
+                    { id: 'b2', matchId: 'm2', text: "B層次 (心靈情感體悟)" },
+                    { id: 'b3', matchId: 'm3', text: "C層次 (社會群體反思)" }
+                    ]}
+                    afterItems={[
+                    { id: 'a3', matchId: 'm3', text: "這讓我反思，人類城市的繁榮，是否不該建立在剝奪其他生命生存空間的殘酷之上？" },
+                    { id: 'a1', matchId: 'm1', text: "那隻黑狗瘦骨嶙峋，在雨中的垃圾桶旁瑟瑟發抖地尋找食物。" },
+                    { id: 'a2', matchId: 'm2', text: "看著牠渴望卻又害怕的眼神，我內心湧起一陣酸楚，學會了對弱小生命的憐憫。" }
+                    ]}
+                    onComplete={() => { onStepComplete(); setStep(5); }}
+                />
+                </div>
+            )}
+
+            {step === 5 && (
+                <div>
+                <QuestTitle step={5} title="開放式微整形 (一)">WWH 審題羅盤</QuestTitle>
+                <TeacherHint>
+                    寫作題目：「我想開設一家這樣的店」。
+                    動筆前一定要先擬大綱！請運用 W(是什麼) / H(怎麼做) / W(為什麼) 來填寫你的核心構想。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "【What】我想開一家 ", { id: 'what', placeholder: '什麼樣的店', hint: '例如：只賣一本書的慢讀書店', minLength: 5 },
+                    " 。\n【How】這家店最大的特色是裡面會 ", { id: 'how', placeholder: '具體的樣貌與擺設', hint: '例如：放滿黃色沙發並播放黑膠唱片', minLength: 5 },
+                    " 。\n【Why】我開這家店，是因為我想讓走進來的客人感受到 ", { id: 'why', placeholder: '深層的意義或社會價值', hint: '例如：在快節奏中靜下心的力量', minLength: 5 }, "。"
+                    ]}
+                    masterVersion="【What】我想開一家【隱藏在城市巷弄裡、每個禮拜只賣同一本書的慢讀書店】。\n【How】這家店最大的特色是裡面會【收起所有的時鐘與網路訊號，只放滿舒適的黃色軟沙發，並全天候播放低沉的黑膠唱片】。\n【Why】我開這家店，是因為我想讓走進來的客人感受到【在這個資訊爆炸、令人焦慮的快節奏社會中，依然保有一種能夠允許自己停下腳步、專注於單一事物的靜謐力量】。"
+                    masterExplanation="透過WWH的明確界定，你在動筆前就已經擁有了清晰的A層次(書店樣貌)與C層次(對抗社會焦慮的價值)，文章絕對不會離題，而且極具深度！"
+                    onComplete={() => { onStepComplete(); setStep(6); }}
+                />
+                </div>
+            )}
+
+            {step === 6 && (
+                <div>
+                <QuestTitle step={6} title="開放式微整形 (二)">A-B-C 層次深化</QuestTitle>
+                <TeacherHint>
+                    我們來試著深化「一次與陌生人對話」的經驗。從現實(A)出發，寫到內心(B)，最後拔高到社會反思(C)。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "【A層次：現實】那個收資源回收的婆婆，推著沉重的推車，笑著遞給我一顆剛洗好的蘋果。\n【B層次：心靈】看著她佈滿皺紋卻真誠的笑臉，我內心感到一陣 ", { id: 'feeling', placeholder: '你內心的情緒波動與慚愧', hint: '羞愧於自己原本的冷漠？', minLength: 5 },
+                    " ，體會到人與人之間純粹的善意。\n【C層次：哲理】這讓我反思，在我們這座看似擁擠卻疏離的水泥叢林裡，是否正是因為我們過度防備，才 ", { id: 'society', placeholder: '對社會冷漠現象的反思', hint: '錯失了這些溫暖的微光？', minLength: 5 }, "？"
+                    ]}
+                    masterVersion="【A層次：現實】那個收資源回收的婆婆，推著沉重的推車，笑著遞給我一顆剛洗好的蘋果。\n【B層次：心靈】看著她佈滿皺紋卻真誠的笑臉，我內心感到一陣【強烈的羞愧，為自己剛剛下意識退後一步的防備心感到無比自責】，體會到人與人之間純粹的善意。\n【C層次：哲理】這讓我反思，在我們這座看似擁擠卻疏離的水泥叢林裡，是否正是因為我們過度防備，才【親手築起了一道道高牆，將那些原本可以溫暖彼此靈魂的微光，徹底拒於門外】？"
+                    masterExplanation="層層遞進！從一顆蘋果(A)，寫到打破防備的自責(B)，最後探討現代社會的人際疏離(C)。只要掌握這個公式，你的論述就能直擊人心。"
+                    onComplete={() => { if(!isCompleted) onComplete(); setStep(7); }}
+                />
+                </div>
+            )}
+
+            {step === 7 && <SuccessCard message="結構大綱已經穩固，危機戰術也已熟練，你具備了上戰場的堅強實力！" onReset={handleReset} />}
+            </div>
+        );
+        }
+
+        function Lesson11Campaign({ onComplete, onStepComplete, isCompleted }) {
+        const [step, setStep] = useState(isCompleted ? 7 : 1);
+        const handleReset = () => setStep(1);
+
+        return (
+            <div className="w-full flex flex-col">
+            {step > 1 && step < 7 && <BackButton onClick={() => setStep(step - 1)} />}
+            
+            {step === 1 && (
+                <div>
+                <QuestTitle step={1} title="鑑賞之眼 (一)">建設性回饋的藝術</QuestTitle>
+                <TeacherHint>
+                    批改同學的文章時，殺傷力有時比紅筆還大。我們不要當無情的批評機器，要用「三明治（肯定 ➡️ 建議 ➡️ 鼓勵）」來包裝！
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="同學寫：『我學騎腳踏車一直跌倒，我很難過，後來多練幾次就會了。』你要給他回饋，哪種說法最能幫助他進步？"
+                    options={[
+                    { id: 'A', text: "「我覺得你寫得太短了，而且『很難過』太普通了，你要改掉。」", isCorrect: false },
+                    { id: 'B', text: "「你的故事很真實！如果能在跌倒時加入『痛覺』的細節描寫，會不會更生動？期待看到你的修改版！」", isCorrect: true },
+                    { id: 'C', text: "「寫得很好啊！故事很完整，我覺得不用改了，直接交出去吧！」", isCorrect: false }
+                    ]}
+                    explanationText={{
+                    correct: "完美的『三明治回饋』！先給予肯定（麵包），再用提問給予具體建議（餡料），最後給予鼓勵（麵包）。同學聽了心裡舒服，也知道怎麼改！",
+                    wrong: "這種給法太過直接（純批評）或是太過空泛（無效讚美）。"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(2); }}
+                />
+                </div>
+            )}
+
+            {step === 2 && (
+                <div>
+                <QuestTitle step={2} title="鑑賞之眼 (二)">面對嚴重離題的戰友</QuestTitle>
+                <TeacherHint>
+                    互評時最尷尬的，就是發現好朋友的文章「完全離題」了。你該怎麼辦？
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="題目是『從陌生到熟悉』。你的好朋友整篇文章都在寫他昨天打電動贏了多開心，完全沒有提到從陌生到熟悉的過程。"
+                    options={[
+                    { id: 'A', text: "為了不傷他的心，就跟他說：『寫得超好！電動的細節很精彩，繼續保持！』", isCorrect: false },
+                    { id: 'B', text: "直接把他的作文簿還給他，冷冷地說：『你整篇離題了，在考場上就是零分，拿回去重寫吧。』", isCorrect: false },
+                    { id: 'C', text: "先肯定：『你打電動的畫面寫得很有臨場感！』接著提醒：『但題目是從陌生到熟悉，我們試著把重點放在你一開始玩多不順手，後來怎麼變強的過程好嗎？』", isCorrect: true }
+                    ]}
+                    explanationText={{
+                    correct: "你是一位兼具溫暖與專業的完美戰友！既肯定了他的寫作優點，保護了他的自尊，又明確地將他拉回題目的核心，這才是真正的幫助！",
+                    wrong: "如果不告訴他離題（A），他上考場就會拿低分，這是害了他；如果態度太凶（B），他會對寫作失去信心，甚至破壞你們的友誼。"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(3); }}
+                />
+                </div>
+            )}
+
+            {step === 3 && (
+                <div>
+                <QuestTitle step={3} title="文本雷達 (一)">拆解神仙級回饋</QuestTitle>
+                <TeacherHint>
+                    優秀的回饋留言，往往包含著「具體可行」的修改方向，而不是只有空泛的指責。
+                </TeacherHint>
+                <HighlightTextGame 
+                    targetInstruction="請點擊標記出這段回饋留言中，屬於「中間餡料 (具體的修改建議與提問)」的關鍵句。"
+                    paragraph={[
+                    { id: 'f1', text: "你的文章非常流暢，特別是第二段打籃球的畫面，動作描寫得很精彩！" },
+                    { id: 'f2', text: " 不過我們再對照一下題目「從陌生到熟悉」，" },
+                    { id: 'c1', text: "如果能多寫一點你一開始『不熟悉、一直失誤』的挫折感" },
+                    { id: 'f3', text: "，" },
+                    { id: 'c2', text: "會不會讓後面的成功顯得更深刻呢？" },
+                    { id: 'f4', text: " 相信你只要稍微微調一下結構，這絕對會是一篇佳作！" }
+                    ]}
+                    correctIds={['c1', 'c2']}
+                    onComplete={() => { onStepComplete(); setStep(4); }}
+                />
+                </div>
+            )}
+
+            {step === 4 && (
+                <div>
+                <QuestTitle step={4} title="排兵布陣 (一)">組裝神仙回饋</QuestTitle>
+                <TeacherHint>
+                    你想給同學一個「三明治回饋」，請把這三句話按照「上層(肯定) ➡️ 中間(建議) ➡️ 底層(鼓勵)」的順序排好！
+                </TeacherHint>
+                <OrderParagraphsGame 
+                    items={[
+                    { id: '3', text: '【底層：鼓勵】你的文筆底子真的很好，期待看到你修改後的版本，一定會是一篇超級佳作！' },
+                    { id: '1', text: '【上層：肯定】你的開頭寫得非常有畫面感，特別是那個起跑槍聲的描寫，讓我好像親眼看到那個場景！' },
+                    { id: '2', text: '【中層：建議】不過第二段的感情轉換有點突然，如果能多加一句內心的OS來交代你的害怕，會不會更順暢呢？' }
+                    ]}
+                    correctOrder={['1', '2', '3']}
+                    onComplete={() => { onStepComplete(); setStep(5); }}
+                />
+                </div>
+            )}
+
+            {step === 5 && (
+                <div>
+                <QuestTitle step={5} title="開放式微整形 (一)">化解毒舌評論</QuestTitle>
+                <TeacherHint>
+                    同學的文章結尾寫得很草率，像在喊口號。請把「你結尾很爛，根本在說教」這句傷人的話，改寫成溫暖的三明治回饋。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "【肯定】你的故事寫得很感人，特別是描寫 ", { id: 'good', placeholder: '稱讚一個具體的優點', hint: '人物的對話？細節的刻畫？', minLength: 5 },
+                    " 的地方非常打動我！\n【建議】關於最後一段，如果我們不要直接寫出『大家都要加油』這種大道理，而是試著 ", { id: 'suggest', placeholder: '提出一個具體的修改方向', hint: '回到第一段的場景？寫一個動作？', minLength: 5 },
+                    " ，你覺得會不會更有餘韻呢？\n【鼓勵】相信只要稍微調整 ", { id: 'cheer', placeholder: '給予未來的期許', hint: '結尾的收束方式', minLength: 5 }, "，文章一定會大昇華！"
+                    ]}
+                    masterVersion="【肯定】你的故事寫得很感人，特別是描寫【主角和外婆在雨中撐傘爭執】的地方非常打動我！\n【建議】關於最後一段，如果我們不要直接寫出『大家都要孝順』這種大道理，而是試著【重新描寫那把舊雨傘，或者寫主角偷偷為外婆倒一杯熱茶的動作】，你覺得會不會更有餘韻呢？\n【鼓勵】相信只要稍微調整【結尾首尾呼應的方式與氛圍】，文章一定會大昇華！"
+                    masterExplanation="看見了嗎？與其直接指責「你寫得很爛」，不如用「提問」的方式（如果我們試著...你覺得會不會更好？），讓同學覺得你們是站在同一陣線解決問題的戰友！"
+                    onComplete={() => { onStepComplete(); setStep(6); }}
+                />
+                </div>
+            )}
+
+            {step === 6 && (
+                <div>
+                <QuestTitle step={6} title="開放式微整形 (二)">引導擴寫細節</QuestTitle>
+                <TeacherHint>
+                    同學的文章充滿了「我很生氣」這類形容詞懶人包。請用提問的方式，引導他寫出細節。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "【肯定】你的劇情發展很順暢，可以看出你 ", { id: 'good', placeholder: '稱讚他的努力', hint: '例如：對於結構安排下了很多苦心', minLength: 5 },
+                    " ！\n【建議】不過在第二段你寫『我很生氣』的地方，如果能加入一些 ", { id: 'suggest1', placeholder: '建議加入什麼感官', hint: '例如：咬牙切齒的臉部表情', minLength: 5 },
+                    " 或是 ", { id: 'suggest2', placeholder: '建議加入什麼動作', hint: '例如：緊握雙拳的肢體動作', minLength: 5 },
+                    " ，會不會讓讀者更有共鳴呢？\n【鼓勵】期待看到你充滿畫面的修改版！"
+                    ]}
+                    masterVersion="【肯定】你的劇情發展很順暢，可以看出你【對於整體起承轉合的結構安排下了很多苦心】！\n【建議】不過在第二段你寫『我很生氣』的地方，如果能加入一些【怒目圓睜、咬牙切齒的臉部表情】，或是【緊握雙拳、渾身發抖的肢體動作】，會不會讓讀者更有共鳴呢？\n【鼓勵】期待看到你充滿畫面的修改版！"
+                    masterExplanation="當你明確指出「可以加入臉部表情或肢體動作」時，同學馬上就知道該怎麼修改了。這就是鷹架理論在同儕互評中的完美應用。"
+                    onComplete={() => { if(!isCompleted) onComplete(); setStep(7); }}
+                />
+                </div>
+            )}
+
+            {step === 7 && <SuccessCard message="你已經具備了溫暖又專業的評鑑眼光，絕對是班上最受歡迎的寫作戰友！" onReset={handleReset} />}
+            </div>
+        );
+        }
+
+        function Lesson12Campaign({ onComplete, onStepComplete, isCompleted }) {
+        const [step, setStep] = useState(isCompleted ? 7 : 1);
+        const handleReset = () => setStep(1);
+
+        return (
+            <div className="w-full flex flex-col">
+            {step > 1 && step < 7 && <BackButton onClick={() => setStep(step - 1)} />}
+            
+            {step === 1 && (
+                <div>
+                <QuestTitle step={1} title="鑑賞之眼 (一)">人機協作的界線</QuestTitle>
+                <TeacherHint>
+                    AI 是輔助你思考的「助教」，不是代替你寫作的「槍手」。一旦你讓它代寫，你就失去了進步的機會。
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="你剛寫完一篇草稿，覺得第二段的文筆稍微有點乾。你想召喚『AI助教』來幫忙，你會輸入什麼指令？"
+                    options={[
+                    { id: 'A', text: "「這是我寫的草稿。請你直接用最華麗的修辭幫我整篇重寫，字數大概600字。」", isCorrect: false },
+                    { id: 'B', text: "「這是我寫的草稿。請給我兩個『轉化』或『譬喻』的修改建議，讓我自己決定要不要採用。」", isCorrect: true },
+                    { id: 'C', text: "「我不寫了，你直接幫我生成一篇會考六級分作文讓我參考就好。」", isCorrect: false }
+                    ]}
+                    explanationText={{
+                    correct: "精準的指令！你讓AI擔任『顧問』，要求它提供『選項』。你保留了最終的決策權，這樣寫出來的文章才保有你的靈魂。",
+                    wrong: "如果讓AI直接幫你代寫或重寫，這篇文章就不是你的了！在考場上你無法帶著AI進去，所以請讓AI當你的教練，而不是代打。"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(2); }}
+                />
+                </div>
+            )}
+
+            {step === 2 && (
+                <div>
+                <QuestTitle step={2} title="鑑賞之眼 (二)">保有靈魂的決策者</QuestTitle>
+                <TeacherHint>
+                    AI 給了你建議，但**你才是最終的決策者**。不要盲目相信 AI 的品味。
+                </TeacherHint>
+                <ScenarioChoiceGame 
+                    scenario="你的原句：『我難過得哭了。』AI建議你改成：『我的眼淚像斷了線的珍珠般滑落。』你會怎麼做？"
+                    options={[
+                    { id: 'A', text: "AI寫得好美、好有文學氣息喔！立刻複製貼上，完全取代我的原句。", isCorrect: false },
+                    { id: 'B', text: "我覺得『斷線珍珠』這個比喻太老套了。我同意AI說要『增加畫面感』的方向，但我決定用自己的經驗改成『我死死咬住下唇，還是擋不住溫熱的液體滑過臉頰。』", isCorrect: true },
+                    { id: 'C', text: "AI根本不懂我，機器寫的東西沒有溫度，我堅持一個字都不改，保留『我難過得哭了』就好。", isCorrect: false }
+                    ]}
+                    explanationText={{
+                    correct: "太棒了！你完美掌握了與AI協作的精髓：『吸收它建議的方向 (增加畫面感)，但保留自己的靈魂與品味』。你沒有被工具綁架！",
+                    wrong: "直接抄襲會失去你自己的聲音，而且AI給的修辭有時候真的很陳腔濫調 (像斷線珍珠)。但也別因為抗拒AI而拒絕進步，試著融合它的方向，用自己的話改寫吧！"
+                    }}
+                    onComplete={() => { onStepComplete(); setStep(3); }}
+                />
+                </div>
+            )}
+
+            {step === 3 && (
+                <div>
+                <QuestTitle step={3} title="文本雷達 (一)">拆解大師級詠唱指令</QuestTitle>
+                <TeacherHint>
+                    和 AI 溝通，指令（Prompt）越具體越好。一個好的指令應該包含「背景資訊」、「具體任務」與「限制條件」。
+                </TeacherHint>
+                <HighlightTextGame 
+                    targetInstruction="請點擊標記出這個指令中，屬於「限制條件 (告訴AI不要做什麼)」的關鍵句。"
+                    paragraph={[
+                    { id: 'f1', text: "哈囉AI助教，這是我剛寫完的會考作文草稿，題目是「青澀的印記」。", isSelectable: true },
+                    { id: 'f2', text: "請先幫我檢查全文是否有錯別字或是不通順的語句。", isSelectable: true },
+                    { id: 'f3', text: " 另外，我覺得第三段的情感描寫太過平淡，缺乏畫面感。", isSelectable: true },
+                    { id: 'f4', text: "請提供兩個具象化的「修辭範例」讓我參考。", isSelectable: true },
+                    { id: 'f5', text: " 請注意，", isSelectable: true },
+                    { id: 'c1', text: "千萬不要直接幫我重寫整段文章，我要自己做最終修改。", isSelectable: true }
+                    ]}
+                    correctIds={['c1']}
+                    onComplete={() => { onStepComplete(); setStep(4); }}
+                />
+                </div>
+            )}
+
+            {step === 4 && (
+                <div>
+                <QuestTitle step={4} title="分類遊戲">指令素質鑑定</QuestTitle>
+                <TeacherHint>
+                    詠唱咒語時，差一個字效果差很多。請判斷以下是對AI下的「優質指令」還是會讓你失去思考能力的「糟糕指令」？
+                </TeacherHint>
+                <CategorizeGame 
+                    questions={[
+                    { text: "「請幫我寫一篇關於『朋友』的作文，要有起承轉合，字數600字。」", answer: "糟糕的指令" },
+                    { text: "「這是我寫的草稿。請幫我挑出語意不通順的地方，並解釋為什麼不通順。」", answer: "優質的指令" },
+                    { text: "「我覺得我這段寫得很爛，幫我用華麗的詞藻重寫整段。」", answer: "糟糕的指令" }
+                    ]}
+                    categories={["優質的指令", "糟糕的指令"]}
+                    onComplete={() => { onStepComplete(); setStep(5); }}
+                />
+                </div>
+            )}
+
+            {step === 5 && (
+                <div>
+                <QuestTitle step={5} title="開放式微整形 (一)">量身打造專屬咒語</QuestTitle>
+                <TeacherHint>
+                    不要只會用「幫我寫」這種懶惰指令。請根據你目前寫作最常遇到的困難，填入空格，打造一個能真正幫助你進步的咒語。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "AI助教你好，這是我寫的一段關於「面對挫折」的草稿。我目前最大的困難是 ", { id: 'problem', placeholder: '你寫作的弱點', hint: '例如：只會寫大道理，沒有真實的故事感', minLength: 5 },
+                    " 。請你扮演一位嚴格但有耐心的國文老師，先針對我的文章提出 ", { id: 'task1', placeholder: '具體的檢視任務', hint: '例如：結構上哪裡不連貫的分析', minLength: 5 },
+                    " 。接著，請用提問的方式，引導我思考 ", { id: 'task2', placeholder: '希望AI引導你思考的方向', hint: '例如：如何加入更多視覺細節', minLength: 5 }, "，讓我能自己動筆修改。"
+                    ]}
+                    masterVersion="AI助教你好，這是我寫的一段關於「面對挫折」的草稿。我目前最大的困難是【詞彙量太少，寫出來的句子總是很乾癟】。請你扮演一位嚴格但有耐心的國文老師，先針對我的文章提出【三個可以替換的高級同義詞或成語建議】。接著，請用提問的方式，引導我思考【如何把「我很痛苦」這個概念，轉化為具體的身體動作描寫】，讓我能自己動筆修改。"
+                    masterExplanation="這個指令非常完美！你明確指出了自己的弱點，設定了AI的角色（老師），給予了具體任務（同義詞建議），最重要的是，你要求AI「引導」你，而不是「代替」你思考。"
+                    onComplete={() => { onStepComplete(); setStep(6); }}
+                />
+                </div>
+            )}
+
+            {step === 6 && (
+                <div>
+                <QuestTitle step={6} title="開放式微整形 (二)">請AI幫忙找靈感</QuestTitle>
+                <TeacherHint>
+                    當你拿到一個很抽象的題目，完全沒有頭緒時，可以請AI幫你「Brainstorm (腦力激盪)」，但要設定好框架。
+                </TeacherHint>
+                <OpenCompareGame 
+                    template={[
+                    "AI助教，我正在準備會考作文，題目是「我們這個世代」。我不想寫很常見的手機或網路成癮。請提供我 ", { id: 'task', placeholder: '要求提供的數量與類型', hint: '例如：三個不同切入點的真實生活場景', minLength: 5 },
+                    " 來作為寫作靈感。這些場景必須符合 ", { id: 'condition1', placeholder: '限制條件一', hint: '例如：國中生在校園或家庭的日常經驗', minLength: 5 },
+                    " ，並且能帶出 ", { id: 'condition2', placeholder: '限制條件二(立意)', hint: '例如：我們這代人獨有的壓力與焦慮', minLength: 5 }, " 的核心觀點。請條列式給我，不要直接寫成文章。"
+                    ]}
+                    masterVersion="AI助教，我正在準備會考作文，題目是「我們這個世代」。我不想寫很常見的手機或網路成癮。請提供我【三個不同切入點且具備強烈畫面感的真實生活場景】來作為寫作靈感。這些場景必須符合【台灣國中生在校園、補習班或家庭的日常經驗】，並且能帶出【我們這代人看似資源豐富，實則對未來充滿未知與焦慮】的核心觀點。請條列式給我，不要直接寫成文章。"
+                    masterExplanation="這是一個極度專業的「Brainstorming」指令。你排除了老套的題材（網路成癮），限制了場景的真實性（台灣國中生），並給定了你想探討的深度（焦慮感）。AI 給出的靈感絕對會非常精準且可用！"
+                    onComplete={() => { if(!isCompleted) onComplete(); setStep(7); }}
+                />
+                </div>
+            )}
+
+            {step === 7 && <SuccessCard message="你已經懂得如何與AI協作，成為駕馭工具的新時代創作者了！" onReset={handleReset} />}
+            </div>
+        );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
