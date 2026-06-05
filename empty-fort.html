@@ -2833,9 +2833,52 @@
             localStorage.removeItem('empty-fort-slide-drawings');
         }
 
+
+        // ============================== 新增：點擊圖片放大 (Lightbox) ==============================
+        function openImageModal(src, alt) {
+            const lightbox = document.getElementById('image-lightbox');
+            const img = document.getElementById('lightbox-img');
+            const caption = document.getElementById('lightbox-caption');
+            if (lightbox && img) {
+                img.src = src;
+                if (caption) {
+                    caption.innerText = alt || '';
+                    caption.style.display = alt ? 'block' : 'none';
+                }
+                lightbox.style.display = 'flex';
+            }
+        }
+
+        function closeImageModal() {
+            const lightbox = document.getElementById('image-lightbox');
+            if (lightbox) {
+                lightbox.style.display = 'none';
+            }
+        }
+
+        function initImageLightbox() {
+            document.querySelectorAll('.slide img').forEach(img => {
+                img.style.cursor = 'zoom-in';
+                const captionText = img.getAttribute('alt') || img.getAttribute('title') || '';
+                img.addEventListener('click', function(e) {
+                    e.stopPropagation(); // 阻止事件氣泡，以免與劃記事件衝突
+                    openImageModal(this.src, captionText);
+                });
+            });
+        }
+
         // 初始化
         updateSlideUI();
         setTimeout(initDrawingCanvas, 200);
+        setTimeout(initImageLightbox, 300);
     </script>
+
+    <!-- ============================== 新增：圖片放大 Lightbox ============================== -->
+    <div id="image-lightbox" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 10000; justify-content: center; align-items: center; cursor: zoom-out;" onclick="closeImageModal()">
+        <img id="lightbox-img" style="max-width: 90%; max-height: 90%; object-fit: contain; border: 3px solid #fff; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" alt="放大圖片">
+        <div id="lightbox-caption" style="position: absolute; bottom: 4vh; color: #fff; font-size: 2.5vh; font-family: var(--font-ancient); background: rgba(0,0,0,0.6); padding: 1vh 2vw; border-radius: 4px; font-weight: 900; display: none;"></div>
+        <div style="position: absolute; top: 3vh; right: 4vw; color: #fff; font-size: 6vh; cursor: pointer; font-weight: bold; line-height: 1;">&times;</div>
+    </div>
+
 </body>
 </html>
