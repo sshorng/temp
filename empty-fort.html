@@ -12,15 +12,15 @@
            16:9 水墨古風投影與平板優化大字版面系統
            ========================================================================== */
         :root {
-            --bg-color: #050505;
-            --card-bg: rgba(18, 18, 18, 0.98);
-            --primary-gold: #d4af37;
-            --accent-red: #8b0000;
-            --accent-bright-red: #ff3333;
-            --accent-green: #2e7d32;
-            --text-light: #ffffff;
-            --text-muted: #cccccc;
-            --border-color: #555555;
+            --bg-color: #fafafa; /* 宣紙白/極淡雅灰 */
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --primary-gold: #5a5a5a; /* 改為典雅深灰/炭灰 */
+            --accent-red: #bd2a2e; /* 典雅朱砂紅 */
+            --accent-bright-red: #d9383a; /* 明亮朱紅 */
+            --accent-green: #4a7c59; /* 雅綠 */
+            --text-light: #242424; /* 墨黑 */
+            --text-muted: #686868; /* 中灰 */
+            --border-color: #dcdcdc; /* 淺灰邊框 */
             --font-ancient: 'Noto Serif TC', serif;
             --font-modern: 'Outfit', 'Noto Serif TC', sans-serif;
         }
@@ -32,7 +32,7 @@
         }
 
         body {
-            background-color: #000;
+            background-color: #e5e5e5; /* 典雅中灰背景色，襯托亮色簡報主體 */
             color: var(--text-light);
             font-family: var(--font-modern);
             overflow: hidden;
@@ -49,25 +49,25 @@
             max-width: 177.78vh;
             max-height: 90vh; /* 貼合螢幕邊緣 */
             background-color: var(--bg-color);
-            border: 3.5px solid #444;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.98);
+            border: 4px double var(--primary-gold); /* 雙線木刻版畫風邊框 */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
             position: relative;
             z-index: 10;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             padding: 2.2vh 4vw;
-            border-radius: 12px;
-            overflow: hidden; /* 保持外層 16:9 完美穩定，不被內容撐大 */
+            border-radius: 10px;
+            overflow: hidden; /* 保持外層 16:9 完美穩定 */
             background-image: 
-                radial-gradient(circle at 10% 10%, rgba(139, 0, 0, 0.25) 0%, transparent 60%),
-                radial-gradient(circle at 90% 90%, rgba(212, 175, 55, 0.18) 0%, transparent 60%);
+                radial-gradient(circle at 10% 10%, rgba(189, 42, 46, 0.03) 0%, transparent 60%),
+                radial-gradient(circle at 90% 90%, rgba(92, 92, 92, 0.05) 0%, transparent 60%);
         }
 
         .ink-mist {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, transparent, rgba(0,0,0,0.85));
+            background: radial-gradient(circle at 50% 50%, transparent, rgba(255, 255, 255, 0.6));
             pointer-events: none;
             z-index: 1;
         }
@@ -76,12 +76,12 @@
             position: absolute;
             top: 3.5vh;
             right: 4vw;
-            background: rgba(25, 25, 25, 0.95);
+            background: rgba(255, 255, 255, 0.95);
             padding: 1.2vh 1.8vw;
             border-radius: 25px;
-            border: 2px solid var(--primary-gold);
+            border: 2px solid var(--accent-red);
             font-size: 3.2vh;
-            color: var(--primary-gold);
+            color: var(--accent-red);
             cursor: pointer;
             z-index: 100;
             display: flex;
@@ -89,6 +89,7 @@
             gap: 8px;
             font-family: var(--font-ancient);
             font-weight: 900;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         /* ==========================================================================
@@ -98,7 +99,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid var(--primary-gold);
+            border-bottom: 3px solid var(--accent-red);
             padding-bottom: 1.5vh;
             height: 9vh;
             z-index: 2;
@@ -108,13 +109,13 @@
             font-family: var(--font-ancient);
             font-size: 4.4vh;
             font-weight: 900;
-            color: var(--primary-gold);
-            text-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+            color: var(--accent-red); /* 水墨朱砂紅標題 */
+            text-shadow: 0 1px 3px rgba(189, 42, 46, 0.1);
         }
 
         .slide-subtitle {
             font-size: 2.6vh;
-            color: var(--text-light);
+            color: var(--text-muted);
             font-family: var(--font-ancient);
             font-weight: 900;
         }
@@ -135,10 +136,10 @@
             width: 6px;
         }
         .slide-body::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(0, 0, 0, 0.05);
         }
         .slide-body::-webkit-scrollbar-thumb {
-            background: var(--primary-gold);
+            background: var(--accent-red);
             border-radius: 3px;
         }
 
@@ -146,7 +147,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 2.5px solid rgba(255,255,255,0.15);
+            border-top: 2.5px solid var(--border-color);
             padding-top: 1.5vh;
             height: 9vh;
             z-index: 50; /* 提升層級，確保導覽按鈕永遠在最上層 */
@@ -161,7 +162,7 @@
         }
 
         .nav-btn {
-            background: #252525;
+            background: #ffffff;
             border: 2px solid var(--border-color);
             color: var(--text-light);
             padding: 1.2vh 2.5vw;
@@ -174,24 +175,25 @@
         }
 
         .nav-btn:hover:not(:disabled) {
-            border-color: var(--primary-gold);
-            color: var(--primary-gold);
-            background: #333;
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+            background: #fafafa;
         }
 
         .nav-btn:disabled {
-            opacity: 0.1;
+            opacity: 0.15;
             cursor: not-allowed;
         }
 
         .nav-btn.primary {
-            background: var(--primary-gold);
-            color: #000;
-            border-color: var(--primary-gold);
+            background: var(--accent-red);
+            color: #ffffff;
+            border-color: var(--accent-red);
         }
 
         .nav-btn.primary:hover:not(:disabled) {
-            box-shadow: 0 0 15px var(--primary-gold);
+            box-shadow: 0 0 10px rgba(189, 42, 46, 0.4);
+            background: #a02024;
         }
 
         /* ==========================================================================
@@ -202,19 +204,19 @@
             font-size: 3.4vh;
             font-weight: 900;
             line-height: 1.7;
-            color: #ffffff;
+            color: var(--text-light);
             margin-bottom: 1vh;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            text-shadow: none;
         }
 
         .story-text em {
-            color: var(--primary-gold);
+            color: var(--accent-red);
             font-style: normal;
             font-weight: 900;
         }
 
         .task-box {
-            background: rgba(139, 0, 0, 0.28);
+            background: rgba(189, 42, 46, 0.05);
             border: 2px solid var(--accent-bright-red);
             padding: 1.2vh 1.8vw;
             border-radius: 6px;
@@ -225,11 +227,11 @@
             align-items: center;
             gap: 1vw;
             margin-bottom: 1vh;
-            color: #ffffff;
+            color: var(--text-light);
         }
 
         .task-tag {
-            background: var(--accent-bright-red);
+            background: var(--accent-red);
             color: white;
             padding: 0.4vh 1vw;
             border-radius: 3px;
@@ -247,9 +249,9 @@
         }
 
         .picker-btn {
-            background: #1a1a1a;
-            border: 2px solid #666;
-            color: #fff;
+            background: #ffffff;
+            border: 2px solid #ccc;
+            color: var(--text-light);
             padding: 1vh 1.6vw;
             font-size: 2.8vh;
             font-family: var(--font-ancient);
@@ -260,51 +262,52 @@
         }
 
         .picker-btn:hover {
-            border-color: var(--primary-gold);
-            background: #252525;
+            border-color: var(--accent-red);
+            background: #f5f5f5;
         }
 
         .picker-btn.selected {
-            background: rgba(212, 175, 55, 0.35) !important;
-            border-color: var(--primary-gold) !important;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+            background: rgba(189, 42, 46, 0.1) !important;
+            border-color: var(--accent-red) !important;
+            color: var(--accent-red) !important;
+            box-shadow: 0 0 10px rgba(189, 42, 46, 0.2);
         }
 
         .picker-btn.correct {
-            background: rgba(46, 125, 50, 0.55) !important;
-            border-color: #4ef04e !important;
-            color: #ffffff !important;
+            background: rgba(74, 124, 89, 0.15) !important;
+            border-color: var(--accent-green) !important;
+            color: var(--accent-green) !important;
         }
 
         .picker-btn.wrong {
-            background: rgba(139, 0, 0, 0.55) !important;
-            border-color: #ff5555 !important;
-            color: #ffffff !important;
+            background: rgba(189, 42, 46, 0.15) !important;
+            border-color: var(--accent-bright-red) !important;
+            color: var(--accent-bright-red) !important;
         }
 
         /* 大字解析與作者怎麼寫面板 */
         .reveal-panel {
-            background: rgba(12, 12, 12, 0.98);
-            border: 2.5px solid var(--primary-gold);
+            background: rgba(255, 255, 255, 0.98);
+            border: 2.5px solid var(--accent-red);
             border-radius: 8px;
             padding: 1.5vh 2vw;
             margin-top: 1vh;
             display: none;
-            box-shadow: 0 0 20px rgba(0,0,0,0.9);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
 
         .analysis-text {
             font-size: 3.2vh;
             font-weight: 900;
             line-height: 1.6;
-            color: #ffffff;
+            color: var(--text-light);
             margin-bottom: 1.2vh;
-            border-left: 6px solid var(--primary-gold);
+            border-left: 6px solid var(--accent-red);
             padding-left: 1.2vw;
         }
 
         .author-write-tag {
-            color: var(--primary-gold);
+            color: var(--accent-red);
             font-weight: 900;
             margin-bottom: 0.5vh;
             display: block;
@@ -313,12 +316,12 @@
         .ask-text {
             font-size: 3.4vh;
             font-weight: 900;
-            color: var(--primary-gold);
+            color: var(--accent-red);
             font-family: var(--font-ancient);
-            background: rgba(212, 175, 55, 0.15);
+            background: rgba(189, 42, 46, 0.05);
             padding: 2.2vh;
             border-radius: 5px;
-            border: 1.5px dashed rgba(212, 175, 55, 0.5);
+            border: 1.5px dashed rgba(189, 42, 46, 0.4);
             line-height: 1.6;
         }
 
@@ -343,8 +346,8 @@
 
         /* 抉擇按鈕 */
         .choice-btn {
-            background: linear-gradient(to right, #252525, #181818);
-            border: 2px solid #666;
+            background: linear-gradient(to right, #ffffff, #f7f7f7);
+            border: 2px solid #ccc;
             color: var(--text-light);
             padding: 1.5vh 2vw;
             font-size: 2.9vh;
@@ -360,22 +363,23 @@
         }
 
         .choice-btn:hover {
-            border-color: var(--primary-gold);
-            background: rgba(212, 175, 55, 0.15);
+            border-color: var(--accent-red);
+            background: rgba(189, 42, 46, 0.05);
             transform: translateX(10px);
         }
 
         .choice-btn::after {
             content: '➔';
-            color: var(--primary-gold);
+            color: var(--accent-red);
         }
 
         .ending-card {
             border: 2.5px solid var(--accent-bright-red);
-            background: linear-gradient(135deg, #2a0303 0%, #050505 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f7f7f7 100%);
             padding: 4vh;
             border-radius: 8px;
             text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .ending-title {
@@ -388,15 +392,15 @@
 
         .quote-highlight {
             font-family: var(--font-ancient);
-            color: var(--primary-gold);
+            color: var(--accent-red);
             font-size: 3.4vh;
             font-weight: 900;
-            background: rgba(212, 175, 55, 0.18);
+            background: rgba(189, 42, 46, 0.07);
             padding: 1.5vh 2.5vw;
             border-radius: 5px;
             display: inline-block;
             margin: 2vh 0;
-            border-left: 6px solid var(--primary-gold);
+            border-left: 6px solid var(--accent-red);
             line-height: 1.5;
         }
 
@@ -404,7 +408,7 @@
            方案一：虛實防線值量表專屬樣式
            ========================================================================== */
         .gauge-container {
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.02);
             border: 2px solid var(--border-color);
             padding: 2.5vh;
             border-radius: 8px;
@@ -422,27 +426,28 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 0.8vh;
+            color: var(--text-light);
         }
 
         .gauge-track {
             width: 100%;
             height: 3vh;
-            background: #222;
+            background: #e8e8e8;
             border-radius: 6px;
             overflow: hidden;
-            border: 1px solid #444;
+            border: 1px solid #ddd;
         }
 
         .gauge-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(to right, var(--accent-red), var(--primary-gold));
+            background: linear-gradient(to right, var(--accent-bright-red), var(--accent-red));
             transition: width 0.6s cubic-bezier(0.1, 0.8, 0.3, 1);
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            box-shadow: 0 0 10px rgba(189, 42, 46, 0.3);
         }
 
         .gauge-fill.shula {
-            background: linear-gradient(to right, #444, var(--accent-green));
+            background: linear-gradient(to right, #ccc, var(--accent-green));
         }
 
         .army-action-grid {
@@ -453,8 +458,8 @@
         }
 
         .action-card {
-            background: #151515;
-            border: 2px solid #555;
+            background: #ffffff;
+            border: 2px solid #ccc;
             padding: 1.8vh;
             border-radius: 6px;
             text-align: center;
@@ -463,17 +468,19 @@
             font-size: 3.2vh;
             font-weight: 900;
             transition: all 0.2s;
+            color: var(--text-light);
         }
 
         .action-card:hover {
-            border-color: var(--primary-gold);
-            background: #222;
+            border-color: var(--accent-red);
+            background: #f9f9f9;
         }
 
         .action-card.active {
-            border-color: var(--primary-gold);
-            background: rgba(212, 175, 55, 0.2);
-            box-shadow: 0 0 10px var(--primary-gold);
+            border-color: var(--accent-red);
+            background: rgba(189, 42, 46, 0.1);
+            box-shadow: 0 0 10px rgba(189, 42, 46, 0.2);
+            color: var(--accent-red);
         }
 
         /* ==========================================================================
@@ -487,8 +494,8 @@
         }
 
         .viewfinder {
-            background: #111;
-            border: 3px solid #333;
+            background: #ffffff;
+            border: 3px solid #ccc;
             border-radius: 8px;
             padding: 2.5vh;
             position: relative;
@@ -499,8 +506,8 @@
         }
 
         .viewfinder.active-lens {
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+            border-color: var(--accent-red);
+            box-shadow: 0 0 15px rgba(189, 42, 46, 0.25);
         }
 
         .lens-tag {
@@ -519,7 +526,7 @@
 
         .lens-tag.close-up {
             background: var(--primary-gold);
-            color: #000;
+            color: #fff;
         }
 
         .viewfinder-content {
@@ -528,12 +535,13 @@
             font-size: 3vh;
             line-height: 1.6;
             font-weight: 900;
+            color: var(--text-light);
         }
 
         .viewfinder-explain {
             font-size: 3.2vh;
             color: var(--text-muted);
-            border-top: 1.5px dashed #444;
+            border-top: 1.5px dashed #ccc;
             padding-top: 1vh;
             margin-top: 0.8vh;
         }
@@ -542,7 +550,7 @@
         .castle-canvas {
             position: relative;
             height: 28vh;
-            background: linear-gradient(to bottom, #222, #050505);
+            background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
             border: 1px solid var(--border-color);
             border-radius: 6px;
             overflow: hidden;
@@ -553,7 +561,7 @@
             bottom: 0;
             width: 100%;
             height: 10vh;
-            background: #2f2f2f;
+            background: #a8a8a8;
         }
 
         .castle-gate {
@@ -563,13 +571,13 @@
             transform: translateX(-50%);
             width: 7vh;
             height: 9vh;
-            background: #4e3215;
+            background: #8e1d20; /* 紅白灰中的紅木大門 */
             border-radius: 3.5vh 3.5vh 0 0;
             transition: all 0.8s;
         }
 
         .castle-gate.open {
-            background: #000;
+            background: #fafafa;
         }
 
         .castle-tower {
@@ -579,7 +587,7 @@
             transform: translateX(-50%);
             width: 13vh;
             height: 7vh;
-            background: #1c1c1c;
+            background: #c8c8c8;
         }
 
         .tower-lute {
@@ -606,8 +614,8 @@
         }
 
         .match-item {
-            background: #222;
-            border: 2px solid #555;
+            background: #ffffff;
+            border: 2px solid #ccc;
             padding: 1.8vh;
             border-radius: 6px;
             font-size: 3.2vh;
@@ -616,16 +624,18 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
+            color: var(--text-light);
         }
 
         .match-item.selected {
-            background: rgba(212, 175, 55, 0.35) !important;
-            border-color: var(--primary-gold) !important;
+            background: rgba(189, 42, 46, 0.1) !important;
+            border-color: var(--accent-red) !important;
+            color: var(--accent-red) !important;
         }
 
         .match-slot {
-            background: rgba(0,0,0,0.5);
-            border: 2px dashed #666;
+            background: rgba(0,0,0,0.02);
+            border: 2px dashed #ccc;
             padding: 1.6vh 2vw;
             border-radius: 6px;
             min-height: 6.2vh;
@@ -635,16 +645,18 @@
             font-size: 3.2vh;
             cursor: pointer;
             font-weight: 900;
+            color: var(--text-light);
         }
 
         .match-slot.correct {
-            border-color: #4ef04e;
-            background: rgba(46, 125, 50, 0.3);
+            border-color: var(--accent-green);
+            background: rgba(74, 124, 89, 0.15);
+            color: var(--accent-green);
         }
 
         .slot-title {
             font-family: var(--font-ancient);
-            color: var(--primary-gold);
+            color: var(--accent-red);
             font-weight: 900;
         }
 
@@ -661,12 +673,12 @@
             display: inline-block;
         }
         .word-select-area span:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(0, 0, 0, 0.05);
         }
         .word-select-area span.selected-word {
-            background: rgba(212, 175, 55, 0.5) !important;
-            border-bottom: 3.5px solid var(--primary-gold);
-            color: #ffffff;
+            background: rgba(189, 42, 46, 0.15) !important;
+            border-bottom: 3.5px solid var(--accent-red);
+            color: var(--accent-red);
         }
 
         /* 改版新增樣式 */
@@ -675,11 +687,11 @@
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 1;
-            opacity: 0.45;
+            opacity: 0.15; /* 亮色底稍微調淡水墨特效 */
         }
         .viewfinder.active-lens {
-            border-color: var(--primary-gold) !important;
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.55) !important;
+            border-color: var(--accent-red) !important;
+            box-shadow: 0 0 25px rgba(189, 42, 46, 0.35) !important;
             animation: cameraFlash 0.35s ease-out;
         }
         .viewfinder-content {
@@ -690,7 +702,7 @@
         }
         @keyframes cameraFlash {
             0% { border-color: #fff; box-shadow: 0 0 50px #fff; background: rgba(255,255,255,0.4); }
-            100% { border-color: var(--primary-gold); box-shadow: 0 0 25px rgba(212, 175, 55, 0.55); }
+            100% { border-color: var(--accent-red); box-shadow: 0 0 25px rgba(189, 42, 46, 0.35); }
         }
 
         /* 時間軸樣式 */
@@ -708,7 +720,7 @@
             left: 5vw;
             right: 5vw;
             height: 4px;
-            background: #333;
+            background: #ccc;
             z-index: 1;
             transform: translateY(-50%);
         }
@@ -718,7 +730,7 @@
             left: 5vw;
             width: 0%;
             height: 4px;
-            background: var(--primary-gold);
+            background: var(--accent-red);
             z-index: 2;
             transform: translateY(-50%);
             transition: width 0.5s ease;
@@ -726,8 +738,8 @@
         .timeline-node {
             position: relative;
             z-index: 3;
-            background: #111;
-            border: 3px solid #555;
+            background: #ffffff;
+            border: 3px solid #ccc;
             width: 6.5vh;
             height: 6.5vh;
             border-radius: 50%;
@@ -742,24 +754,24 @@
             font-family: var(--font-ancient);
         }
         .timeline-node.active {
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 18px var(--primary-gold);
-            color: var(--primary-gold);
-            background: #222;
+            border-color: var(--accent-red);
+            box-shadow: 0 0 18px rgba(189, 42, 46, 0.3);
+            color: var(--accent-red);
+            background: #ffffff;
         }
         .timeline-label {
             position: absolute;
             top: 7.5vh;
             white-space: nowrap;
             font-size: 1.9vh;
-            color: #666;
+            color: #888;
             font-family: var(--font-ancient);
             transition: color 0.3s;
             left: 50%;
             transform: translateX(-50%);
         }
         .timeline-node.active .timeline-label {
-            color: #fff;
+            color: var(--text-light);
             font-weight: 900;
         }
 
@@ -771,34 +783,138 @@
             margin: 1.5vh 0;
         }
         .comparison-box {
-            background: rgba(12, 12, 12, 0.98);
-            border: 2px solid #444;
+            background: rgba(255, 255, 255, 0.98);
+            border: 2px solid #ccc;
             border-radius: 8px;
             padding: 1.2vh 1.8vw;
             font-family: var(--font-ancient);
             font-size: 2.6vh;
             line-height: 1.7;
             position: relative;
+            color: var(--text-light);
         }
         .comparison-box.active {
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            border-color: var(--accent-red);
+            box-shadow: 0 0 15px rgba(189, 42, 46, 0.15);
         }
         .comparison-header {
             font-size: 2.1vh;
-            color: var(--primary-gold);
+            color: var(--accent-red);
             margin-bottom: 1.2vh;
-            border-bottom: 1.5px solid #333;
+            border-bottom: 1.5px solid #eaeaea;
             padding-bottom: 0.6vh;
             font-weight: 900;
         }
         .highlight-pulse {
-            color: var(--primary-gold) !important;
+            color: var(--accent-red) !important;
             font-weight: 900;
-            animation: goldPulse 1s infinite alternate;
-            border-bottom: 2px solid var(--primary-gold);
+            animation: redPulse 1s infinite alternate;
+            border-bottom: 2px solid var(--accent-red);
             padding: 0 3px;
             display: inline-block;
+        }
+        @keyframes redPulse {
+            0% { text-shadow: 0 0 4px rgba(189, 42, 46, 0.2); }
+            100% { text-shadow: 0 0 12px rgba(189, 42, 46, 0.6); }
+        }
+
+        /* ==========================================================================
+           平板全域劃記工具列（懸浮摺疊 FAB 版）
+           ========================================================================== */
+        #drawing-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 45; /* 介於內容與 footer 之間 (footer z-index 50) */
+            pointer-events: none;
+            cursor: crosshair;
+            touch-action: none; /* 解決平板無法劃記的關鍵：防止觸控被瀏覽器攔截 */
+        }
+
+        .drawing-fab-container {
+            position: absolute;
+            bottom: 12vh;
+            right: 4vw;
+            left: auto;
+            top: auto;
+            z-index: 100; /* 高於一切，方便平板隨時點選 */
+            display: flex;
+            flex-direction: column-reverse; /* 選單向上彈出 */
+            align-items: flex-end;
+            gap: 1vh;
+            touch-action: none; /* 允許對懸浮球本身進行觸控拖曳 */
+        }
+
+        .drawing-fab {
+            width: 6.5vh;
+            height: 6.5vh;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--accent-red);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3vh;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: var(--accent-red);
+        }
+
+        .drawing-fab:hover, .drawing-fab.active {
+            transform: scale(1.08);
+            border-color: var(--accent-bright-red);
+            color: var(--accent-bright-red);
+        }
+
+        .drawing-menu {
+            display: none; /* 預設隱藏 */
+            flex-direction: column;
+            gap: 0.8vh;
+            background: rgba(255, 255, 255, 0.98);
+            border: 1.5px solid var(--accent-red);
+            border-radius: 12px;
+            padding: 0.8vh;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            animation: drawingFadeIn 0.25s ease-out;
+        }
+
+        .drawing-menu.show {
+            display: flex;
+        }
+
+        .drawing-menu-btn {
+            width: 5vh;
+            height: 5vh;
+            background: #f5f5f5;
+            border: 1.5px solid #ccc;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.2vh;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #fff;
+        }
+
+        .drawing-menu-btn:hover, .drawing-menu-btn.active {
+            border-color: var(--primary-gold);
+            background: var(--accent-red);
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .drawing-menu-btn.danger:hover {
+            background: var(--accent-red);
+            border-color: var(--accent-bright-red);
+        }
+
+        @keyframes drawingFadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -824,14 +940,14 @@
         <div class="slide-body">
 
             <!-- ============================== SLIDE 1: 說書封面 ============================== -->
-            <div id="slide-1" class="slide active" data-title="三國演義卷首" data-sub="第一幕：起局">
+            <div id="slide-1" class="slide active" data-title="三國演義第九十五回" data-sub="第一幕：起局">
                 <div style="text-align: center;">
-                    <h2 style="font-family:var(--font-ancient); font-size: 6.8vh; color: var(--primary-gold); margin-bottom: 1vh; letter-spacing: 4px; font-weight: 900;">第一回：滾滾沙塵壓西城</h2>
-                    <p style="font-size: 3.5vh; color: #fff; font-family: var(--font-ancient); line-height: 1.8; max-width: 800px; margin: 0 auto; font-weight: 900;">
-                        「滾滾長江東逝水，浪花淘盡英雄...」<br>
+                    <h2 style="font-family:var(--font-ancient); font-size: 5.2vh; color: var(--accent-red); margin-bottom: 3vh; letter-spacing: 2px; font-weight: 900; line-height: 1.4;">第九十五回：馬謖拒諫失街亭<br>武侯彈琴退仲達</h2>
+                    <p style="font-size: 3.5vh; color: var(--text-light); font-family: var(--font-ancient); line-height: 1.8; max-width: 850px; margin: 0 auto; font-weight: 900;">
+                         「滾滾長江東逝水，浪花淘盡英雄...」<br>
                         街亭已失，蜀漢危在旦夕。司馬懿十五萬鐵騎即將兵臨城下，夫子請帶領弟子親臨西城敵樓。
                     </p>
-                    <p style="font-size: 2.6vh; color: var(--primary-gold); margin-top: 5vh; animation: pulse 2s infinite; font-weight: 900;">
+                    <p style="font-size: 2.6vh; color: var(--accent-red); margin-top: 5vh; animation: pulse 2s infinite; font-weight: 900;">
                         【請點擊下方「下一頁」開啟西城戰局】
                     </p>
                 </div>
@@ -882,10 +998,10 @@
                 
                 <!-- 兵力動態對比沙盤 -->
                 <div style="position:relative;">
-                    <canvas id="force-canvas" style="width:100%; height:11vh; background:#0a0a0a; border:2px solid #444; border-radius:6px;"></canvas>
+                    <canvas id="force-canvas" style="width:100%; height:11vh; background:#ffffff; border:2px solid var(--border-color); border-radius:6px;"></canvas>
                     <div id="force-text-overlay" style="position:absolute; top:1.5vh; left:2vw; right:2vw; display:flex; justify-content:space-between; font-size:3.2vh; font-family:var(--font-ancient); font-weight:900; pointer-events:none;">
-                        <span style="color:#ff3333; text-shadow:0 0 8px #000;">魏軍主力：150,000</span>
-                        <span style="color:var(--primary-gold); text-shadow:0 0 8px #000;">西城殘兵：2,500</span>
+                        <span style="color:var(--accent-red); text-shadow:0 0 8px #fff;">魏軍主力：150,000</span>
+                        <span style="color:var(--text-light); text-shadow:0 0 8px #fff;">西城殘兵：2,500</span>
                     </div>
                 </div>
 
@@ -1375,10 +1491,10 @@
                 
                 <div class="split-layout" style="grid-template-columns: 1.2fr 1fr; gap: 2.5vw; align-items: center;">
                     <!-- 左側：水墨卷軸謎面 -->
-                    <div style="background: rgba(25, 25, 25, 0.9); border: 3px double var(--primary-gold); border-radius: 12px; padding: 3vh; text-align: center; box-shadow: 0 0 20px rgba(212,175,55,0.15);">
-                        <p style="font-size: 2.4vh; color: var(--primary-gold); font-family: var(--font-ancient); margin-bottom: 1vh; font-weight: 900;">📜 歇後語燈謎卷軸</p>
-                        <div id="riddle-text" style="font-size: 4vh; font-family: var(--font-ancient); color: #fff; line-height: 1.6; font-weight: 900; padding: 2vh 0;">
-                            「孔明大擺空城計 ── <span style="border-bottom: 3px dashed var(--primary-gold); color: var(--primary-gold); padding: 0 1vw;">？</span>」
+                    <div style="background: #ffffff; border: 3px double var(--accent-red); border-radius: 12px; padding: 3vh; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                        <p style="font-size: 2.4vh; color: var(--accent-red); font-family: var(--font-ancient); margin-bottom: 1vh; font-weight: 900;">📜 歇後語燈謎卷軸</p>
+                        <div id="riddle-text" style="font-size: 4vh; font-family: var(--font-ancient); color: var(--text-light); line-height: 1.6; font-weight: 900; padding: 2vh 0;">
+                            「孔明大擺空城計 ── <span style="border-bottom: 3px dashed var(--accent-red); color: var(--accent-red); padding: 0 1vw;">？</span>」
                         </div>
                     </div>
                     <!-- 右側：燈謎選項 -->
@@ -1402,14 +1518,14 @@
 
             <!-- ============================== SLIDE 20: 兵法與人性的總結 ============================== -->
             <div id="slide-19" class="slide" data-title="沙盤智謀總結" data-sub="第四幕：復盤">
-                <div style="background: rgba(18, 18, 18, 0.98); border: 2.5px solid var(--primary-gold); border-radius: 12px; padding: 4vh; box-shadow: 0 0 30px rgba(212,175,55,0.2);">
-                    <h3 style="font-family:var(--font-ancient); font-size:4.8vh; color:var(--primary-gold); margin-bottom:3vh; text-align:center; font-weight:900;">
+                <div style="background: #ffffff; border: 2.5px solid var(--accent-red); border-radius: 12px; padding: 4vh; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <h3 style="font-family:var(--font-ancient); font-size:4.8vh; color:var(--accent-red); margin-bottom:3vh; text-align:center; font-weight:900;">
                         智謀總結 ── 掌握人性
                     </h3>
                     <blockquote class="quote-highlight" style="display:block; text-align:center; font-size:3.8vh; font-weight:900; line-height:1.6; margin-bottom: 3vh;">
                         《孫子兵法》云：「知己知彼，百戰不殆。」
                     </blockquote>
-                    <p style="font-size:3.2vh; color:#ffffff; line-height:1.8; max-width:850px; margin:0 auto; text-align:center; font-weight:900; font-family: var(--font-ancient);">
+                    <p style="font-size:3.2vh; color:var(--text-light); line-height:1.8; max-width:850px; margin:0 auto; text-align:center; font-weight:900; font-family: var(--font-ancient);">
                         <span class="author-write-tag" style="text-align:center; display:block; font-size: 3.4vh; margin-bottom: 1.5vh;">🎬 【作者怎麼寫】「將戰事昇華為人性的博弈」</span>
                         羅貫中寫這篇課文，其核心不在於兵力的碰撞，而是在描摹人性的鏡子。諸葛亮的空城計能大獲全勝，非因武力，而是因為他精準地算計了司馬懿「多疑」且「對自己一生謹慎標籤的深信不疑」。這是一場心戰，也是作者筆下對人性的終極解構。
                     </p>
@@ -1418,12 +1534,12 @@
 
             <!-- ============================== SLIDE 21: 封底 ============================== -->
             <div id="slide-20" class="slide" data-title="突圍成功" data-sub="封底">
-                <div style="background: rgba(18, 18, 18, 0.98); border: 3px double var(--primary-gold); border-radius: 12px; padding: 5vh; text-align: center; box-shadow: 0 0 35px rgba(212,175,55,0.25);">
-                    <h2 style="font-family:var(--font-ancient); font-size: 7vh; color: var(--primary-gold); margin-bottom: 2vh; font-weight:900; text-shadow: 0 0 15px rgba(212,175,55,0.4);">⚔️ 西城突圍成功 ⚔️</h2>
+                <div style="background: #ffffff; border: 3px double var(--accent-red); border-radius: 12px; padding: 5vh; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+                    <h2 style="font-family:var(--font-ancient); font-size: 7vh; color: var(--accent-red); margin-bottom: 2vh; font-weight:900; text-shadow: 0 1px 3px rgba(189,42,46,0.15);">⚔️ 西城突圍成功 ⚔️</h2>
                     <p style="font-size: 3.6vh; color: var(--text-light); font-family: var(--font-ancient); font-weight:900; line-height: 1.6; margin-bottom: 4vh;">
                         夫子與弟子已成功穿透文本，完成空城計所有智謀與寫作手法的復盤。
                     </p>
-                    <p style="font-size: 3vh; color: var(--primary-gold); font-style:italic; font-weight:900; margin-bottom: 5vh;">
+                    <p style="font-size: 3vh; color: var(--accent-red); font-style:italic; font-weight:900; margin-bottom: 5vh;">
                         「羽扇綸巾談笑間，檣櫓灰飛煙滅。」
                     </p>
                     <button class="nav-btn primary" style="font-size: 3.2vh; padding: 2vh 4vw; border-radius: 8px;" onclick="resetGame()">重新啟局 🔄</button>
@@ -1431,6 +1547,24 @@
             </div>
 
         </div>
+
+        <!-- 畫布劃記層 -->
+        <canvas id="drawing-canvas"></canvas>
+
+        <!-- 水墨古風懸浮劃記工具列 (FAB 版) -->
+        <div class="drawing-fab-container">
+            <div class="drawing-fab" id="drawing-fab-trigger" title="展開劃記選單">
+                🖱️
+            </div>
+            <div class="drawing-menu" id="drawing-menu-panel">
+                <button class="drawing-menu-btn active" id="tool-pointer" onclick="setDrawingTool('pointer')" title="指針 (滑鼠模式)">🖱️</button>
+                <button class="drawing-menu-btn" id="tool-pen" onclick="setDrawingTool('pen')" title="紅筆">✍️</button>
+                <button class="drawing-menu-btn" id="tool-eraser" onclick="setDrawingTool('eraser')" title="橡皮擦">🧽</button>
+                <button class="drawing-menu-btn" onclick="clearCurrentDrawing()" title="清空此頁">🗑️</button>
+                <button class="drawing-menu-btn danger" onclick="clearAllDrawings()" title="清空全簡報" style="border-color: rgba(255,51,51,0.4);">💥</button>
+            </div>
+        </div>
+
         <div class="slide-footer">
             <button class="nav-btn" id="prev-btn" onclick="navigateSlide(-1)">上一頁</button>
             <div class="page-indicator" id="slide-indicator">第 1 / 21 頁</div>
@@ -1577,9 +1711,9 @@
                 fCtx.stroke();
                 
                 // 畫城樓
-                fCtx.fillStyle = '#1c1c1c';
+                fCtx.fillStyle = '#f0f0f0';
                 fCtx.fillRect(fCanvas.width * 0.8, fCanvas.height * 0.3, fCanvas.width * 0.2, fCanvas.height * 0.4);
-                fCtx.strokeStyle = varColor('--primary-gold', '#d4af37');
+                fCtx.strokeStyle = varColor('--accent-red', '#bd2a2e');
                 fCtx.strokeRect(fCanvas.width * 0.8, fCanvas.height * 0.3, fCanvas.width * 0.2, fCanvas.height * 0.4);
                 
                 // 更新魏軍 (紅點粒子)
@@ -1607,7 +1741,7 @@
                 });
                 
                 // 更新蜀軍 (金點粒子)
-                fCtx.fillStyle = varColor('--primary-gold', '#d4af37');
+                fCtx.fillStyle = varColor('--primary-gold', '#5a5a5a');
                 shus.forEach(s => {
                     s.x += s.vx;
                     s.y += s.vy;
@@ -1743,6 +1877,11 @@
             }
             if (currentSlide === 10 || currentSlide === 12) {
                 playHeartbeatSound();
+            }
+
+            // 讀取並還原當前頁面的劃記
+            if (typeof loadCurrentSlideDrawing === 'function') {
+                loadCurrentSlideDrawing();
             }
         }
 
@@ -2265,8 +2404,406 @@
             goToSlide(1);
         }
 
+        // ============================== 平板全域劃記與持久化記憶邏輯 ==============================
+        const drawCanvas = document.getElementById('drawing-canvas');
+        let isDrawing = false;
+        let drawingTool = 'pointer'; // 'pointer', 'pen', 'eraser'
+        let lastX = 0;
+        let lastY = 0;
+        
+        // 記憶結構：key是slideId, value是base64 PNG
+        let slideDrawings = {};
+        
+        // 從 localStorage 讀取歷史紀錄
+        try {
+            const savedDrawings = localStorage.getItem('empty-fort-slide-drawings');
+            if (savedDrawings) {
+                slideDrawings = JSON.parse(savedDrawings);
+            }
+        } catch(e) {
+            console.error("讀取劃記歷史失敗", e);
+        }
+
+        // 初始化畫布大小（使用 getBoundingClientRect 取 canvas 自身的真實視覺尺寸）
+        function initDrawingCanvas() {
+            if (!drawCanvas) return;
+            const rect = drawCanvas.getBoundingClientRect();
+            const w = Math.round(rect.width) || 800;
+            const h = Math.round(rect.height) || 450;
+            drawCanvas.width = w;
+            drawCanvas.height = h;
+            console.log('🎨 initDrawingCanvas:', {w, h});
+            
+            // 重新加載當前頁的劃記
+            loadCurrentSlideDrawing();
+        }
+
+        window.addEventListener('resize', () => {
+            // 在調整大小前，先存儲當前畫面以免遺失
+            saveCurrentSlideDrawing();
+            initDrawingCanvas();
+        });
+
+        // 選項面板展開與收合
+        function toggleDrawingMenu() {
+            const panel = document.getElementById('drawing-menu-panel');
+            if (panel) {
+                panel.classList.toggle('show');
+            }
+        }
+
+        // 設定工具
+        function setDrawingTool(tool) {
+            drawingTool = tool;
+            
+            // 更新按鈕樣式 (由 .drawing-tool-btn 改為 .drawing-menu-btn)
+            document.querySelectorAll('.drawing-menu-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const fabTrigger = document.getElementById('drawing-fab-trigger');
+            
+            if (tool === 'pointer') {
+                document.getElementById('tool-pointer').classList.add('active');
+                drawCanvas.style.pointerEvents = 'none'; // 穿透點擊
+                if (fabTrigger) {
+                    fabTrigger.innerText = '🖱️';
+                    fabTrigger.classList.remove('active');
+                }
+            } else if (tool === 'pen') {
+                document.getElementById('tool-pen').classList.add('active');
+                drawCanvas.style.pointerEvents = 'auto'; // 啟用劃記
+                if (fabTrigger) {
+                    fabTrigger.innerText = '✍️';
+                    fabTrigger.classList.add('active');
+                }
+            } else if (tool === 'eraser') {
+                document.getElementById('tool-eraser').classList.add('active');
+                drawCanvas.style.pointerEvents = 'auto'; // 啟用橡皮擦
+                if (fabTrigger) {
+                    fabTrigger.innerText = '🧽';
+                    fabTrigger.classList.add('active');
+                }
+            }
+            
+            // 選取工具後自動收合選單
+            const panel = document.getElementById('drawing-menu-panel');
+            if (panel) {
+                panel.classList.remove('show');
+            }
+        }
+
+        // 取得跨平台精確座標（含 CSS↔Canvas 縮放修正）
+        function getCoords(e) {
+            const rect = drawCanvas.getBoundingClientRect();
+            let clientX, clientY;
+            
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else if (e.changedTouches && e.changedTouches.length > 0) {
+                clientX = e.changedTouches[0].clientX;
+                clientY = e.changedTouches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            
+            // CSS 像素 → Canvas 內部像素（修正縮放比）
+            const scaleX = drawCanvas.width / rect.width;
+            const scaleY = drawCanvas.height / rect.height;
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
+            };
+        }
+
+        // 開始繪圖/擦除（使用 Pointer Events API，徹底解決瀏覽器原生拖曳吃掉 mousemove 的問題）
+        function startDrawing(e) {
+            if (drawingTool === 'pointer') return;
+            
+            // 動態防禦：用 getBoundingClientRect 取 canvas 真實視覺尺寸
+            const rect = drawCanvas.getBoundingClientRect();
+            const cw = Math.round(rect.width);
+            const ch = Math.round(rect.height);
+            if (cw > 0 && ch > 0 && (drawCanvas.width !== cw || drawCanvas.height !== ch)) {
+                drawCanvas.width = cw;
+                drawCanvas.height = ch;
+                loadCurrentSlideDrawing();
+                console.log('🎨 Canvas 尺寸修正:', {cw, ch});
+            }
+            
+            isDrawing = true;
+            
+            // 阻止預設行為（防止電腦上滑動時選取文字或觸發原生拖曳）
+            if (e.cancelable !== false) {
+                e.preventDefault();
+            }
+            
+            // ★ 關鍵修復：Pointer Capture — 確保後續所有 move/up 事件都由此 canvas 接收
+            if (e.pointerId !== undefined) {
+                try { drawCanvas.setPointerCapture(e.pointerId); } catch(_) {}
+            }
+            
+            const coords = getCoords(e);
+            lastX = coords.x;
+            lastY = coords.y;
+            
+            // 起筆圓點（讓使用者立刻看到「有反應」）
+            const ctx = drawCanvas.getContext('2d');
+            if (ctx && drawingTool === 'pen') {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.fillStyle = 'rgba(40, 75, 140, 0.8)';
+                ctx.beginPath();
+                ctx.arc(lastX, lastY, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            console.log('✏️ startDrawing OK', {tool: drawingTool, x: lastX, y: lastY, canvasW: drawCanvas.width, canvasH: drawCanvas.height});
+        }
+
+        function draw(e) {
+            if (!isDrawing || drawingTool === 'pointer') return;
+            if (e.cancelable !== false) {
+                e.preventDefault();
+            }
+            
+            const ctx = drawCanvas.getContext('2d');
+            if (!ctx) return;
+            
+            const coords = getCoords(e);
+            const x = coords.x;
+            const y = coords.y;
+            
+            // 坐標安全容錯
+            if (lastX === undefined || lastX === null) lastX = x;
+            if (lastY === undefined || lastY === null) lastY = y;
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            
+            if (drawingTool === 'pen') {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = 'rgba(40, 75, 140, 0.8)'; // 靛青藍，青花瓷古風
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+            } else if (drawingTool === 'eraser') {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.lineWidth = 35;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+            }
+            
+            ctx.stroke();
+            lastX = x;
+            lastY = y;
+        }
+
+        function stopDrawing(e) {
+            if (isDrawing) {
+                isDrawing = false;
+                // 釋放 Pointer Capture
+                if (e && e.pointerId !== undefined) {
+                    try { drawCanvas.releasePointerCapture(e.pointerId); } catch(_) {}
+                }
+                saveCurrentSlideDrawing();
+                console.log('✏️ stopDrawing OK — 劃記已儲存');
+            }
+        }
+
+        // ★ 統一使用 Pointer Events API（涵蓋滑鼠 + 觸控 + 觸控筆，一軌搞定）
+        if (drawCanvas) {
+            drawCanvas.addEventListener('pointerdown', (e) => {
+                startDrawing(e);
+            });
+            drawCanvas.addEventListener('pointermove', (e) => {
+                draw(e);
+            });
+            drawCanvas.addEventListener('pointerup', (e) => {
+                stopDrawing(e);
+            });
+            drawCanvas.addEventListener('pointercancel', (e) => {
+                stopDrawing(e);
+            });
+            // 防止觸控裝置的 300ms 延遲與預設手勢
+            drawCanvas.style.touchAction = 'none';
+        }
+
+        // ============================== 懸浮球 (FAB) 自由拖拽與點選無衝突控制 ==============================
+        const fabContainer = document.querySelector('.drawing-fab-container');
+        const fabTrigger = document.getElementById('drawing-fab-trigger');
+        let isDraggingFab = false;
+        let hasDragged = false; // 是否進行過真正的拖拽
+        let fabStartX = 0, fabStartY = 0;
+        let fabStartLeft = 0, fabStartTop = 0;
+
+        if (fabTrigger && fabContainer) {
+            // 監聽 mousedown 與 touchstart 啟動拖拽
+            fabTrigger.addEventListener('mousedown', startDragFab);
+            fabTrigger.addEventListener('touchstart', startDragFab, { passive: true });
+            
+            // 獨立綁定 click 事件，僅在「沒有拖拽」時打開選單
+            fabTrigger.addEventListener('click', (e) => {
+                console.log("FAB Click 觸發, hasDragged =", hasDragged);
+                if (!hasDragged) {
+                    toggleDrawingMenu();
+                }
+            });
+        }
+
+        function startDragFab(e) {
+            isDraggingFab = true;
+            hasDragged = false;
+            
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            
+            fabStartX = clientX;
+            fabStartY = clientY;
+            
+            const rect = fabContainer.getBoundingClientRect();
+            const parentRect = fabContainer.parentElement.getBoundingClientRect();
+            
+            fabStartLeft = rect.left - parentRect.left;
+            fabStartTop = rect.top - parentRect.top;
+            
+            // 註冊全域移動與結束監聽
+            document.addEventListener('mousemove', dragFab);
+            document.addEventListener('touchmove', dragFab, { passive: false });
+            document.addEventListener('mouseup', stopDragFab);
+            document.addEventListener('touchend', stopDragFab);
+        }
+
+        function dragFab(e) {
+            if (!isDraggingFab) return;
+            
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            
+            const dx = clientX - fabStartX;
+            const dy = clientY - fabStartY;
+            
+            // 超過 5 像素才判定為拖曳，避免極微小的抖動被判定為拖曳而無法點擊
+            if (Math.hypot(dx, dy) > 5) {
+                hasDragged = true;
+            }
+            
+            if (hasDragged) {
+                if (e.cancelable) e.preventDefault();
+                
+                let newLeft = fabStartLeft + dx;
+                let newTop = fabStartTop + dy;
+                
+                const parentRect = fabContainer.parentElement.getBoundingClientRect();
+                const maxLeft = parentRect.width - fabContainer.offsetWidth;
+                const maxTop = parentRect.height - fabContainer.offsetHeight;
+                
+                // 限制在簡報容器內，避免拖出螢幕外
+                newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+                newTop = Math.max(0, Math.min(newTop, maxTop));
+                
+                // 改以絕對定位坐標，清除 right / bottom 的 CSS 影響
+                fabContainer.style.right = 'auto';
+                fabContainer.style.bottom = 'auto';
+                fabContainer.style.left = newLeft + 'px';
+                fabContainer.style.top = newTop + 'px';
+            }
+        }
+
+        function stopDragFab(e) {
+            if (isDraggingFab) {
+                isDraggingFab = false;
+                document.removeEventListener('mousemove', dragFab);
+                document.removeEventListener('touchmove', dragFab);
+                document.removeEventListener('mouseup', stopDragFab);
+                document.removeEventListener('touchend', stopDragFab);
+                
+                console.log("拖拽結束, hasDragged =", hasDragged);
+                
+                // 防止拖拽結束後觸發點擊的微調
+                if (hasDragged) {
+                    // 若有拖拽過，在短時間內阻止後續的 click 行為
+                    setTimeout(() => {
+                        hasDragged = false;
+                    }, 50);
+                }
+            }
+        }
+
+        // 儲存當前頁劃記
+        function saveCurrentSlideDrawing() {
+            if (!drawCanvas) return;
+            const slideId = slideIdMap[currentSlide];
+            const ctx = drawCanvas.getContext('2d');
+            if (!ctx) return;
+            
+            // 檢查 Canvas 是否為空
+            const buffer = new Uint32Array(ctx.getImageData(0, 0, drawCanvas.width, drawCanvas.height).data.buffer);
+            const isEmpty = !buffer.some(color => color !== 0);
+            
+            if (isEmpty) {
+                delete slideDrawings[slideId];
+            } else {
+                slideDrawings[slideId] = drawCanvas.toDataURL();
+            }
+            
+            try {
+                localStorage.setItem('empty-fort-slide-drawings', JSON.stringify(slideDrawings));
+            } catch(e) {
+                console.error("保存劃記失敗", e);
+            }
+        }
+
+        // 加載當前頁劃記
+        function loadCurrentSlideDrawing() {
+            if (!drawCanvas) return;
+            const ctx = drawCanvas.getContext('2d');
+            if (!ctx) return;
+            ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+            
+            const slideId = slideIdMap[currentSlide];
+            const dataUrl = slideDrawings[slideId];
+            
+            if (dataUrl) {
+                const img = new Image();
+                img.onload = function() {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.drawImage(img, 0, 0, drawCanvas.width, drawCanvas.height);
+                };
+                img.src = dataUrl;
+            }
+        }
+
+        // 清空當前頁劃記
+        function clearCurrentDrawing() {
+            if (!drawCanvas) return;
+            const ctx = drawCanvas.getContext('2d');
+            if (ctx) {
+                ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+            }
+            const slideId = slideIdMap[currentSlide];
+            delete slideDrawings[slideId];
+            localStorage.setItem('empty-fort-slide-drawings', JSON.stringify(slideDrawings));
+        }
+
+        // 清空所有頁面劃記
+        function clearAllDrawings() {
+            if (!confirm("確定要清除所有頁面的劃記嗎？此動作無法復原！")) return;
+            if (drawCanvas) {
+                const ctx = drawCanvas.getContext('2d');
+                if (ctx) {
+                    ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+                }
+            }
+            slideDrawings = {};
+            localStorage.removeItem('empty-fort-slide-drawings');
+        }
+
         // 初始化
         updateSlideUI();
+        setTimeout(initDrawingCanvas, 200);
     </script>
 </body>
 </html>
