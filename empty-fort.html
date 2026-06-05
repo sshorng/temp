@@ -833,88 +833,55 @@
             touch-action: none; /* 解決平板無法劃記的關鍵：防止觸控被瀏覽器攔截 */
         }
 
-        .drawing-fab-container {
-            position: absolute;
-            bottom: 12vh;
-            right: 4vw;
-            left: auto;
-            top: auto;
-            z-index: 100; /* 高於一切，方便平板隨時點選 */
+        .drawing-footer-toolbar {
             display: flex;
-            flex-direction: column-reverse; /* 選單向上彈出 */
-            align-items: flex-end;
-            gap: 1vh;
-            touch-action: none; /* 允許對懸浮球本身進行觸控拖曳 */
-        }
-
-        .drawing-fab {
-            width: 6.5vh;
-            height: 6.5vh;
-            background: rgba(255, 255, 255, 0.95);
-            border: 2px solid var(--accent-red);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
             align-items: center;
-            font-size: 3vh;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            color: var(--accent-red);
-        }
-
-        .drawing-fab:hover, .drawing-fab.active {
-            transform: scale(1.08);
-            border-color: var(--accent-bright-red);
-            color: var(--accent-bright-red);
-        }
-
-        .drawing-menu {
-            display: none; /* 預設隱藏 */
-            flex-direction: column;
-            gap: 0.8vh;
-            background: rgba(255, 255, 255, 0.98);
-            border: 1.5px solid var(--accent-red);
-            border-radius: 12px;
-            padding: 0.8vh;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            animation: drawingFadeIn 0.25s ease-out;
-        }
-
-        .drawing-menu.show {
-            display: flex;
+            gap: 1vh;
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            padding: 0.5vh 1vh;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-right: 1.5vw;
         }
 
         .drawing-menu-btn {
-            width: 5vh;
-            height: 5vh;
-            background: #f5f5f5;
-            border: 1.5px solid #ccc;
+            width: 4.8vh;
+            height: 4.8vh;
+            background: #ffffff;
+            border: 1.5px solid var(--border-color);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 2.2vh;
             cursor: pointer;
             transition: all 0.2s;
-            color: #fff;
+            color: var(--text-muted);
+            padding: 0;
+        }
+
+        .drawing-menu-btn svg {
+            width: 2.3vh;
+            height: 2.3vh;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            display: block;
         }
 
         .drawing-menu-btn:hover, .drawing-menu-btn.active {
-            border-color: var(--primary-gold);
+            border-color: var(--accent-red);
             background: var(--accent-red);
-            color: #fff;
+            color: #ffffff;
             transform: scale(1.05);
         }
 
         .drawing-menu-btn.danger:hover {
-            background: var(--accent-red);
+            background: var(--accent-bright-red);
             border-color: var(--accent-bright-red);
-        }
-
-        @keyframes drawingFadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            color: #ffffff;
         }
     </style>
 </head>
@@ -1551,24 +1518,31 @@
         <!-- 畫布劃記層 -->
         <canvas id="drawing-canvas"></canvas>
 
-        <!-- 水墨古風懸浮劃記工具列 (FAB 版) -->
-        <div class="drawing-fab-container">
-            <div class="drawing-fab" id="drawing-fab-trigger" title="展開劃記選單">
-                🖱️
-            </div>
-            <div class="drawing-menu" id="drawing-menu-panel">
-                <button class="drawing-menu-btn active" id="tool-pointer" onclick="setDrawingTool('pointer')" title="指針 (滑鼠模式)">🖱️</button>
-                <button class="drawing-menu-btn" id="tool-pen" onclick="setDrawingTool('pen')" title="紅筆">✍️</button>
-                <button class="drawing-menu-btn" id="tool-eraser" onclick="setDrawingTool('eraser')" title="橡皮擦">🧽</button>
-                <button class="drawing-menu-btn" onclick="clearCurrentDrawing()" title="清空此頁">🗑️</button>
-                <button class="drawing-menu-btn danger" onclick="clearAllDrawings()" title="清空全簡報" style="border-color: rgba(255,51,51,0.4);">💥</button>
-            </div>
-        </div>
-
         <div class="slide-footer">
             <button class="nav-btn" id="prev-btn" onclick="navigateSlide(-1)">上一頁</button>
             <div class="page-indicator" id="slide-indicator">第 1 / 21 頁</div>
-            <button class="nav-btn primary" id="next-btn" onclick="navigateSlide(1)">下一頁</button>
+            
+            <div style="display: flex; align-items: center;">
+                <!-- 頁尾嵌入式劃記工具列 (膠囊扁平化設計) -->
+                <div class="drawing-footer-toolbar">
+                    <button class="drawing-menu-btn active" id="tool-pointer" onclick="setDrawingTool('pointer')" title="滑鼠模式 (雙擊此工具列或雙擊畫布可快速切換畫筆/滑鼠)">
+                        <svg viewBox="0 0 24 24"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path><path d="M13 13l6 6"></path></svg>
+                    </button>
+                    <button class="drawing-menu-btn" id="tool-pen" onclick="setDrawingTool('pen')" title="靛青畫筆">
+                        <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    </button>
+                    <button class="drawing-menu-btn" id="tool-eraser" onclick="setDrawingTool('eraser')" title="橡皮擦">
+                        <svg viewBox="0 0 24 24"><path d="M20 20H7L3 16c-1.5-1.5-1.5-3.5 0-5l8.5-8.5c1.5-1.5 3.5-1.5 5 0l4 4c1.5 1.5 1.5 3.5 0 5L12 20"></path><line x1="6" y1="12" x2="16" y2="2"></line></svg>
+                    </button>
+                    <button class="drawing-menu-btn" onclick="clearCurrentDrawing()" title="清空本頁劃記">
+                        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    </button>
+                    <button class="drawing-menu-btn danger" onclick="clearAllDrawings()" title="清空所有頁面劃記">
+                        <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </button>
+                </div>
+                <button class="nav-btn primary" id="next-btn" onclick="navigateSlide(1)">下一頁</button>
+            </div>
         </div>
     </div>
 
@@ -1794,6 +1768,17 @@
         }
 
         let currentSlide = 1;
+        try {
+            const savedSlide = localStorage.getItem('empty-fort-current-slide');
+            if (savedSlide) {
+                const s = Number(savedSlide);
+                if (s >= 1 && s <= 22) {
+                    currentSlide = s;
+                }
+            }
+        } catch(e) {
+            console.error("載入頁數歷史失敗", e);
+        }
         const totalSlides = 22; // 已補齊
 
         // slideLocks 用於追蹤作答狀態以展示解析
@@ -1882,6 +1867,13 @@
             // 讀取並還原當前頁面的劃記
             if (typeof loadCurrentSlideDrawing === 'function') {
                 loadCurrentSlideDrawing();
+            }
+
+            // 記憶當前頁面，重整不會消失
+            try {
+                localStorage.setItem('empty-fort-current-slide', currentSlide);
+            } catch(e) {
+                console.error("保存頁數歷史失敗", e);
             }
         }
 
@@ -2301,6 +2293,7 @@
         // 重設遊戲
         function resetGame() {
             currentSlide = 1;
+            try { localStorage.setItem('empty-fort-current-slide', 1); } catch(e) {}
             matchedCount = 0;
             selectedSource = null;
             s8Officer = false; s8Kong = false;
@@ -2456,40 +2449,23 @@
         function setDrawingTool(tool) {
             drawingTool = tool;
             
-            // 更新按鈕樣式 (由 .drawing-tool-btn 改為 .drawing-menu-btn)
+            // 更新按鈕樣式
             document.querySelectorAll('.drawing-menu-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             
-            const fabTrigger = document.getElementById('drawing-fab-trigger');
-            
             if (tool === 'pointer') {
-                document.getElementById('tool-pointer').classList.add('active');
+                const btn = document.getElementById('tool-pointer');
+                if (btn) btn.classList.add('active');
                 drawCanvas.style.pointerEvents = 'none'; // 穿透點擊
-                if (fabTrigger) {
-                    fabTrigger.innerText = '🖱️';
-                    fabTrigger.classList.remove('active');
-                }
             } else if (tool === 'pen') {
-                document.getElementById('tool-pen').classList.add('active');
+                const btn = document.getElementById('tool-pen');
+                if (btn) btn.classList.add('active');
                 drawCanvas.style.pointerEvents = 'auto'; // 啟用劃記
-                if (fabTrigger) {
-                    fabTrigger.innerText = '✍️';
-                    fabTrigger.classList.add('active');
-                }
             } else if (tool === 'eraser') {
-                document.getElementById('tool-eraser').classList.add('active');
+                const btn = document.getElementById('tool-eraser');
+                if (btn) btn.classList.add('active');
                 drawCanvas.style.pointerEvents = 'auto'; // 啟用橡皮擦
-                if (fabTrigger) {
-                    fabTrigger.innerText = '🧽';
-                    fabTrigger.classList.add('active');
-                }
-            }
-            
-            // 選取工具後自動收合選單
-            const panel = document.getElementById('drawing-menu-panel');
-            if (panel) {
-                panel.classList.remove('show');
             }
         }
 
@@ -2553,7 +2529,7 @@
             const ctx = drawCanvas.getContext('2d');
             if (ctx && drawingTool === 'pen') {
                 ctx.globalCompositeOperation = 'source-over';
-                ctx.fillStyle = 'rgba(40, 75, 140, 0.8)';
+                ctx.fillStyle = '#284b8c';
                 ctx.beginPath();
                 ctx.arc(lastX, lastY, 1.5, 0, Math.PI * 2);
                 ctx.fill();
@@ -2585,7 +2561,7 @@
             
             if (drawingTool === 'pen') {
                 ctx.globalCompositeOperation = 'source-over';
-                ctx.strokeStyle = 'rgba(40, 75, 140, 0.8)'; // 靛青藍，青花瓷古風
+                ctx.strokeStyle = '#284b8c'; // 靛青藍，青花瓷古風 (實心無透明度)
                 ctx.lineWidth = 3;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
@@ -2631,105 +2607,41 @@
             drawCanvas.style.touchAction = 'none';
         }
 
-        // ============================== 懸浮球 (FAB) 自由拖拽與點選無衝突控制 ==============================
-        const fabContainer = document.querySelector('.drawing-fab-container');
-        const fabTrigger = document.getElementById('drawing-fab-trigger');
-        let isDraggingFab = false;
-        let hasDragged = false; // 是否進行過真正的拖拽
-        let fabStartX = 0, fabStartY = 0;
-        let fabStartLeft = 0, fabStartTop = 0;
-
-        if (fabTrigger && fabContainer) {
-            // 監聽 mousedown 與 touchstart 啟動拖拽
-            fabTrigger.addEventListener('mousedown', startDragFab);
-            fabTrigger.addEventListener('touchstart', startDragFab, { passive: true });
-            
-            // 獨立綁定 click 事件，僅在「沒有拖拽」時打開選單
-            fabTrigger.addEventListener('click', (e) => {
-                console.log("FAB Click 觸發, hasDragged =", hasDragged);
-                if (!hasDragged) {
-                    toggleDrawingMenu();
+        // ============================== 頁尾嵌入式工具列與畫布互動控制 ==============================
+        const footerToolbar = document.querySelector('.drawing-footer-toolbar');
+        if (footerToolbar) {
+            let lastTap = 0;
+            // 雙點擊/雙觸碰工具列任何位置，快速切換滑鼠指針與畫筆
+            footerToolbar.addEventListener('pointerdown', (e) => {
+                const now = Date.now();
+                if (now - lastTap < 300) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (drawingTool === 'pointer') {
+                        setDrawingTool('pen');
+                    } else {
+                        setDrawingTool('pointer');
+                    }
+                    console.log('✏️ 雙擊/雙觸頁尾工具列切換工具為:', drawingTool);
                 }
+                lastTap = now;
             });
         }
 
-        function startDragFab(e) {
-            isDraggingFab = true;
-            hasDragged = false;
-            
-            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-            
-            fabStartX = clientX;
-            fabStartY = clientY;
-            
-            const rect = fabContainer.getBoundingClientRect();
-            const parentRect = fabContainer.parentElement.getBoundingClientRect();
-            
-            fabStartLeft = rect.left - parentRect.left;
-            fabStartTop = rect.top - parentRect.top;
-            
-            // 註冊全域移動與結束監聽
-            document.addEventListener('mousemove', dragFab);
-            document.addEventListener('touchmove', dragFab, { passive: false });
-            document.addEventListener('mouseup', stopDragFab);
-            document.addEventListener('touchend', stopDragFab);
-        }
-
-        function dragFab(e) {
-            if (!isDraggingFab) return;
-            
-            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-            
-            const dx = clientX - fabStartX;
-            const dy = clientY - fabStartY;
-            
-            // 超過 5 像素才判定為拖曳，避免極微小的抖動被判定為拖曳而無法點擊
-            if (Math.hypot(dx, dy) > 5) {
-                hasDragged = true;
-            }
-            
-            if (hasDragged) {
-                if (e.cancelable) e.preventDefault();
-                
-                let newLeft = fabStartLeft + dx;
-                let newTop = fabStartTop + dy;
-                
-                const parentRect = fabContainer.parentElement.getBoundingClientRect();
-                const maxLeft = parentRect.width - fabContainer.offsetWidth;
-                const maxTop = parentRect.height - fabContainer.offsetHeight;
-                
-                // 限制在簡報容器內，避免拖出螢幕外
-                newLeft = Math.max(0, Math.min(newLeft, maxLeft));
-                newTop = Math.max(0, Math.min(newTop, maxTop));
-                
-                // 改以絕對定位坐標，清除 right / bottom 的 CSS 影響
-                fabContainer.style.right = 'auto';
-                fabContainer.style.bottom = 'auto';
-                fabContainer.style.left = newLeft + 'px';
-                fabContainer.style.top = newTop + 'px';
-            }
-        }
-
-        function stopDragFab(e) {
-            if (isDraggingFab) {
-                isDraggingFab = false;
-                document.removeEventListener('mousemove', dragFab);
-                document.removeEventListener('touchmove', dragFab);
-                document.removeEventListener('mouseup', stopDragFab);
-                document.removeEventListener('touchend', stopDragFab);
-                
-                console.log("拖拽結束, hasDragged =", hasDragged);
-                
-                // 防止拖拽結束後觸發點擊的微調
-                if (hasDragged) {
-                    // 若有拖拽過，在短時間內阻止後續的 click 行為
-                    setTimeout(() => {
-                        hasDragged = false;
-                    }, 50);
+        if (drawCanvas) {
+            let canvasLastTap = 0;
+            // 雙點擊/雙觸碰畫布，快速切換回滑鼠指針模式
+            drawCanvas.addEventListener('pointerdown', (e) => {
+                const now = Date.now();
+                if (now - canvasLastTap < 300) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDrawingTool('pointer');
+                    isDrawing = false; // 取消目前的劃記狀態
+                    console.log('✏️ 雙擊畫布切換工具為 pointer');
                 }
-            }
+                canvasLastTap = now;
+            });
         }
 
         // 儲存當前頁劃記
