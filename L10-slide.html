@@ -330,9 +330,9 @@
         /* 簡報分頁 */
         .slide {
             display: none;
-            height: 100%;
+            min-height: 100%;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
         }
 
         .slide.active {
@@ -736,7 +736,7 @@
 
             <!-- ============================== SLIDE 1: 說書封面 ============================== -->
             <div id="slide-1" class="slide active" data-title="莫泊桑的小說工坊" data-sub="序章：起局">
-                <div style="text-align: center;">
+                <div style="text-align: center; margin: auto 0;">
                     <h2 style="font-family:var(--font-ancient); font-size: 6.1vh; color: var(--accent-red); margin-bottom: 3vh; letter-spacing: 2px; font-weight: 900; line-height: 1.4;">第十課：項鍊</h2>
                     <p style="font-size: 4.0vh; color: var(--text-light); font-family: var(--font-ancient); line-height: 1.8; max-width: 850px; margin: 0 auto; font-weight: 900;">
                         「人生是多麼奇怪，多麼變化無常啊！極細小的一件事可以敗壞你，也可以成全你！」<br>
@@ -1099,7 +1099,7 @@
 
             <!-- ============================== SLIDE 12: 結尾 ============================== -->
             <div id="slide-12" class="slide" data-title="工坊任務結算" data-sub="結章：重塑">
-                <div style="background: #ffffff; border: 3px double var(--accent-red); border-radius: 12px; padding: 4vh; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+                <div style="background: #ffffff; border: 3px double var(--accent-red); border-radius: 12px; padding: 4vh; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin: auto 0;">
                     <h2 style="font-family:var(--font-ancient); font-size: 6.8vh; color: var(--accent-red); margin-bottom: 2vh; font-weight:900;">🎓 經典解構完成</h2>
                     <p style="font-size: 3.8vh; color: var(--text-light); font-family: var(--font-ancient); font-weight:900; line-height: 1.6; margin-bottom: 3vh;">
                         恭喜夫子與弟子成功穿透文本，完成項鍊情節、寫作手法與伏筆的探究。
