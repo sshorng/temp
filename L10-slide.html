@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>項鍊：莫泊桑的小說工坊</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800;900&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           16:9 法式復古沙龍投影與平板優化大字版面系統
+           ========================================================================== */
+        :root {
+            --bg-color: #fcfaf2; /* 典雅法式羊皮紙黃 */
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --primary-gold: #3a3a3a; /* 典雅深炭灰 */
+            --accent-red: #8b2635; /* 經典皇家深紅 */
+            --accent-bright-red: #bd2a2e; /* 亮紅 */
+            --accent-green: #2e5a44; /* 墨綠 */
+            --text-light: #1c1c1c; /* 墨黑 */
+            --text-muted: #5e5e5e; /* 中灰 */
+            --border-color: #d8cfb4; /* 淺羊皮邊框 */
+            --font-ancient: 'Noto Serif TC', serif;
+            --font-modern: 'Outfit', 'Noto Serif TC', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #e5ded0; /* 溫暖的環境背景色 */
+            color: var(--text-light);
+            font-family: var(--font-modern);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .slide-container {
+            width: 96vw;
+            height: 54vw; /* 鎖定 16:9 比例 */
+            max-width: 177.78vh;
+            max-height: 90vh; /* 貼合螢幕邊緣 */
+            background-color: var(--bg-color);
+            border: 4px double var(--accent-red); /* 雙線皇家紅木邊框 */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2.2vh 4vw;
+            border-radius: 10px;
+            overflow: hidden; /* 保持外層 16:9 完美穩定 */
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(139, 38, 53, 0.04) 0%, transparent 60%),
+                radial-gradient(circle at 90% 90%, rgba(58, 58, 58, 0.05) 0%, transparent 60%);
+        }
+
+        .ink-mist {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, transparent, rgba(252, 250, 242, 0.6));
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sound-badge {
+            position: absolute;
+            top: 3.5vh;
+            right: 4vw;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.2vh 1.8vw;
+            border-radius: 25px;
+            border: 2px solid var(--accent-red);
+            font-size: 3.6vh;
+            color: var(--accent-red);
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ==========================================================================
+           大字標題與排版
+           ========================================================================== */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent-red);
+            padding-bottom: 1.5vh;
+            height: 9vh;
+            z-index: 2;
+        }
+
+        .slide-title {
+            font-family: var(--font-ancient);
+            font-size: 4.7vh;
+            font-weight: 900;
+            color: var(--accent-red); /* 經典法式皇家紅 */
+            text-shadow: 0 1px 3px rgba(139, 38, 53, 0.1);
+        }
+
+        .slide-subtitle {
+            font-size: 3.2vh;
+            color: var(--text-muted);
+            font-family: var(--font-ancient);
+            font-weight: 900;
+        }
+
+        .slide-body {
+            flex: 1; /* 自動填滿中間空間，消除上下留白 */
+            height: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-y: auto; /* 超出時內部垂直滾動 */
+            z-index: 2;
+            padding-right: 0.8vw;
+            margin-bottom: 1.5vh;
+            margin-top: 1.5vh;
+        }
+
+        /* 美化滾動條 */
+        .slide-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        .slide-body::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .slide-body::-webkit-scrollbar-thumb {
+            background: var(--accent-red);
+            border-radius: 3px;
+        }
+
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2.5px solid var(--border-color);
+            padding-top: 1.5vh;
+            height: 9vh;
+            z-index: 50;
+            background: var(--bg-color);
+            position: relative;
+        }
+
+        .page-indicator {
+            font-size: 3.2vh;
+            color: var(--text-light);
+            font-weight: 900;
+        }
+
+        .nav-btn {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            color: var(--text-light);
+            padding: 1.2vh 2.5vw;
+            font-size: 3.2vh;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+            background: #fdfdfd;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.15;
+            cursor: not-allowed;
+        }
+
+        .nav-btn.primary {
+            background: var(--accent-red);
+            color: #ffffff;
+            border-color: var(--accent-red);
+        }
+
+        .nav-btn.primary:hover:not(:disabled) {
+            box-shadow: 0 0 10px rgba(139, 38, 53, 0.4);
+            background: #701c27;
+        }
+
+        /* ==========================================================================
+           小說敘事與高對比排版
+           ========================================================================== */
+        .story-text {
+            font-family: var(--font-ancient);
+            font-size: 3.8vh;
+            font-weight: 900;
+            line-height: 1.7;
+            color: var(--text-light);
+            margin-bottom: 1.5vh;
+        }
+
+        .story-text em {
+            color: var(--accent-red);
+            font-style: normal;
+            font-weight: 900;
+        }
+
+        .task-box {
+            background: rgba(139, 38, 53, 0.05);
+            border: 2px solid var(--accent-bright-red);
+            padding: 1.2vh 1.8vw;
+            border-radius: 6px;
+            font-size: 3.3vh;
+            font-weight: 900;
+            font-family: var(--font-ancient);
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+            margin-bottom: 1.5vh;
+            color: var(--text-light);
+        }
+
+        .task-tag {
+            background: var(--accent-red);
+            color: white;
+            padding: 0.4vh 1vw;
+            border-radius: 3px;
+            font-weight: 900;
+            font-size: 2.8vh;
+            white-space: nowrap;
+        }
+
+        /* 點選按鈕 */
+        .click-picker-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2vw;
+            margin-top: 0.8vh;
+            justify-content: center;
+        }
+
+        .picker-btn {
+            background: #ffffff;
+            border: 2px solid #ccc;
+            color: var(--text-light);
+            padding: 1vh 1.6vw;
+            font-size: 3.3vh;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .picker-btn:hover {
+            border-color: var(--accent-red);
+            background: #f5f5f5;
+        }
+
+        .picker-btn.selected {
+            background: rgba(139, 38, 53, 0.1) !important;
+            border-color: var(--accent-red) !important;
+            color: var(--accent-red) !important;
+            box-shadow: 0 0 10px rgba(139, 38, 53, 0.2);
+        }
+
+        .picker-btn.correct {
+            background: rgba(46, 90, 68, 0.15) !important;
+            border-color: var(--accent-green) !important;
+            color: var(--accent-green) !important;
+        }
+
+        .picker-btn.wrong {
+            background: rgba(139, 38, 53, 0.15) !important;
+            border-color: var(--accent-bright-red) !important;
+            color: var(--accent-bright-red) !important;
+        }
+
+        /* 大字解析面板 */
+        .reveal-panel {
+            background: rgba(255, 255, 255, 0.98);
+            border: 2.5px solid var(--accent-red);
+            border-radius: 8px;
+            padding: 1.5vh 2vw;
+            margin-top: 1.5vh;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .analysis-text {
+            font-size: 3.6vh;
+            font-weight: 900;
+            line-height: 1.6;
+            color: var(--text-light);
+            margin-bottom: 1.2vh;
+            border-left: 6px solid var(--accent-red);
+            padding-left: 1.2vw;
+        }
+
+        .author-write-tag {
+            color: var(--accent-red);
+            font-weight: 900;
+            margin-bottom: 0.5vh;
+            display: block;
+        }
+
+        .ask-text {
+            font-size: 3.8vh;
+            font-weight: 900;
+            color: var(--accent-red);
+            font-family: var(--font-ancient);
+            background: rgba(139, 38, 53, 0.05);
+            padding: 2.2vh;
+            border-radius: 5px;
+            border: 1.5px dashed rgba(139, 38, 53, 0.4);
+            line-height: 1.6;
+        }
+
+        /* 簡報分頁 */
+        .slide {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3vw;
+            align-items: center;
+        }
+
+        /* 抉擇按鈕 */
+        .choice-btn {
+            background: linear-gradient(to right, #ffffff, #fcfcfc);
+            border: 2px solid #ccc;
+            color: var(--text-light);
+            padding: 1.5vh 2vw;
+            font-size: 3.2vh;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            cursor: pointer;
+            border-radius: 8px;
+            text-align: left;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .choice-btn:hover {
+            border-color: var(--accent-red);
+            background: rgba(139, 38, 53, 0.05);
+            transform: translateX(10px);
+        }
+
+        .choice-btn::after {
+            content: '➔';
+            color: var(--accent-red);
+        }
+
+        .quote-highlight {
+            font-family: var(--font-ancient);
+            color: var(--accent-red);
+            font-size: 3.8vh;
+            font-weight: 900;
+            background: rgba(139, 38, 53, 0.07);
+            padding: 1.5vh 2.5vw;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 2vh 0;
+            border-left: 6px solid var(--accent-red);
+            line-height: 1.5;
+        }
+
+        /* ==========================================================================
+           第一關：感官對比表格專屬樣式
+           ========================================================================== */
+        .table-sandbox {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5vh;
+            font-family: var(--font-ancient);
+            font-size: 3.3vh;
+            font-weight: 900;
+        }
+
+        .table-sandbox th {
+            background: var(--accent-red);
+            color: #ffffff;
+            padding: 1.2vh 1vw;
+            border: 1px solid var(--border-color);
+        }
+
+        .table-sandbox td {
+            padding: 1.2vh 1vw;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+        }
+
+        .clickable-cell {
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--accent-red);
+            background: rgba(139, 38, 53, 0.02);
+            text-align: center;
+        }
+
+        .clickable-cell:hover {
+            background: rgba(139, 38, 53, 0.08);
+        }
+
+        .revealed-cell {
+            background: rgba(46, 90, 68, 0.08) !important;
+            color: var(--accent-green) !important;
+            font-weight: 900;
+            text-align: left !important;
+        }
+
+        /* ==========================================================================
+           第二關：狄德羅效應梯子專屬樣式
+           ========================================================================== */
+        .ladder-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5vh;
+            margin: 2vh 0;
+        }
+
+        .ladder-step {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border: 2.5px solid #ccc;
+            border-radius: 8px;
+            padding: 1.5vh 2vw;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-ancient);
+            font-size: 3.3vh;
+            font-weight: 900;
+        }
+
+        .ladder-step:hover {
+            border-color: var(--accent-bright-red);
+            background: rgba(139, 38, 53, 0.02);
+        }
+
+        .ladder-step.active {
+            border-color: var(--accent-red);
+            background: rgba(139, 38, 53, 0.08);
+            box-shadow: 0 4px 12px rgba(139, 38, 53, 0.15);
+        }
+
+        .step-num {
+            background: var(--accent-red);
+            color: #ffffff;
+            width: 4.5vh;
+            height: 4.5vh;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 1.5vw;
+            font-size: 3.0vh;
+        }
+
+        /* ==========================================================================
+           第三關：人物天平與襯托
+           ========================================================================== */
+        .character-card {
+            background: #ffffff;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            padding: 2.2vh;
+            min-height: 28vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-tag {
+            background: var(--primary-gold);
+            color: #ffffff;
+            padding: 0.5vh 1vw;
+            border-radius: 3px;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            font-size: 2.8vh;
+            width: fit-content;
+            margin-bottom: 1.5vh;
+        }
+
+        .card-tag.wife {
+            background: var(--accent-red);
+        }
+
+        .card-desc {
+            font-size: 3.3vh;
+            line-height: 1.6;
+            font-weight: 900;
+        }
+
+        /* ==========================================================================
+           第五關：三大伏筆尋寶場景
+           ========================================================================== */
+        .scene-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2vw;
+            margin-top: 1.5vh;
+        }
+
+        .scene-card {
+            background: #ffffff;
+            border: 3px solid #ccc;
+            border-radius: 8px;
+            padding: 2.5vh 2vw;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-ancient);
+            min-height: 26vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .scene-card:hover {
+            border-color: var(--accent-red);
+            box-shadow: 0 4px 15px rgba(139, 38, 53, 0.15);
+        }
+
+        .scene-card.found {
+            border-color: var(--accent-green);
+            background: rgba(46, 90, 68, 0.08);
+        }
+
+        .scene-title {
+            font-size: 3.6vh;
+            font-weight: 900;
+            color: var(--accent-red);
+            margin-bottom: 1.5vh;
+        }
+
+        .scene-desc {
+            font-size: 3.1vh;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ==========================================================================
+           第六關：真兇投票柱狀圖
+           ========================================================================== */
+        .poll-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2vw;
+            margin-top: 1.5vh;
+        }
+
+        .poll-card {
+            background: #ffffff;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            padding: 2.2vh;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-ancient);
+        }
+
+        .poll-card:hover {
+            border-color: var(--accent-red);
+            background: rgba(139, 38, 53, 0.02);
+        }
+
+        .poll-card.voted {
+            border-color: var(--accent-red);
+            background: rgba(139, 38, 53, 0.08);
+        }
+
+        .bar-container {
+            width: 100%;
+            height: 16vh;
+            background: #f0f0f0;
+            border-radius: 6px;
+            margin: 2vh 0 1vh 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .bar-fill {
+            width: 100%;
+            height: 0%;
+            background: var(--accent-red);
+            transition: height 0.6s cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+
+        .percent-text {
+            font-size: 3.6vh;
+            font-weight: 900;
+            color: var(--text-light);
+        }
+
+        /* ==========================================================================
+           第七關：寫作靈感發射器
+           ========================================================================== */
+        .genre-btn {
+            background: #ffffff;
+            border: 2px solid #ccc;
+            padding: 1vh 1.5vw;
+            font-size: 3.2vh;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            transition: all 0.2s;
+        }
+
+        .genre-btn:hover, .genre-btn.active {
+            border-color: var(--accent-red);
+            background: var(--accent-red);
+            color: #ffffff;
+        }
+
+        /* ==========================================================================
+           平板全域劃記工具列
+           ========================================================================== */
+        #drawing-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 45; /* 介於內容與 footer 之間 */
+            pointer-events: none;
+            cursor: crosshair;
+            touch-action: none; /* 防止平板手勢被攔截 */
+        }
+
+        .drawing-footer-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 1vh;
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            padding: 0.5vh 1vh;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-right: 1.5vw;
+        }
+
+        .drawing-menu-btn {
+            width: 4.8vh;
+            height: 4.8vh;
+            background: #ffffff;
+            border: 1.5px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-muted);
+            padding: 0;
+        }
+
+        .drawing-menu-btn svg {
+            width: 2.3vh;
+            height: 2.3vh;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            display: block;
+        }
+
+        .drawing-menu-btn:hover, .drawing-menu-btn.active {
+            border-color: var(--accent-red);
+            background: var(--accent-red);
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+
+        .drawing-menu-btn.danger:hover {
+            background: var(--accent-bright-red);
+            border-color: var(--accent-bright-red);
+            color: #ffffff;
+        }
+
+        /* 解決 iOS 等裝置放大問題 */
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ink-mist"></div>
+
+    <!-- 簡報投影主容器 -->
+    <div class="slide-container">
+        
+        <!-- 簡報頭 -->
+        <div class="slide-header">
+            <div class="slide-title" id="header-title">項鍊</div>
+            <div class="slide-subtitle" id="header-subtitle">莫泊桑的小說工坊</div>
+        </div>
+
+        <!-- 簡報身 -->
+        <div class="slide-body">
+            <!-- TEMPLATE_SLIDES_START -->
+
+            <!-- ============================== SLIDE 1: 說書封面 ============================== -->
+            <div id="slide-1" class="slide active" data-title="莫泊桑的小說工坊" data-sub="序章：起局">
+                <div style="text-align: center;">
+                    <h2 style="font-family:var(--font-ancient); font-size: 6.1vh; color: var(--accent-red); margin-bottom: 3vh; letter-spacing: 2px; font-weight: 900; line-height: 1.4;">第十課：項鍊</h2>
+                    <p style="font-size: 4.0vh; color: var(--text-light); font-family: var(--font-ancient); line-height: 1.8; max-width: 850px; margin: 0 auto; font-weight: 900;">
+                        「人生是多麼奇怪，多麼變化無常啊！極細小的一件事可以敗壞你，也可以成全你！」<br>
+                        虛榮的代價是十年的粗糲勞作，還是一場看清真實的靈魂重塑？夫子請帶領弟子進入莫泊桑的寫作工坊。
+                    </p>
+                    <p style="font-size: 3.2vh; color: var(--accent-red); margin-top: 5vh; font-weight: 900; animation: pulse 2s infinite;">
+                        【請點擊下方「下一頁」開啟命運沙盤】
+                    </p>
+                </div>
+            </div>
+
+            
+            <!-- ============================== SLIDE 2: 小說三要素 ============================== -->
+            <div id="slide-2" class="slide" data-title="小說基礎：角色、情節與背景" data-sub="知識解碼（小說三要素）">
+                <div class="task-box">
+                    <span class="task-tag">小說三要素</span>
+                    讀小說前，先掌握建構故事的黃金鐵三角！
+                </div>
+                <div class="split-layout" style="gap: 2vw; align-items: stretch; margin-bottom: 1.5vh;">
+                    <div style="background:#ffffff; border:2.5px solid var(--border-color); border-radius:8px; padding:2.5vh; display:flex; flex-direction:column; justify-content:space-between;">
+                        <h4 style="font-size: 3.6vh; color:var(--accent-red); margin-bottom:1.5vh; font-family:var(--font-ancient);">👤 角色（Character）</h4>
+                        <p style="font-size: 3.1vh; color:var(--text-light); line-height:1.6; margin-bottom:1.5vh;">
+                            故事的主角與配角，是推動故事前進的核心。人物的<b>性格特質</b>、<b>心理矛盾</b>與<b>言行舉止</b>，決定了故事的走向。
+                        </p>
+                        <blockquote class="quote-highlight" style="font-size: 2.8vh; margin:0; padding: 1vh 2vw;">
+                            💡 思考：瑪蒂達的性格中，虛榮與自尊是如何交織的？
+                        </blockquote>
+                    </div>
+                    <div style="background:#ffffff; border:2.5px solid var(--border-color); border-radius:8px; padding:2.5vh; display:flex; flex-direction:column; justify-content:space-between;">
+                        <h4 style="font-size: 3.6vh; color:var(--accent-red); margin-bottom:1.5vh; font-family:var(--font-ancient);">🎬 情節（Plot）</h4>
+                        <p style="font-size: 3.1vh; color:var(--text-light); line-height:1.6; margin-bottom:1.5vh;">
+                            事件發生與發展的順序，通常包含<b>開端、發展、高潮、結局</b>。好的情節會安排衝突、懸念與意料之外的翻轉。
+                        </p>
+                        <blockquote class="quote-highlight" style="font-size: 2.8vh; margin:0; padding: 1vh 2vw;">
+                            💡 思考：丟失項鍊是情節的哪個階段？
+                        </blockquote>
+                    </div>
+                </div>
+                <div style="background:#ffffff; border:2.5px solid var(--border-color); border-radius:8px; padding:2vh; margin-top: 1vh;">
+                    <h4 style="font-size: 3.4vh; color:var(--accent-green); margin-bottom:1vh; font-family:var(--font-ancient);">🗺️ 背景（Setting）</h4>
+                    <p style="font-size: 3.1vh; color:var(--text-light); line-height:1.5;">
+                        故事發生的時間與空間，包含了社會風氣、時代文化。本課背景為十九世紀末的法國巴黎，當時社會崇尚虛華，上流社交圈是所有人夢想的殿堂。
+                    </p>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 3: 莫泊桑特色 ============================== -->
+            <div id="slide-3" class="slide" data-title="莫泊桑的藝術：寫實與突轉" data-sub="知識解碼（莫泊桑特色）">
+                <div class="task-box">
+                    <span class="task-tag">世界短篇小說之王</span>
+                    莫泊桑（Guy de Maupassant）與契訶夫、歐亨利並稱為「世界三大短篇小說大師」。
+                </div>
+                <div class="split-layout" style="gap: 2vw; align-items: stretch; margin-bottom: 1.5vh;">
+                    <div style="background:#ffffff; border:2.5px solid var(--border-color); border-radius:8px; padding:2.5vh; display:flex; flex-direction:column; justify-content:space-between;">
+                        <h4 style="font-size: 3.5vh; color:var(--accent-red); margin-bottom:1.5vh; font-family:var(--font-ancient);">1. 冷靜客觀的寫實風格</h4>
+                        <p style="font-size: 3.1vh; color:var(--text-light); line-height:1.6;">
+                            他主張小說家應像科學家般觀察社會，以冷峻、不帶偏見的筆調，真實呈現人性的弱點與社會底層、市民階層的無奈掙扎。
+                        </p>
+                    </div>
+                    <div style="background:#ffffff; border:2.5px solid var(--border-color); border-radius:8px; padding:2.5vh; display:flex; flex-direction:column; justify-content:space-between;">
+                        <h4 style="font-size: 3.5vh; color:var(--accent-red); margin-bottom:1.5vh; font-family:var(--font-ancient);">2. 犀利刻骨的反諷藝術</h4>
+                        <p style="font-size: 3.1vh; color:var(--text-light); line-height:1.6;">
+                            擅長捕捉日常生活中荒誕的瞬間，用看似平實的語言反襯出命運對虛榮的捉弄，給讀者留下深刻的警醒與反思。
+                        </p>
+                    </div>
+                </div>
+                <div style="background:#ffffff; border:2.5px solid var(--border-color); border-radius:8px; padding:2vh; margin-top: 1vh; border-left: 6px solid var(--accent-bright-red);">
+                    <h4 style="font-size: 3.5vh; color:var(--accent-bright-red); margin-bottom:1vh; font-family:var(--font-ancient);">💡 莫泊桑式結尾（歐亨利式結局）</h4>
+                    <p style="font-size: 3.1vh; color:var(--text-light); line-height:1.5; font-weight:900;">
+                        這是一種「意料之外，情理之中」的結尾美學。在故事的最後一秒，作者突然揭露一個石破天驚的真相，瞬間顛覆前面的所有情節，給人巨大的戲劇震撼力與餘韻。〈項鍊〉結尾的假項鍊揭露，正是這項藝術的巔峰！
+                    </p>
+                </div>
+            </div>
+
+<!-- ============================== SLIDE 4: 暖身題 ============================== -->
+            <div id="slide-4" class="slide" data-title="暖身思考：幸福的包裝" data-sub="準備活動">
+                <div class="story-text">
+                    小說開始前，請觀察兩位虛擬 IG 使用者的幸福包裝，並在小組內給予打分（0至10分）：
+                </div>
+                <div class="split-layout" style="gap: 2vw; align-items: stretch; margin-bottom: 1.5vh;">
+                    <div style="background:#ffffff; border:2px solid var(--border-color); border-radius:8px; padding:2vh; display:flex; flex-direction:column; justify-content:space-between;">
+                        <h4 style="font-size: 3.3vh; color:var(--accent-red); margin-bottom:1vh; font-family:var(--font-ancient);">帳號 A：凡爾賽的精緻日常</h4>
+                        <p style="font-size: 3.0vh; color:var(--text-light); line-height:1.5; margin-bottom:2vh;">簡介：只愛閃耀的珠寶與精緻的晚禮服，下午茶必須在沙龍享用。配圖是滿屏的高檔餐廳與華麗裝扮。</p>
+                        <div style="display:flex; align-items:center; gap:1vw;">
+                            <span style="font-size: 2.9vh; font-weight:900;">幸福指數打分：</span>
+                            <select id="score-a" onchange="rateHappiness()" style="font-size: 2.9vh; padding:0.5vh;">
+                                <option value="">請評分</option>
+                                <script>for(let i=0;i<=10;i++) document.write(`<option value="${i}">${i}分</option>`);</script>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="background:#ffffff; border:2px solid var(--border-color); border-radius:8px; padding:2vh; display:flex; flex-direction:column; justify-content:space-between;">
+                        <h4 style="font-size: 3.3vh; color:var(--accent-red); margin-bottom:1vh; font-family:var(--font-ancient);">帳號 B：教育部書記的柴米油鹽</h4>
+                        <p style="font-size: 3.0vh; color:var(--text-light); line-height:1.5; margin-bottom:2vh;">簡介：晚餐是一鍋樸實的燉肉，桌布三天沒換。生活普通，但丈夫總是大口吃肉並直呼美味。</p>
+                        <div style="display:flex; align-items:center; gap:1vw;">
+                            <span style="font-size: 2.9vh; font-weight:900;">幸福指數打分：</span>
+                            <select id="score-b" onchange="rateHappiness()" style="font-size: 2.9vh; padding:0.5vh;">
+                                <option value="">請評分</option>
+                                <script>for(let i=0;i<=10;i++) document.write(`<option value="${i}">${i}分</option>`);</script>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal-panel" id="reveal-slide2">
+                    <div class="ask-text">
+                        💡 思考問題：為什麼換了包裝，判斷就差這麼多？如果發現只要裝扮就能獲得羨慕，你會不會像主角瑪蒂達一樣去借那條項鍊？
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 5: 第一關 ============================== -->
+            <div id="slide-5" class="slide" data-title="第一關：錯置的靈魂" data-sub="第一幕：開端（第1至2段）">
+                <div class="task-box">
+                    <span class="task-tag">感官對照</span>
+                    請點選下方「現實的粗糙」欄位，解碼瑪蒂達腦中的「幻想精緻」與心理對照！
+                </div>
+                <table class="table-sandbox">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">感官維度</th>
+                            <th style="width: 35%;">現實的粗糙（點選解碼）</th>
+                            <th style="width: 50%;">幻想的精緻與心理分析</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align:center;"><b>視覺（居住）</b></td>
+                            <td class="clickable-cell" id="c-1" onclick="revealCell(1, '東方掛氈、青銅燈臺。對照顯示她對平庸居所的厭惡，心生痛苦。')">黯淡的牆壁、破舊的椅子</td>
+                            <td id="r-1" style="font-size: 3.0vh; color: var(--text-muted);">[點擊左側進行解碼]</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center;"><b>味覺（飲食）</b></td>
+                            <td class="clickable-cell" id="c-2" onclick="revealCell(2, '精緻盤碟、美味佳餚。對照顯示出她極度排斥粗茶淡飯的現實。')">燉肉鍋、三天沒洗的桌布</td>
+                            <td id="r-2" style="font-size: 3.0vh; color: var(--text-muted);">[點擊左側進行解碼]</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center;"><b>聽覺（交流）</b></td>
+                            <td class="clickable-cell" id="c-3" onclick="revealCell(3, '輕聲細語、恭維讚美。對照顯示她不甘平庸，渴望上流社會的奉承。')">丈夫俗氣的讚美聲</td>
+                            <td id="r-3" style="font-size: 3.0vh; color: var(--text-muted);">[點擊左側進行解碼]</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="reveal-panel" id="reveal-slide3">
+                    <div class="split-layout" style="gap:2vw; align-items:start;">
+                        <div class="analysis-text" style="font-size: 3.0vh; margin-bottom:0;">
+                            <span class="author-write-tag">🎬 【寫作分析】開頭的一連串「沒有」與心理地獄</span>
+                            作者在開頭使用一連串「沒有」的否定句型（沒有陪嫁資產、沒有遺產、沒有方法），渲染出瑪蒂達生命中強烈的匱乏與空虛感。這種「自認不凡」卻又「被迫錯位」的心理狀態，即是心理學著名的<b>【包法利夫人症候群】</b>：沉溺於奢華幻想，無法適應真實生活。
+                        </div>
+                        <div style="background:rgba(139,38,53,0.02); border:1.5px solid var(--accent-red); border-radius:6px; padding:1.5vh;">
+                            <span class="task-tag" style="margin-bottom:1vh; display:inline-block;">學習評量</span>
+                            <p style="font-size: 2.9vh; font-weight:900; margin-bottom:1vh;">關於本文開頭的佈局，下列何者最精確？</p>
+                            <button class="picker-btn" onclick="checkAnswer3(this, 'wrong')" style="font-size: 2.8vh; padding:0.5vh 1vw; display:block; width:100%; text-align:left; margin-bottom:0.5vh;">（A） 描寫瑪蒂達勤儉持家對比丈夫的揮霍</button>
+                            <button class="picker-btn" onclick="checkAnswer3(this, 'correct')" style="font-size: 2.8vh; padding:0.5vh 1vw; display:block; width:100%; text-align:left; margin-bottom:0.5vh;">（B） 先極力鋪陳幻想，再寫現實寒酸，凸顯痛苦空虛</button>
+                            <button class="picker-btn" onclick="checkAnswer3(this, 'wrong')" style="font-size: 2.8vh; padding:0.5vh 1vw; display:block; width:100%; text-align:left;">（C） 以第一人稱控訴當時法國社會對女性的不公</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 6: 第二關 ============================== -->
+            <div id="slide-6" class="slide" data-title="第二關：慾望的階梯" data-sub="第二幕：發展（第3至5段）">
+                <div class="task-box">
+                    <span class="task-tag">狄德羅效應</span>
+                    請由下而上，點選並解鎖瑪蒂達的「慾望升級階梯」，感受慾望螺旋的失控！
+                </div>
+                <div class="ladder-container">
+                    <div class="ladder-step" id="step-4" onclick="clickStep(4, '<b>Step 4（頂點）：</b>在朋友珍娜家借到昂貴的「鑽石項鍊」，看著鏡中精緻的自己，心跳加速，陶醉其中。')">
+                        <div class="step-num">4</div>
+                        <div>借到項鍊：慾望與虛榮的狂喜頂點</div>
+                    </div>
+                    <div class="ladder-step" id="step-3" onclick="clickStep(3, '<b>Step 3（失控）：</b>丈夫建議戴便宜的鮮花（只需十法郎），瑪蒂達斷然拒絕，說出：『在闊太太們中間露出窮酸相，再沒有比這更丟臉的了』。')">
+                        <div class="step-num">3</div>
+                        <div>拒絕鮮花：害怕被識別為窮人的社交恐懼</div>
+                    </div>
+                    <div class="ladder-step" id="step-2" onclick="clickStep(2, '<b>Step 2（升級）：</b>有了禮服，又開始焦慮『身上一件首飾也沒有，顯得寒酸』，進一步索要珠寶。')">
+                        <div class="step-num">2</div>
+                        <div>索要首飾：狄德羅效應啟動，配套需求上升</div>
+                    </div>
+                    <div class="ladder-step" id="step-1" onclick="clickStep(1, '<b>Step 1（起點）：</b>拿到教育部晚宴請帖，因為沒有像樣的禮服而懊惱大哭，逼使丈夫讓出買獵槍的四百法郎。')">
+                        <div class="step-num">1</div>
+                        <div>懊惱大哭：獲得禮服，犧牲丈夫的獵槍</div>
+                    </div>
+                </div>
+
+                <div class="reveal-panel" id="reveal-slide4">
+                    <div class="analysis-text" style="font-size: 3.1vh; margin-bottom:0;" id="ladder-detail">
+                        請點擊階梯，觀察慾望如何像喝鹽水般，越喝越渴。
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 7: 第三關 ============================== -->
+            <div id="slide-7" class="slide" data-title="第三關：人物的襯托對比" data-sub="寫作手法：人物刻畫">
+                <div class="task-box">
+                    <span class="task-tag">對比手法</span>
+                    請點選下方卡片切換情境，對照「瑪蒂達」與「丈夫」的言行，體會映襯的藝術！
+                </div>
+                <div style="display:flex; justify-content:center; gap:1vw; margin-bottom:1.5vh;">
+                    <button class="picker-btn" id="s5-btn-1" onclick="switchContrast(1)">情境一：面對晚宴請帖</button>
+                    <button class="picker-btn" id="s5-btn-2" onclick="switchContrast(2)">情境二：面對舞會裝備</button>
+                </div>
+                <div class="split-layout" style="gap:2vw; align-items:stretch; margin-bottom:1.5vh;">
+                    <div class="character-card">
+                        <span class="card-tag wife">瑪蒂達（虛榮索取）</span>
+                        <div class="card-desc" id="wife-desc">請選擇情境</div>
+                    </div>
+                    <div class="character-card">
+                        <span class="card-tag">丈夫（知足犧牲）</span>
+                        <div class="card-desc" id="husband-desc">請選擇情境</div>
+                    </div>
+                </div>
+
+                <div class="reveal-panel" id="reveal-slide5">
+                    <div class="split-layout" style="gap:2vw; align-items:start;">
+                        <div class="analysis-text" style="font-size: 3.0vh; margin-bottom:0;">
+                            <span class="author-write-tag">🎬 【寫作手法】人物對比與反襯</span>
+                            作者安排丈夫這個角色，掀起情節的對比。丈夫實質地付出與犧牲（出讓買槍錢、陪同還債），對照瑪蒂達情感上的單向索取與對虛榮的病態執著，加深了悲劇的無奈。
+                        </div>
+                        <div style="background:rgba(139,38,53,0.02); border:1.5px solid var(--accent-red); border-radius:6px; padding:1.5vh;">
+                            <span class="task-tag" style="margin-bottom:1vh; display:inline-block;">學習評量</span>
+                            <p style="font-size: 2.9vh; font-weight:900; margin-bottom:1vh;">選項鍊時「心跳得厲害，手也發抖」，此生理描寫展現何者？</p>
+                            <button class="picker-btn" onclick="checkAnswer5(this, 'wrong')" style="font-size: 2.8vh; padding:0.5vh 1vw; display:block; width:100%; text-align:left; margin-bottom:0.5vh;">(A) 擔心弄壞貴重物品的恐懼</button>
+                            <button class="picker-btn" onclick="checkAnswer5(this, 'correct')" style="font-size: 2.8vh; padding:0.5vh 1vw; display:block; width:100%; text-align:left; margin-bottom:0.5vh;">(B) 對昂貴物質的強烈佔有慾與病態渴望</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 8: 第四關 ============================== -->
+            <div id="slide-8" class="slide" data-title="第四關：巔峰與墜落" data-sub="第三幕：高潮（第6至7段）">
+                <div class="task-box">
+                    <span class="task-tag">戲劇性突轉</span>
+                    點選「舞會巔峰」與「午夜墜落」，感受情節突然翻轉的戲劇張力！
+                </div>
+                <div style="display:flex; justify-content:center; gap:2vw; margin-bottom:2vh;">
+                    <button class="picker-btn" id="s6-btn-1" onclick="switchPeak(1)" style="font-size: 3.3vh; padding: 1.5vh 3vw;">✨ 璀璨舞會：美麗迷人的頂點</button>
+                    <button class="picker-btn" id="s6-btn-2" onclick="switchPeak(2)" style="font-size: 3.3vh; padding: 1.5vh 3vw;">❄️ 驚恐午夜：項鍊遺失的深淵</button>
+                </div>
+                <div style="background:#ffffff; border:2.5px solid var(--border-color); border-radius:8px; padding:3vh; min-height:22vh; margin-bottom:1.5vh;">
+                    <h4 style="font-size: 3.6vh; color:var(--accent-red); margin-bottom:1vh; font-family:var(--font-ancient);" id="peak-title">請點擊上方按鈕觀察轉折</h4>
+                    <p style="font-size: 3.3vh; line-height:1.6; font-weight:900;" id="peak-desc"></p>
+                </div>
+
+                <div class="reveal-panel" id="reveal-slide6">
+                    <div class="split-layout" style="gap:2vw; align-items:start;">
+                        <div class="analysis-text" style="font-size: 3.0vh; margin-bottom:0;">
+                            <span class="author-write-tag">🎬 【寫作分析】突轉 (Peripeteia) 與逃跑的防線</span>
+                            亞里斯多德在《詩學》中指出，悲劇的張力來自於<b>「突轉」</b>：情節向相反方向的突然轉變。最甜蜜的時刻之後接上丟失項鍊，對比強烈。而瑪蒂達逃跑是因為「怕被穿皮草的闊太太們看見她披著粗陋的外套」，這再次展現了她「寧可受凍，也不願暴露貧窮」的虛榮防線。
+                        </div>
+                        <div style="background:rgba(139,38,53,0.02); border:1.5px solid var(--accent-red); border-radius:6px; padding:1.5vh;">
+                            <span class="task-tag" style="margin-bottom:1vh; display:inline-block;">學習評量</span>
+                            <p style="font-size: 2.9vh; font-weight:900; margin-bottom:1vh;">「急急忙忙披上家常衣服，怕被看見」，反應何種心理？</p>
+                            <button class="picker-btn" onclick="checkAnswer6(this, 'correct')" style="font-size: 2.8vh; padding:0.5vh 1vw; display:block; width:100%; text-align:left; margin-bottom:0.5vh;">(A) 自卑與虛榮，深怕被識破貧窮的真相</button>
+                            <button class="picker-btn" onclick="checkAnswer6(this, 'wrong')" style="font-size: 2.8vh; padding:0.5vh 1vw; display:block; width:100%; text-align:left;">(B) 體貼丈夫，不想讓他在寒風中久等</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 9: 第五關 ============================== -->
+            <div id="slide-9" class="slide" data-title="第五關：命運伏筆尋寶" data-sub="第四幕：結局（第8至10段）">
+                <div class="task-box">
+                    <span class="task-tag">伏筆尋寶</span>
+                    莫泊桑在文中早就藏了三個線索暗示項鍊是假的。請在工坊中找出這三個關鍵物證！
+                </div>
+                <div class="scene-grid">
+                    <div class="scene-card" id="scene-1" onclick="findClue(1, '<b>【借的時候】</b>珍娜態度極為隨便，連叮嚀都沒有，很大方地說：『當然可以』。這暗示了此項鍊在珍娜心中的地位與價值並不高。')">
+                        <div class="scene-title">🔍 珍娜的臥室</div>
+                        <div class="scene-desc">借項鍊的場景</div>
+                    </div>
+                    <div class="scene-card" id="scene-2" onclick="findClue(2, '<b>【買的時候】</b>找回項鍊無望，夫婦前去買真品賠償。珠寶商查了帳簿卻說：『我只賣出這個盒子』。這證明項鍊跟盒子不是原配。')">
+                        <div class="scene-title">🔍 珠寶店的櫃檯</div>
+                        <div class="scene-desc">購買替代項鍊的場景</div>
+                    </div>
+                    <div class="scene-card" id="scene-3" onclick="findClue(3, '<b>【還的時候】</b>瑪蒂達驚恐地送還項鍊，但珍娜連盒子都沒有打開看，也沒仔細檢查。這暗示了珍娜本身就不在乎這條假首飾。')">
+                        <div class="scene-title">🔍 珍娜的客廳</div>
+                        <div class="scene-desc">歸還項鍊的場景</div>
+                    </div>
+                </div>
+
+                <div class="reveal-panel" id="reveal-slide7">
+                    <div class="split-layout" style="gap:2vw; align-items:start;">
+                        <div class="analysis-text" style="font-size: 2.9vh; margin-bottom:0;" id="clue-detail">
+                            三大伏筆全部找齊！
+                        </div>
+                        <div style="background:rgba(139,38,53,0.02); border:1.5px solid var(--accent-red); border-radius:6px; padding:1.5vh; min-width:250px;">
+                            <span class="task-tag" style="margin-bottom:1vh; display:inline-block;">學習評量</span>
+                            <p style="font-size: 2.9vh; font-weight:900; margin-bottom:1vh;">關於〈項鍊〉結局的安排，下列何者最精闢？</p>
+                            <button class="picker-btn" onclick="checkAnswer7(this, 'wrong')" style="font-size: 2.8vh; padding:0.5vh 1vw; display:block; width:100%; text-align:left; margin-bottom:0.5vh;">(A) 證明珍娜很小氣，連朋友都騙</button>
+                            <button class="picker-btn" onclick="checkAnswer7(this, 'correct')" style="font-size: 2.8vh; padding:0.5vh 1vw; display:block; width:100%; text-align:left;">(B) 透過巨大的反差，諷刺虛榮與無常</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 10: 第六關 ============================== -->
+            <div id="slide-10" class="slide" data-title="第六關：悲劇的真兇" data-sub="統整探究：深度思辨">
+                <div class="task-box">
+                    <span class="task-tag">陪審團投票</span>
+                    導致瑪蒂達悲劇的「真兇」究竟是誰？請小組投開票，並說明你的理由。
+                </div>
+                <div class="poll-grid">
+                    <div class="poll-card" id="poll-1" onclick="vote(1, '嫌疑人 A：貧窮。如果她出身富貴，就不需要去借項鍊，更不需要為此勞動十年。')">
+                        <div style="font-size: 3.2vh; font-weight:900;">A. 貧窮（社會環境）</div>
+                        <div class="bar-container"><div class="bar-fill" id="bar-1"></div></div>
+                        <div class="percent-text" id="percent-1">0%</div>
+                    </div>
+                    <div class="poll-card" id="poll-2" onclick="vote(2, '嫌疑人 B：命運。剛好在舞會後丟失項鍊，這是機率問題，是命運的無常捉弄。')">
+                        <div style="font-size: 3.2vh; font-weight:900;">B. 命運（無常巧合）</div>
+                        <div class="bar-container"><div class="bar-fill" id="bar-2"></div></div>
+                        <div class="percent-text" id="percent-2">0%</div>
+                    </div>
+                    <div class="poll-card" id="poll-3" onclick="vote(3, '嫌疑人 C：性格。如果不是她的愛慕虛榮與事後不敢坦白誠實，就不會釀成十年苦果。')">
+                        <div style="font-size: 3.2vh; font-weight:900;">C. 性格（虛榮懦弱）</div>
+                        <div class="bar-container"><div class="bar-fill" id="bar-3"></div></div>
+                        <div class="percent-text" id="percent-3">0%</div>
+                    </div>
+                </div>
+
+                <div class="reveal-panel" id="reveal-slide8">
+                    <div class="ask-text" id="poll-detail">
+                        請投票，我們將動態分析真兇。
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 11: 第七關 ============================== -->
+            <div id="slide-11" class="slide" data-title="課後延伸：續寫靈感發射器" data-sub="延伸活動：寫作應用">
+                <div class="task-box">
+                    <span class="task-tag">續寫引導</span>
+                    當珍娜說出：「我那掛項鍊是假的，頂多值五百法郎！」時故事戛然而止。請選續寫流派獲取靈感：
+                </div>
+                <div style="display:flex; justify-content:center; gap:1vw; margin-bottom:2vh;">
+                    <button class="genre-btn" id="g-btn-1" onclick="switchGenre('comedy')">🎭 喜劇流（回歸好日子）</button>
+                    <button class="genre-btn" id="g-btn-2" onclick="switchGenre('tragedy')">🌧️ 崩潰流（巨大的打擊）</button>
+                    <button class="genre-btn" id="g-btn-3" onclick="switchGenre('philosophy')">🌾 哲理流（樸實的覺醒）</button>
+                </div>
+                <div style="background:#ffffff; border:2px solid var(--border-color); border-radius:8px; padding:2.5vh; min-height:22vh; margin-bottom:1.5vh;">
+                    <h4 style="font-size: 3.3vh; color:var(--accent-red); margin-bottom:1vh; font-family:var(--font-ancient);" id="genre-title">請選擇一個流派</h4>
+                    <p style="font-size: 3.2vh; line-height:1.6; font-weight:900;" id="genre-desc"></p>
+                    <blockquote class="quote-highlight" id="genre-quote" style="display:none; margin-top:1.5vh; margin-bottom:0; font-size: 3.0vh;"></blockquote>
+                </div>
+
+                <div class="reveal-panel" id="reveal-slide9" style="display:block;">
+                    <div style="font-size: 3.0vh; font-weight:900;" class="split-layout">
+                        <div>
+                            📚 <b>歷屆試題觀摩一：</b> 「我察覺自己始終沒有學會如何樂在生活，而只會追逐成就；我終生都在追尋幸福，卻始終找不到。」涵義與下列何者最接近？<br>
+                            <button class="picker-btn" onclick="checkExam(this, 1, 'correct')" style="font-size: 2.9vh; margin-top:1vh;">(A) 真正的幸福在於能夠享受生活</button>
+                            <button class="picker-btn" onclick="checkExam(this, 1, 'wrong')" style="font-size: 2.9vh; margin-top:1vh;">(B) 追逐成功之路與幸福背道而馳</button>
+                        </div>
+                        <div>
+                            📚 <b>歷屆試題觀摩二：</b> 莎士比亞曾寫下：「我曾經走遍各地，讓自己在世人面前穿上彩衣，割裂自己的思想，廉價出賣最貴重的東西。」「最貴重的東西」指何者？<br>
+                            <button class="picker-btn" onclick="checkExam(this, 2, 'wrong')" style="font-size: 2.9vh; margin-top:1vh;">(A) 才華</button>
+                            <button class="picker-btn" onclick="checkExam(this, 2, 'correct')" style="font-size: 2.9vh; margin-top:1vh;">(B) 尊嚴</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 12: 結尾 ============================== -->
+            <div id="slide-12" class="slide" data-title="工坊任務結算" data-sub="結章：重塑">
+                <div style="background: #ffffff; border: 3px double var(--accent-red); border-radius: 12px; padding: 4vh; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+                    <h2 style="font-family:var(--font-ancient); font-size: 6.8vh; color: var(--accent-red); margin-bottom: 2vh; font-weight:900;">🎓 經典解構完成</h2>
+                    <p style="font-size: 3.8vh; color: var(--text-light); font-family: var(--font-ancient); font-weight:900; line-height: 1.6; margin-bottom: 3vh;">
+                        恭喜夫子與弟子成功穿透文本，完成項鍊情節、寫作手法與伏筆的探究。
+                    </p>
+                    <div style="text-align:left; max-width:800px; margin:0 auto 3vh auto; background:rgba(139,38,53,0.02); border:1px solid var(--border-color); padding:2vh; border-radius:8px; font-size: 3.0vh; line-height:1.6; font-weight:900;">
+                        💡 <b>本課核心重點心智圖複習：</b><br>
+                        1. <b>開端錯位：</b> 自認不凡的靈魂與粗糙現實的衝突（包法利夫人症候群）。<br>
+                        2. <b>發展階梯：</b> 狄德羅效應下的慾望螺旋升級，丈夫的言行襯托。<br>
+                        3. <b>高潮突轉：</b> 舞會高光與丟失項鍊，家常衣服逃跑的自卑心理。<br>
+                        4. <b>結局反諷：</b> 十年青春換來假貨，歐亨利結局的情境反諷，但重塑了真實人格。
+                    </div>
+                    <button class="nav-btn primary" style="font-size: 3.6vh; padding: 2vh 4vw; border-radius: 8px;" onclick="resetGame()">重新啟局 🔄</button>
+                </div>
+            </div>
+            <!-- TEMPLATE_SLIDES_END -->
+
+        </div>
+
+        <!-- 畫布劃記層 -->
+        <canvas id="drawing-canvas"></canvas>
+
+        <div class="slide-footer">
+            <button class="nav-btn" id="prev-btn" onclick="navigateSlide(-1)">上一頁</button>
+            <div class="page-indicator" id="slide-indicator">第 1 / 10 頁</div>
+            
+            <div style="display: flex; align-items: center;">
+                <!-- 頁尾嵌入式劃記工具列 (膠囊扁平化設計) -->
+                <div class="drawing-footer-toolbar">
+                    <button class="drawing-menu-btn active" id="tool-pointer" onclick="setDrawingTool('pointer')" title="滑鼠模式 (雙擊此工具列或雙擊畫布可快速切換畫筆/滑鼠)">
+                        <svg viewBox="0 0 24 24"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path><path d="M13 13l6 6"></path></svg>
+                    </button>
+                    <button class="drawing-menu-btn" id="tool-pen" onclick="setDrawingTool('pen')" title="藍色畫筆">
+                        <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    </button>
+                    <button class="drawing-menu-btn" id="tool-eraser" onclick="setDrawingTool('eraser')" title="橡皮擦">
+                        <svg viewBox="0 0 24 24"><path d="M20 20H7L3 16c-1.5-1.5-1.5-3.5 0-5l8.5-8.5c1.5-1.5 3.5-1.5 5 0l4 4c1.5 1.5 1.5 3.5 0 5L12 20"></path><line x1="6" y1="12" x2="16" y2="2"></line></svg>
+                    </button>
+                    <button class="drawing-menu-btn" onclick="clearCurrentDrawing()" title="清空本頁劃記">
+                        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    </button>
+                    <button class="drawing-menu-btn danger" onclick="clearAllDrawings()" title="清空所有頁面劃記">
+                        <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </button>
+                </div>
+                <button class="nav-btn primary" id="next-btn" onclick="navigateSlide(1)">下一頁</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            alert("⚠️ 偵測到 JS 錯誤！\n訊息: " + message + "\n行號: " + lineno);
+            const errDiv = document.createElement('div');
+            errDiv.style.position = 'fixed';
+            errDiv.style.top = '0'; errDiv.style.left = '0';
+            errDiv.style.width = '100vw'; errDiv.style.height = '100vh';
+            errDiv.style.background = 'rgba(139, 0, 0, 0.98)';
+            errDiv.style.color = '#fff'; errDiv.style.zIndex = '99999';
+            errDiv.style.padding = '4vh 4vw'; errDiv.style.fontFamily = 'monospace';
+            errDiv.style.fontSize = '2.5vh'; errDiv.style.overflow = 'auto';
+            errDiv.innerHTML = `<h1 style="color: #ff3333; font-size: 4.3vh; margin-bottom: 1vh;">🎬 偵測到 JavaScript 執行期錯誤</h1>
+                                <p><b>錯誤訊息:</b> ${message}</p>
+                                <p><b>來源檔案:</b> ${source}</p>
+                                <p><b>出錯行號:</b> ${lineno} 行 ${colno} 列</p>
+                                <pre style="background: #222; padding: 2vh; border-radius: 5px; margin-top: 2vh; font-size: 2.8vh; white-space: pre-wrap;">${error ? error.stack : ''}</pre>`;
+            document.body.appendChild(errDiv);
+            return false;
+        };
+
+        // ============================== Web Audio API 合成音效 ==============================
+        function playSound(type) {
+            if (!window.AudioContext && !window.webkitAudioContext) return;
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            if (type === 'success') {
+                // 成功過關：優雅的大調雙音
+                const freqs = [329.63, 392.00, 523.25]; // E4, G4, C5
+                freqs.forEach((f, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.value = f;
+                    osc.type = 'sine';
+                    gain.gain.setValueAtTime(0.12, ctx.currentTime + idx * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + idx * 0.1 + 0.6);
+                    osc.start(ctx.currentTime + idx * 0.1);
+                    osc.stop(ctx.currentTime + idx * 0.1 + 0.6);
+                });
+            } else if (type === 'wrong') {
+                // 答錯：沉悶的低音
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 130.81; // C3
+                osc.type = 'sawtooth';
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.4);
+            } else if (type === 'heartbeat') {
+                // 心跳聲：低頻重音
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 65.41; // C2
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.25);
+            } else if (type === 'click') {
+                // 常規點擊：短促高音
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 440; // A4
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.15);
+            }
+        }
+
+        // ============================== 簡報基礎切換邏輯 ==============================
+        let currentSlide = 1;
+        try {
+            const savedSlide = localStorage.getItem('necklace-current-slide');
+            if (savedSlide) {
+                const s = Number(savedSlide);
+                if (s >= 1 && s <= 12) {
+                    currentSlide = s;
+                }
+            }
+        } catch(e) {}
+        
+        const totalSlides = 12;
+        const slideIdMap = {
+            1: "slide-1",
+            2: "slide-2",
+            3: "slide-3",
+            4: "slide-4",
+            5: "slide-5",
+            6: "slide-6",
+            7: "slide-7",
+            8: "slide-8",
+            9: "slide-9",
+            10: "slide-10",
+            11: "slide-11",
+            12: "slide-12"
+        };
+
+        function updateSlideUI() {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(s => s.style.display = 'none');
+
+            const targetId = slideIdMap[currentSlide];
+            const target = document.getElementById(targetId);
+            if (target) {
+                target.style.display = 'flex';
+                const title = target.getAttribute('data-title');
+                const sub = target.getAttribute('data-sub');
+                document.getElementById('header-title').innerText = title;
+                document.getElementById('header-subtitle').innerText = sub;
+            }
+
+            document.getElementById('slide-indicator').innerText = `第 ${currentSlide} / ${totalSlides} 頁`;
+            document.getElementById('prev-btn').disabled = (currentSlide === 1);
+            document.getElementById('next-btn').disabled = (currentSlide === totalSlides);
+
+            // 讀取劃記
+            if (typeof loadCurrentSlideDrawing === 'function') {
+                loadCurrentSlideDrawing();
+            }
+
+            try {
+                localStorage.setItem('necklace-current-slide', currentSlide);
+            } catch(e) {}
+        }
+
+        function navigateSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 1) currentSlide = 1;
+            if (currentSlide > totalSlides) currentSlide = totalSlides;
+
+            playSound('click');
+            updateSlideUI();
+        }
+
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            playSound('click');
+            updateSlideUI();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (currentSlide < totalSlides) navigateSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                if (currentSlide > 1) navigateSlide(-1);
+            }
+        });
+
+        // ============================== 各頁面交互細節邏輯 ==============================
+
+        // Slide 2: 暖身評分
+        function rateHappiness() {
+            const valA = document.getElementById('score-a').value;
+            const valB = document.getElementById('score-b').value;
+            if (valA !== "" && valB !== "") {
+                playSound('success');
+                document.getElementById('reveal-slide2').style.display = 'block';
+            }
+        }
+
+        // Slide 3: 第一關表格解碼
+        const revealedCells = {1: false, 2: false, 3: false};
+        let answeredSlide3 = false;
+        function revealCell(idx, txt) {
+            playSound('click');
+            const cell = document.getElementById('c-' + idx);
+            cell.classList.add('revealed-cell');
+            document.getElementById('r-' + idx).innerHTML = txt;
+            revealedCells[idx] = true;
+            
+            if (revealedCells[1] && revealedCells[2] && revealedCells[3]) {
+                document.getElementById('reveal-slide3').style.display = 'block';
+            }
+        }
+        function checkAnswer3(btn, choice) {
+            const btns = document.querySelectorAll('#slide-3 .picker-btn');
+            btns.forEach(b => b.classList.remove('correct', 'wrong'));
+            if (choice === 'correct') {
+                playSound('success');
+                btn.classList.add('correct');
+            } else {
+                playSound('wrong');
+                btn.classList.add('wrong');
+            }
+        }
+
+        // Slide 4: 第二關梯子
+        let activeSteps = 0;
+        function clickStep(idx, txt) {
+            playSound('heartbeat');
+            document.querySelectorAll('.ladder-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-' + idx).classList.add('active');
+            
+            document.getElementById('reveal-slide4').style.display = 'block';
+            document.getElementById('ladder-detail').innerHTML = txt;
+        }
+
+        // Slide 5: 第三關對比
+        function switchContrast(idx) {
+            playSound('click');
+            document.getElementById('s5-btn-1').classList.remove('selected');
+            document.getElementById('s5-btn-2').classList.remove('selected');
+            document.getElementById('s5-btn-' + idx).classList.add('selected');
+            
+            const wDesc = document.getElementById('wife-desc');
+            const hDesc = document.getElementById('husband-desc');
+            
+            if (idx === 1) {
+                wDesc.innerHTML = "<b>【懊惱大哭，丟在一旁】</b><br>面對丈夫費盡心思拿到的請帖，只關心自己沒有禮服，流淚抱怨，絲毫不在意丈夫的體貼。";
+                hDesc.innerHTML = "<b>【得意洋洋，期望妻喜】</b><br>費盡心思拿到難得的請帖，興沖沖帶回家，卻換來妻子的冷水，依舊耐著性子安撫，甚至割捨自己買獵槍的錢。";
+            } else {
+                wDesc.innerHTML = "<b>【非禮服珠寶不可】</b><br>有了四百法郎禮服後仍不滿足，執意要佩戴名貴珠寶，說出：『沒有比露出窮酸相更丟臉的事了』。";
+                hDesc.innerHTML = "<b>【提議十法郎鮮花】</b><br>認為戴當季天然的鮮花就很美麗大方，不解妻子對奢華標籤的執念，但最終無奈妥協，建議向朋友借首飾。";
+            }
+            
+            document.getElementById('reveal-slide5').style.display = 'block';
+        }
+        function checkAnswer5(btn, choice) {
+            const btns = document.querySelectorAll('#slide-5 .picker-btn');
+            btns.forEach(b => b.classList.remove('correct', 'wrong'));
+            if (choice === 'correct') {
+                playSound('success');
+                btn.classList.add('correct');
+            } else {
+                playSound('wrong');
+                btn.classList.add('wrong');
+            }
+        }
+
+        // Slide 6: 第四關突轉
+        function switchPeak(idx) {
+            playSound('click');
+            document.getElementById('s6-btn-1').classList.remove('selected');
+            document.getElementById('s6-btn-2').classList.remove('selected');
+            document.getElementById('s6-btn-' + idx).classList.add('selected');
+            
+            const title = document.getElementById('peak-title');
+            const desc = document.getElementById('peak-desc');
+            
+            if (idx === 1) {
+                title.innerText = "✨ 美麗迷人的社交巔峰";
+                desc.innerHTML = "瑪蒂達在舞會上大獲成功。她比所有女賓都美麗、高雅、溫柔、迷人。所有的男子都注視著她，打聽她的名字。她沉浸在狂熱的讚美與虛榮的狂喜中，那是她夢寐以求的理想世界。";
+            } else {
+                title.innerText = "❄️ 驚恐午夜的現實墜落";
+                desc.innerHTML = "舞會於凌晨四點結束。在走出大廳前，丈夫將家常、粗陋的外套披在她肩上，與她的禮服極不相配。她害怕被穿皮草的闊太太們看見，急忙逃下樓去。回到家，驚恐地發現項鍊已丟失，命運瞬間翻轉！";
+            }
+            document.getElementById('reveal-slide6').style.display = 'block';
+        }
+        function checkAnswer6(btn, choice) {
+            const btns = document.querySelectorAll('#slide-6 .picker-btn');
+            btns.forEach(b => b.classList.remove('correct', 'wrong'));
+            if (choice === 'correct') {
+                playSound('success');
+                btn.classList.add('correct');
+            } else {
+                playSound('wrong');
+                btn.classList.add('wrong');
+            }
+        }
+
+        // Slide 7: 第五關伏筆
+        const cluesFound = {1: false, 2: false, 3: false};
+        function findClue(idx, txt) {
+            playSound('click');
+            cluesFound[idx] = true;
+            document.getElementById('scene-' + idx).classList.add('found');
+            
+            if (cluesFound[1] && cluesFound[2] && cluesFound[3]) {
+                playSound('success');
+                document.getElementById('reveal-slide7').style.display = 'block';
+                document.getElementById('clue-detail').innerHTML = "<b>三大暗示伏筆已解鎖：</b><br>" + txt;
+            } else {
+                document.getElementById('reveal-slide7').style.display = 'block';
+                document.getElementById('clue-detail').innerHTML = "已找到部分線索，請繼續點擊其他場景！<br>" + txt;
+            }
+        }
+        function checkAnswer7(btn, choice) {
+            const btns = document.querySelectorAll('#slide-7 .picker-btn');
+            btns.forEach(b => b.classList.remove('correct', 'wrong'));
+            if (choice === 'correct') {
+                playSound('success');
+                btn.classList.add('correct');
+            } else {
+                playSound('wrong');
+                btn.classList.add('wrong');
+            }
+        }
+
+        // Slide 8: 第六關投票
+        let votes = {1: 15, 2: 12, 3: 20}; // 模擬基礎票數
+        let voted = false;
+        function vote(idx, txt) {
+            if (voted) return;
+            playSound('success');
+            votes[idx]++;
+            voted = true;
+            
+            document.querySelectorAll('.poll-card').forEach(c => c.classList.add('voted'));
+            
+            const total = votes[1] + votes[2] + votes[3];
+            for (let i = 1; i <= 3; i++) {
+                const pct = Math.round((votes[i] / total) * 100);
+                document.getElementById('bar-' + i).style.height = pct + "%";
+                document.getElementById('percent-' + i).innerText = pct + "%";
+            }
+            
+            document.getElementById('reveal-slide8').style.display = 'block';
+            document.getElementById('poll-detail').innerHTML = "<b>你投給了：</b>" + txt + "<br><br><b>【分析導引】</b> 莫泊桑在此處留下巨大的空白。悲劇看似偶然（丟失項鍊），卻是環境與性格的必然。如果她坦白告知，或許就能避開十年的勞作，但這十年的磨難卻重塑了她，讓她告別虛榮，磨練出堅強的靈魂。這條假項鍊反而『成全』了她真實的人格。";
+        }
+
+        // Slide 9: 寫作靈感發射器
+        const genres = {
+            comedy: {
+                title: "🎭 喜劇流：償還與大團圓",
+                desc: "珍娜聽聞真相後震驚不已，緊緊擁抱瑪蒂達。她變賣了真項鍊，退還了夫婦多付的三萬多法郎。拿回鉅款後，瑪蒂達過上了舒適的日子，但她再也不會沉溺於虛榮中，而是用這筆錢開了一家手藝工坊，用粗糙但靈活的手指編織美麗的掛毯。",
+                quote: "「珍娜的淚水滴落在瑪蒂達那雙發紅、粗糙的手背上，那是十年的代價，也是真實幸福的起點。」"
+            },
+            tragedy: {
+                title: "🌧️ 崩潰流：命運的終極嘲弄",
+                desc: "「假的？五百法郎？」這句話像一道驚雷，擊碎了瑪蒂達。十年的挑水、洗衣服、菜市場爭吵，十年的青春與美貌，到頭來只是一場天大的誤會。瑪蒂達僵立在香榭麗舍大道的寒風中，嘴角浮起一絲狂亂、淒涼的笑聲，隨後軟倒在雪地裡。",
+                quote: "「命運之神開了一個巨大的玩笑，把黃金磨成了沙子，再告訴你那本是一捧泥土。」"
+            },
+            philosophy: {
+                title: "🌾 哲理流：靈魂的真實重塑",
+                desc: "瑪蒂達短暫地怔了怔，看著自己粗糙的雙手，突然釋懷地笑了。她沒有要求珍娜退還金錢。她對珍娜說：『那十年的勞動雖然辛苦，但它讓我睡得安穩，吃得踏實。我不再需要那條項鍊來證明自己。』她轉身離去，步履輕快，充滿力量。",
+                quote: "「那條鑽石項鍊曾是束縛她的枷鎖，如今這串假鑽石，卻成了砸碎枷鎖的鐵錘。」"
+            }
+        };
+        function switchGenre(key) {
+            playSound('click');
+            document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+            
+            let clickedBtnId = "";
+            if (key === 'comedy') clickedBtnId = "g-btn-1";
+            else if (key === 'tragedy') clickedBtnId = "g-btn-2";
+            else clickedBtnId = "g-btn-3";
+            document.getElementById(clickedBtnId).classList.add('active');
+            
+            const data = genres[key];
+            document.getElementById('genre-title').innerText = data.title;
+            document.getElementById('genre-desc').innerHTML = data.desc;
+            
+            const quoteEl = document.getElementById('genre-quote');
+            quoteEl.style.display = 'block';
+            quoteEl.innerText = data.quote;
+        }
+        function checkExam(btn, examIdx, choice) {
+            const btns = btn.parentNode.querySelectorAll('.picker-btn');
+            btns.forEach(b => b.classList.remove('correct', 'wrong'));
+            if (choice === 'correct') {
+                playSound('success');
+                btn.classList.add('correct');
+            } else {
+                playSound('wrong');
+                btn.classList.add('wrong');
+            }
+        }
+
+        // 重設遊戲
+        function resetGame() {
+            playSound('click');
+            currentSlide = 1;
+            try { localStorage.setItem('necklace-current-slide', 1); } catch(e) {}
+            
+            // 重置 Slide 2
+            document.getElementById('score-a').value = "";
+            document.getElementById('score-b').value = "";
+            document.getElementById('reveal-slide2').style.display = 'none';
+
+            // 重置 Slide 3
+            answeredSlide3 = false;
+            for (let i = 1; i <= 3; i++) {
+                revealedCells[i] = false;
+                const cell = document.getElementById('c-' + i);
+                cell.classList.remove('revealed-cell');
+                document.getElementById('r-' + i).innerHTML = "[點擊左側進行解碼]";
+            }
+            document.getElementById('reveal-slide3').style.display = 'none';
+
+            // 重置 Slide 4
+            document.querySelectorAll('.ladder-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('reveal-slide4').style.display = 'none';
+            document.getElementById('ladder-detail').innerHTML = "請點擊階梯，觀察慾望如何像喝鹽水般，越喝越渴。";
+
+            // 重置 Slide 5
+            document.getElementById('s5-btn-1').classList.remove('selected');
+            document.getElementById('s5-btn-2').classList.remove('selected');
+            document.getElementById('wife-desc').innerHTML = "請選擇情境";
+            document.getElementById('husband-desc').innerHTML = "請選擇情境";
+            document.getElementById('reveal-slide5').style.display = 'none';
+
+            // 重置 Slide 6
+            document.getElementById('s6-btn-1').classList.remove('selected');
+            document.getElementById('s6-btn-2').classList.remove('selected');
+            document.getElementById('peak-title').innerText = "請點擊上方按鈕觀察轉折";
+            document.getElementById('peak-desc').innerHTML = "";
+            document.getElementById('reveal-slide6').style.display = 'none';
+
+            // 重置 Slide 7
+            for (let i = 1; i <= 3; i++) {
+                cluesFound[i] = false;
+                document.getElementById('scene-' + i).classList.remove('found');
+            }
+            document.getElementById('reveal-slide7').style.display = 'none';
+            document.getElementById('clue-detail').innerHTML = "已找到部分線索，請繼續點擊其他場景！";
+
+            // 重置 Slide 8
+            voted = false;
+            votes = {1: 15, 2: 12, 3: 20};
+            document.querySelectorAll('.poll-card').forEach(c => c.classList.remove('voted'));
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById('bar-' + i).style.height = "0%";
+                document.getElementById('percent-' + i).innerText = "0%";
+            }
+            document.getElementById('reveal-slide8').style.display = 'none';
+
+            // 重置 Slide 9
+            document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('genre-title').innerText = "請選擇一個流派";
+            document.getElementById('genre-desc').innerHTML = "";
+            document.getElementById('genre-quote').style.display = 'none';
+
+            // 清理按鈕狀態
+            document.querySelectorAll('.picker-btn').forEach(b => b.classList.remove('correct', 'wrong', 'selected'));
+
+            clearAllDrawings(true); // 靜默清理劃記
+            updateSlideUI();
+        }
+
+        // ============================== 平板全域劃記與持久化記憶邏輯 ==============================
+        const drawCanvas = document.getElementById('drawing-canvas');
+        let isDrawing = false;
+        let drawingTool = 'pointer'; // 'pointer', 'pen', 'eraser'
+        let lastX = 0;
+        let lastY = 0;
+        
+        let slideDrawings = {};
+        
+        try {
+            const savedDrawings = localStorage.getItem('necklace-slide-drawings');
+            if (savedDrawings) {
+                slideDrawings = JSON.parse(savedDrawings);
+            }
+        } catch(e) {}
+
+        function initDrawingCanvas() {
+            if (!drawCanvas) return;
+            const rect = drawCanvas.getBoundingClientRect();
+            const w = Math.round(rect.width) || 800;
+            const h = Math.round(rect.height) || 450;
+            drawCanvas.width = w;
+            drawCanvas.height = h;
+            
+            loadCurrentSlideDrawing();
+        }
+
+        window.addEventListener('resize', () => {
+            saveCurrentSlideDrawing();
+            initDrawingCanvas();
+        });
+
+        function setDrawingTool(tool) {
+            drawingTool = tool;
+            
+            document.querySelectorAll('.drawing-menu-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (tool === 'pointer') {
+                const btn = document.getElementById('tool-pointer');
+                if (btn) btn.classList.add('active');
+                drawCanvas.style.pointerEvents = 'none';
+            } else if (tool === 'pen') {
+                const btn = document.getElementById('tool-pen');
+                if (btn) btn.classList.add('active');
+                drawCanvas.style.pointerEvents = 'auto';
+            } else if (tool === 'eraser') {
+                const btn = document.getElementById('tool-eraser');
+                if (btn) btn.classList.add('active');
+                drawCanvas.style.pointerEvents = 'auto';
+            }
+        }
+
+        function getCoords(e) {
+            const rect = drawCanvas.getBoundingClientRect();
+            let clientX, clientY;
+            
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else if (e.changedTouches && e.changedTouches.length > 0) {
+                clientX = e.changedTouches[0].clientX;
+                clientY = e.changedTouches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            
+            const scaleX = drawCanvas.width / rect.width;
+            const scaleY = drawCanvas.height / rect.height;
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
+            };
+        }
+
+        function startDrawing(e) {
+            if (drawingTool === 'pointer') return;
+            
+            const rect = drawCanvas.getBoundingClientRect();
+            const cw = Math.round(rect.width);
+            const ch = Math.round(rect.height);
+            if (cw > 0 && ch > 0 && (drawCanvas.width !== cw || drawCanvas.height !== ch)) {
+                drawCanvas.width = cw;
+                drawCanvas.height = ch;
+                loadCurrentSlideDrawing();
+            }
+            
+            isDrawing = true;
+            
+            if (e.cancelable !== false) {
+                e.preventDefault();
+            }
+            
+            if (e.pointerId !== undefined) {
+                try { drawCanvas.setPointerCapture(e.pointerId); } catch(_) {}
+            }
+            
+            const coords = getCoords(e);
+            lastX = coords.x;
+            lastY = coords.y;
+            
+            const ctx = drawCanvas.getContext('2d');
+            if (ctx && drawingTool === 'pen') {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = '#284b8c'; // 藍色墨水
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+            }
+        }
+
+        function draw(e) {
+            if (!isDrawing || drawingTool === 'pointer') return;
+            if (e.cancelable !== false) {
+                e.preventDefault();
+            }
+            
+            const ctx = drawCanvas.getContext('2d');
+            if (!ctx) return;
+            
+            const coords = getCoords(e);
+            const x = coords.x;
+            const y = coords.y;
+            
+            if (lastX === undefined || lastX === null) lastX = x;
+            if (lastY === undefined || lastY === null) lastY = y;
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            
+            if (drawingTool === 'pen') {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = '#284b8c';
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+            } else if (drawingTool === 'eraser') {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.lineWidth = 35;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+            }
+            
+            ctx.stroke();
+            lastX = x;
+            lastY = y;
+        }
+
+        function stopDrawing(e) {
+            if (isDrawing) {
+                isDrawing = false;
+                if (e && e.pointerId !== undefined) {
+                    try { drawCanvas.releasePointerCapture(e.pointerId); } catch(_) {}
+                }
+                saveCurrentSlideDrawing();
+            }
+        }
+
+        if (drawCanvas) {
+            drawCanvas.addEventListener('pointerdown', (e) => { startDrawing(e); });
+            drawCanvas.addEventListener('pointermove', (e) => { draw(e); });
+            drawCanvas.addEventListener('pointerup', (e) => { stopDrawing(e); });
+            drawCanvas.addEventListener('pointercancel', (e) => { stopDrawing(e); });
+        }
+
+        // 雙擊切換指針/筆
+        const footerToolbar = document.querySelector('.drawing-footer-toolbar');
+        if (footerToolbar) {
+            let lastTap = 0;
+            footerToolbar.addEventListener('pointerdown', (e) => {
+                const now = Date.now();
+                if (now - lastTap < 300) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (drawingTool === 'pointer') {
+                        setDrawingTool('pen');
+                    } else {
+                        setDrawingTool('pointer');
+                    }
+                }
+                lastTap = now;
+            });
+        }
+
+        if (drawCanvas) {
+            let canvasLastTap = 0;
+            drawCanvas.addEventListener('pointerdown', (e) => {
+                const now = Date.now();
+                if (now - canvasLastTap < 300) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDrawingTool('pointer');
+                    isDrawing = false;
+                }
+                canvasLastTap = now;
+            });
+        }
+
+        function saveCurrentSlideDrawing() {
+            if (!drawCanvas) return;
+            const slideId = slideIdMap[currentSlide];
+            const ctx = drawCanvas.getContext('2d');
+            if (!ctx) return;
+            
+            const buffer = new Uint32Array(ctx.getImageData(0, 0, drawCanvas.width, drawCanvas.height).data.buffer);
+            const isEmpty = !buffer.some(color => color !== 0);
+            
+            if (isEmpty) {
+                delete slideDrawings[slideId];
+            } else {
+                slideDrawings[slideId] = drawCanvas.toDataURL();
+            }
+            
+            try {
+                localStorage.setItem('necklace-slide-drawings', JSON.stringify(slideDrawings));
+            } catch(e) {}
+        }
+
+        function loadCurrentSlideDrawing() {
+            if (!drawCanvas) return;
+            const ctx = drawCanvas.getContext('2d');
+            if (!ctx) return;
+            ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+            
+            const slideId = slideIdMap[currentSlide];
+            const dataUrl = slideDrawings[slideId];
+            
+            if (dataUrl) {
+                const img = new Image();
+                img.onload = function() {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.drawImage(img, 0, 0, drawCanvas.width, drawCanvas.height);
+                };
+                img.src = dataUrl;
+            }
+        }
+
+        function clearCurrentDrawing() {
+            if (!drawCanvas) return;
+            const ctx = drawCanvas.getContext('2d');
+            if (ctx) {
+                ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+            }
+            const slideId = slideIdMap[currentSlide];
+            delete slideDrawings[slideId];
+            localStorage.setItem('necklace-slide-drawings', JSON.stringify(slideDrawings));
+        }
+
+        function clearAllDrawings(silent = false) {
+            if (!silent && !confirm("確定要清除所有頁面的劃記嗎？此動作無法復原！")) return;
+            if (drawCanvas) {
+                const ctx = drawCanvas.getContext('2d');
+                if (ctx) {
+                    ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+                }
+            }
+            slideDrawings = {};
+            localStorage.removeItem('necklace-slide-drawings');
+        }
+
+        // 初始化
+        updateSlideUI();
+        setTimeout(initDrawingCanvas, 200);
+    </script>
+
+</body>
+</html>
