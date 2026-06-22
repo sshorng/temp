@@ -3,70 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>跨網域無線投屏中繼站</title>
+    <title>精簡版-跨網域無線投屏</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         body { font-family: sans-serif; background: #f5f3f9; text-align: center; padding: 20px; }
-        .box { max-width: 600px; margin: 20px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        button { background: #7c4dff; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 10px; }
-        input { padding: 8px; width: 200px; border: 1px solid #ccc; border-radius: 4px; text-align: center; }
+        .box { max-width: 500px; margin: 20px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        button { background: #7c4dff; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 10px; font-size: 16px; }
+        input { padding: 10px; width: 220px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-size: 16px; }
         video { width: 100%; background: #000; border-radius: 8px; margin-top: 20px; }
-        .id-text { font-size: 20px; color: #7c4dff; font-weight: bold; margin: 10px 0; }
+        .room-tag { font-size: 24px; color: #7c4dff; font-weight: bold; background: #e8e3f5; padding: 5px 15px; border-radius: 6px; display: inline-block; margin: 10px 0; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h2>🏫 跨網域無線投影網頁版</h2>
-    <p>我的連線 ID：<span id="my-id" class="id-text">正在取得 ID...</span></p>
+    <h2>🏫 課堂免對碼無線投影</h2>
     
-    <div style="border-top: 1px solid #eee; padding-top: 10px;">
-        <button id="share-btn">【平板端】發射無線螢幕</button>
+    <p>🖥️ 本教室投影代碼：<br><span class="room-tag">room302</span></p>
+    
+    <div style="border-top: 1px solid #eee; padding-top: 15px; margin-top: 15px;">
+        <p style="font-size: 14px; color: #666;">【步驟 1：平板操作】</p>
+        <button id="share-btn">📱 啟動平板發射螢幕</button>
     </div>
     
-    <div style="border-top: 1px solid #eee; padding-top: 10px; margin-top: 15px;">
-        <input type="text" id="target-id" placeholder="請輸入對方的 ID">
-        <button id="connect-btn">【電腦端】接收畫面連線</button>
+    <div style="border-top: 1px solid #eee; padding-top: 15px; margin-top: 15px;">
+        <p style="font-size: 14px; color: #666;">【步驟 2：電腦操作】</p>
+        <input type="text" id="target-id" value="room302" placeholder="輸入平板連線的代碼">
+        <br>
+        <button id="connect-btn" style="background:#28a745;">📺 電腦端接收畫面</button>
     </div>
 </div>
 
 <video id="remote-video" autoplay playsinline controls></video>
 
 <script>
-    // 初始化 PeerJS，使用官方免費的雲端伺服器牽線
-    const peer = new Peer();
+    // 【核心邏輯修改】讓這台裝置直接以固定名稱 "room302" 向雲端伺服器註冊
+    // 提醒：若有多間教室要同時使用，每間教室的網頁此處名稱需不同（例如 room303, room304）
+    const MY_ROOM_ID = "room302"; 
+    
+    const peer = new Peer(MY_ROOM_ID);
     let localStream;
 
-    // 取得自己的雲端配對 ID
     peer.on('open', (id) => {
-        document.getElementById('my-id').innerText = id;
+        console.log('成功以教室代號註冊：', id);
     });
 
-    // 【平板端】點擊發射螢幕
-    document.getElementById('share-btn').addEventListener('click', async () => {
-        try {
-            localStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
-            alert("平板已準備就緒！請將上方的 ID 輸入到大螢幕電腦中。");
-        } catch (err) {
-            alert("請確保在 HTTPS 環境下執行，且 Android 以外的某些行動裝置可能不支援網頁螢幕擷取。");
+    peer.on('error', (err) => {
+        if(err.type === 'unavailable-id') {
+            alert('代碼已被佔用！代表有其他教室網頁正開啟著相同的代碼。');
         }
     });
 
-    // 【電腦端】輸入平板 ID 進行連線接收
+    // 【平板端】發射螢幕
+    document.getElementById('share-btn').addEventListener('click', async () => {
+        try {
+            localStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+            alert("平板已就緒！請在大螢幕電腦點擊「綠色接收按鈕」。");
+        } catch (err) {
+            alert("請確保在 HTTPS 環境下執行（Android 平板適用）。");
+        }
+    });
+
+    // 【電腦端】接收連線
     document.getElementById('connect-btn').addEventListener('click', () => {
         const targetId = document.getElementById('target-id').value.trim();
-        if (!targetId) return alert("請輸入平板顯示的 ID");
+        if (!targetId) return alert("請輸入要連線的代碼");
 
-        // 呼叫對方（此處 PeerJS 底層會自動嘗試穿透學校防火牆）
+        // 電腦端直接主動呼叫該代碼
         const call = peer.call(targetId, new MediaStream()); 
         
-        // 監聽並接收平板傳過來的畫面
         call.on('stream', (remoteStream) => {
             document.getElementById('remote-video').srcObject = remoteStream;
         });
     });
 
-    // 平板端接受連線並傳送畫面
+    // 當有連線呼叫進來時，由擁有 localStream (平板) 的那一端負責回應畫面
     peer.on('call', (call) => {
         if (localStream) {
             call.answer(localStream);
