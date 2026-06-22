@@ -3,236 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>課堂專用 - 平板網頁投影中繼站</title>
+    <title>跨網域無線投屏中繼站</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        :root {
-            --primary-color: #7c4dff; /* 溫和的淡紫色調 */
-            --bg-color: #f5f3f9;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 900px;
-            width: 100%;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-            text-align: center;
-            box-sizing: border-box;
-        }
-
-        h1 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .control-panel {
-            background: #fcfbfe;
-            border: 1px solid #e8e3f5;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-
-        .step-box {
-            display: inline-block;
-            text-align: left;
-            margin: 10px 0;
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        textarea {
-            width: 100%;
-            height: 100px;
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #dcd1f0;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 12px;
-            resize: none;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-weight: bold;
-            margin: 5px;
-        }
-
-        button:hover {
-            background-color: #6533e3;
-        }
-
-        button.secondary {
-            background-color: #6c757d;
-        }
-
-        button.secondary:hover {
-            background-color: #5a6268;
-        }
-
-        .video-container {
-            margin-top: 20px;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%; /* 16:9 比例 */
-        }
-
-        video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .badge {
-            background: #e8e3f5;
-            color: var(--primary-color);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
+        body { font-family: sans-serif; background: #f5f3f9; text-align: center; padding: 20px; }
+        .box { max-width: 600px; margin: 20px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        button { background: #7c4dff; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 10px; }
+        input { padding: 8px; width: 200px; border: 1px solid #ccc; border-radius: 4px; text-align: center; }
+        video { width: 100%; background: #000; border-radius: 8px; margin-top: 20px; }
+        .id-text { font-size: 20px; color: #7c4dff; font-weight: bold; margin: 10px 0; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🏫 課堂平板投影網頁中繼站</h1>
+<div class="box">
+    <h2>🏫 跨網域無線投影網頁版</h2>
+    <p>我的連線 ID：<span id="my-id" class="id-text">正在取得 ID...</span></p>
     
-    <div class="control-panel">
-        <div class="step-box">
-            <strong>💡 使用說明（請確保兩台裝置連在同一個校園 Wi-Fi）：</strong><br>
-            1. <strong>平板端：</strong>點擊 <span class="badge">1. 平板發射訊號</span> ➔ 允許分享螢幕 ➔ 複製下方產生的「金鑰代碼」。<br>
-            2. <strong>電腦端：</strong>將平板的代碼貼入下方輸入框 ➔ 點擊 <span class="badge">2. 電腦接收端連線</span>。<br>
-            3. <strong>平板端：</strong>複製電腦端產生的「回傳代碼」➔ 貼回平板 ➔ 點擊 <span class="badge">3. 平板確認連線</span>。
-        </div>
-
-        <textarea id="sdpData" placeholder="訊號金鑰與代碼會顯示在這裡..."></textarea>
-        
-        <div>
-            <button id="startShareBtn">1. 平板發射訊號 (廣播)</button>
-            <button id="connectBtn">2. 電腦接收端連線</button>
-            <button id="answerBtn" class="secondary">3. 平板確認連線</button>
-        </div>
+    <div style="border-top: 1px solid #eee; padding-top: 10px;">
+        <button id="share-btn">【平板端】發射無線螢幕</button>
     </div>
-
-    <div class="video-container">
-        <video id="remoteVideo" autoplay playsinline controls></video>
+    
+    <div style="border-top: 1px solid #eee; padding-top: 10px; margin-top: 15px;">
+        <input type="text" id="target-id" placeholder="請輸入對方的 ID">
+        <button id="connect-btn">【電腦端】接收畫面連線</button>
     </div>
 </div>
 
+<video id="remote-video" autoplay playsinline controls></video>
+
 <script>
-    const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-    let peerConnection;
+    // 初始化 PeerJS，使用官方免費的雲端伺服器牽線
+    const peer = new Peer();
     let localStream;
 
-    const sdpDataEl = document.getElementById('sdpData');
-    const remoteVideo = document.getElementById('remoteVideo');
+    // 取得自己的雲端配對 ID
+    peer.on('open', (id) => {
+        document.getElementById('my-id').innerText = id;
+    });
 
-    // 1. 平板端：發起分享
-    document.getElementById('startShareBtn').addEventListener('click', async () => {
+    // 【平板端】點擊發射螢幕
+    document.getElementById('share-btn').addEventListener('click', async () => {
         try {
-            // 擷取平板螢幕畫面
-            localStream = await navigator.mediaDevices.getDisplayMedia({ 
-                video: { cursor: "always" }, 
-                audio: true 
-            });
-            
-            peerConnection = new RTCPeerConnection(configuration);
-            
-            // 將平板畫面軌道加入連線
-            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-            // 當產生網路候選位置時更新文本
-            peerConnection.onicecandidate = event => {
-                if (!event.candidate) {
-                    sdpDataEl.value = btoa(JSON.stringify(peerConnection.localDescription));
-                    sdpDataEl.select();
-                    alert('【平板端提示】金鑰已產生並自動複製！請透過 Line/郵件/AirDrop 傳給大螢幕電腦，並貼到電腦的輸入框中。');
-                }
-            };
-
-            const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
+            localStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+            alert("平板已準備就緒！請將上方的 ID 輸入到大螢幕電腦中。");
         } catch (err) {
-            console.error("無法擷取螢幕: ", err);
-            alert("請確保使用 HTTPS 環境或本機測試，且瀏覽器支援螢幕擷取。");
+            alert("請確保在 HTTPS 環境下執行，且 Android 以外的某些行動裝置可能不支援網頁螢幕擷取。");
         }
     });
 
-    // 2. 電腦端：輸入平板金鑰並建立回應
-    document.getElementById('connectBtn').addEventListener('click', async () => {
-        const inputData = sdpDataEl.value.trim();
-        if (!inputData) return alert('請先貼入平板端生成的金鑰代碼！');
+    // 【電腦端】輸入平板 ID 進行連線接收
+    document.getElementById('connect-btn').addEventListener('click', () => {
+        const targetId = document.getElementById('target-id').value.trim();
+        if (!targetId) return alert("請輸入平板顯示的 ID");
 
-        try {
-            peerConnection = new RTCPeerConnection(configuration);
-
-            // 監聽遠端畫面傳入
-            peerConnection.ontrack = event => {
-                if (remoteVideo.srcObject !== event.streams[0]) {
-                    remoteVideo.srcObject = event.streams[0];
-                }
-            };
-
-            const offerDesc = new RTCSessionDescription(JSON.parse(atob(inputData)));
-            await peerConnection.setRemoteDescription(offerDesc);
-
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-
-            peerConnection.onicecandidate = event => {
-                if (!event.candidate) {
-                    sdpDataEl.value = btoa(JSON.stringify(peerConnection.localDescription));
-                    sdpDataEl.select();
-                    alert('【電腦端提示】回傳金鑰已生成！請將此段代碼傳回平板端貼上。');
-                }
-            };
-        } catch (err) {
-            alert('代碼解析失敗，請確認複製內容是否完整。');
-        }
+        // 呼叫對方（此處 PeerJS 底層會自動嘗試穿透學校防火牆）
+        const call = peer.call(targetId, new MediaStream()); 
+        
+        // 監聽並接收平板傳過來的畫面
+        call.on('stream', (remoteStream) => {
+            document.getElementById('remote-video').srcObject = remoteStream;
+        });
     });
 
-    // 3. 平板端：輸入電腦回傳的金鑰，正式連線
-    document.getElementById('answerBtn').addEventListener('click', async () => {
-        const inputData = sdpDataEl.value.trim();
-        if (!inputData) return alert('請貼回電腦端產生的回傳代碼！');
-
-        try {
-            const answerDesc = new RTCSessionDescription(JSON.parse(atob(inputData)));
-            await peerConnection.setRemoteDescription(answerDesc);
-            alert('🎉 連線成功！畫面開始同步。');
-        } catch (err) {
-            alert('連線失敗，請重新嘗試。');
+    // 平板端接受連線並傳送畫面
+    peer.on('call', (call) => {
+        if (localStream) {
+            call.answer(localStream);
         }
     });
 </script>
