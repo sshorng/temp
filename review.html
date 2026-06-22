@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國文段考複習 · 江湖對決</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#2c2416; --paper:#f7f2e6; --paper-dark:#ede4d0;
+  --red:#b53b2c; --red-light:#e85d4a; --gold:#c9a84c; --gold-light:#f0dda0;
+  --green:#3a7d5a; --green-light:#6bcf8a; --blue:#3a5f8a; --blue-light:#7ab0d4;
+  --shadow:rgba(44,36,22,.12);
+}
+body{font-family:'Noto Sans TC',sans-serif;background:linear-gradient(180deg,#0d0a06 0%,#1a1510 40%,#2a2218 100%);min-height:100vh;color:var(--ink);overflow-x:hidden;font-size:17px}
+.screen{display:none;min-height:100vh;max-width:960px;margin:0 auto;padding:0 16px 24px}
+.screen.active{display:block;animation:enter .45s ease}
+@keyframes enter{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== HOME ===== */
+.home-scene{position:relative;padding-top:60px;text-align:center}
+.home-scene::before{content:'⛰️';position:absolute;top:0;left:50%;transform:translateX(-50%);font-size:100px;opacity:.12;pointer-events:none}
+.home-icon{width:90px;height:90px;margin:0 auto 12px;background:linear-gradient(135deg,#c9a84c,#8a7540);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:46px;box-shadow:0 8px 32px rgba(201,168,76,.3);animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.home-title{font-family:'Noto Serif TC',serif;font-size:42px;font-weight:900;color:#f0e8d8;letter-spacing:8px;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.home-sub{color:#a09078;margin-top:8px;font-size:17px;letter-spacing:3px}
+.home-rule{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px 24px;margin:28px auto 0;max-width:560px;text-align:left;color:#c8b898;font-size:16px;line-height:1.8}
+.home-rule strong{color:var(--gold)}
+.lesson-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px auto;max-width:600px}
+.lc{background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.06);border-radius:16px;padding:16px 8px;text-align:center;cursor:pointer;transition:all .25s;color:#c0b098}
+.lc:hover{background:rgba(255,255,255,.08);border-color:var(--gold);transform:translateY(-3px)}.lc.selected{background:rgba(201,168,76,.12);border-color:var(--gold);color:var(--gold-light)}
+.lc .num{font-size:13px;opacity:.5}.lc .name{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:700;margin-top:6px}
+.lc .tag{display:inline-block;margin-top:6px;font-size:13px;padding:2px 14px;border-radius:20px;color:#fff;opacity:.8}
+.lc .tag.t7{background:#b53b2c}.lc .tag.t8{background:#3a5f8a}.lc .tag.t9{background:#3a7d5a}.lc .tag.t10{background:#7a4fa0}.lc .tag.tz{background:#c0843c}
+.lc-all{grid-column:span 3;background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(181,59,44,.05));border-color:var(--gold)}
+.start-btn{display:block;width:100%;max-width:400px;margin:20px auto 0;padding:18px;background:linear-gradient(135deg,var(--red),#8a2e20);color:#fff;border:none;border-radius:18px;font-size:22px;font-weight:700;cursor:pointer;font-family:'Noto Serif TC',serif;letter-spacing:3px;box-shadow:0 4px 24px rgba(181,59,44,.3);transition:all .25s}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(181,59,44,.4)}
+
+/* ===== BATTLE ===== */
+.battle-scene{position:relative}
+.bg-mountains{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-mountains::before{content:'⛰️🏔️⛰️';position:absolute;bottom:0;left:-20px;font-size:160px;opacity:.04;letter-spacing:-10px}
+.bg-mountains::after{content:'🌫️';position:absolute;top:10%;right:10%;font-size:80px;opacity:.03}
+
+/* HP bar */
+.hp-section{display:flex;gap:12px;margin-bottom:14px;position:relative;z-index:1;align-items:center}
+.hp-player{flex:1;text-align:center}
+.hp-boss{flex:1;text-align:center}
+.hp-label{color:#c0b098;font-size:14px;font-weight:600;letter-spacing:1px;margin-bottom:4px}
+.hp-label span{opacity:.6}
+.hp-bar{height:18px;border-radius:10px;background:rgba(255,255,255,.08);overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.06)}
+.hp-bar .fill{height:100%;border-radius:10px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.hp-fill-player{background:linear-gradient(90deg,#3a7d5a,#5cb885)}
+.hp-fill-boss{background:linear-gradient(90deg,#b53b2c,#e85d4a)}
+.hp-text{font-size:26px;font-weight:700;color:#f0e8d8;margin-top:4px;font-family:'Noto Serif TC',serif}
+
+/* VS DIVIDER */
+.vs-divider{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#8a7540);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#0d0a06;flex-shrink:0;box-shadow:0 0 20px rgba(201,168,76,.2)}
+
+/* battle arena */
+.battle-arena{position:relative;z-index:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:24px;padding:28px;backdrop-filter:blur(6px);min-height:420px}
+.battle-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.bt-left{display:flex;align-items:center;gap:10px}.bt-left .back{border:none;background:rgba(255,255,255,.06);color:#a09078;width:40px;height:40px;border-radius:12px;font-size:20px;cursor:pointer;transition:all .2s}.bt-left .back:hover{background:rgba(255,255,255,.12)}
+.q-progress{color:#a09078;font-size:16px;font-weight:500}
+.streak-display{padding:4px 16px;border-radius:16px;font-size:15px;font-weight:600}
+.streak-display.on{background:rgba(201,168,76,.15);color:var(--gold-light)}
+.streak-display.off{background:rgba(255,255,255,.04);color:#605848}
+
+/* Question */
+.q-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 14px;border-radius:12px;font-size:14px;font-weight:600;margin-bottom:14px}
+.q-badge.l7{background:rgba(181,59,44,.15);color:#e87a6a}
+.q-badge.l8{background:rgba(58,95,138,.15);color:#7ab0d4}
+.q-badge.l9{background:rgba(58,125,90,.15);color:#6bcf8a}
+.q-badge.l10{background:rgba(122,79,160,.15);color:#b080cc}
+.q-badge.lz{background:rgba(192,132,60,.15);color:#e0b060}
+.q-type-badge{font-size:14px;color:#a09078;background:rgba(255,255,255,.04);padding:3px 12px;border-radius:8px;margin-bottom:12px;display:inline-block}
+.q-text{font-family:'Noto Serif TC',serif;font-size:22px;font-weight:600;color:#f0e8d8;line-height:1.8;margin-bottom:20px}
+
+/* Options */
+.options{display:grid;gap:8px}
+.opt{display:flex;align-items:center;gap:12px;padding:14px 18px;border:2px solid rgba(255,255,255,.08);border-radius:14px;cursor:pointer;transition:all .2s;color:#d8d0c0;background:rgba(255,255,255,.02);font-size:16px;line-height:1.6}
+.opt:hover{background:rgba(255,255,255,.06);border-color:rgba(201,168,76,.3)}
+.opt .l{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#a09078;flex-shrink:0}
+.opt.correct{background:rgba(58,125,90,.15);border-color:var(--green);color:#8be0aa}
+.opt.correct .l{background:var(--green);color:#fff}
+.opt.wrong{background:rgba(181,59,44,.15);border-color:var(--red);color:#e87a6a}
+.opt.wrong .l{background:var(--red);color:#fff}
+.opt.disabled{pointer-events:none}
+
+/* TF */
+.tf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tf-btn{padding:18px;border:2px solid rgba(255,255,255,.08);border-radius:16px;cursor:pointer;text-align:center;font-size:20px;font-weight:700;transition:all .2s;background:rgba(255,255,255,.02);color:#d8d0c0}
+.tf-btn:hover{background:rgba(255,255,255,.06);border-color:rgba(201,168,76,.3)}
+.tf-btn.correct{background:rgba(58,125,90,.15);border-color:var(--green);color:#8be0aa}
+.tf-btn.wrong{background:rgba(181,59,44,.15);border-color:var(--red);color:#e87a6a}
+.tf-btn.disabled{pointer-events:none}
+
+/* Boss speech bubble */
+.boss-speech{position:absolute;top:-20px;right:10px;z-index:20;max-width:280px;animation:bsIn .3s ease;background:rgba(20,15,10,.92);border:1px solid var(--gold);border-radius:16px 4px 16px 16px;padding:12px 16px;backdrop-filter:blur(8px)}
+@keyframes bsIn{from{opacity:0;transform:translateY(10px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+.boss-speech .bs-name{font-size:13px;color:var(--gold);font-weight:600;margin-bottom:4px}
+.boss-speech .bs-text{font-size:16px;color:#e8ddd0;line-height:1.5;font-family:'Noto Serif TC',serif}
+.boss-speech .bs-arrow{position:absolute;bottom:-8px;right:20px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:10px solid rgba(20,15,10,.92)}
+
+/* Explanation */
+.explain-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:16px 18px;margin-top:14px;position:relative;z-index:1}
+.explain-box .e-label{font-size:13px;color:var(--gold);font-weight:600;letter-spacing:1px;margin-bottom:4px}
+.explain-box .e-text{font-size:16px;color:#b8a890;line-height:1.7}
+
+/* BATTLE EFFECTS */
+.hit-effect{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:99;display:flex;align-items:center;justify-content:center;font-size:80px;animation:slash .5s ease forwards}
+@keyframes slash{0%{opacity:1;transform:scale(.5) rotate(-10deg)}50%{opacity:1;transform:scale(1.3) rotate(5deg)}100%{opacity:0;transform:scale(1.5) rotate(0deg)}}
+@keyframes fbFlash{0%{opacity:1}100%{opacity:0}}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+.damage-popup{position:absolute;font-size:32px;font-weight:900;pointer-events:none;z-index:10;animation:dmgPop .8s ease forwards;font-family:'Noto Serif TC',serif}
+@keyframes dmgPop{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(1.3)}}
+.boss-shake{animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.player-shake{animation:pShake .4s ease}
+@keyframes pShake{0%,100%{transform:translateX(0)}20%{transform:translateX(5px)}40%{transform:translateX(-5px)}60%{transform:translateX(3px)}80%{transform:translateX(-3px)}}
+
+/* BOSS face */
+.boss-face{position:absolute;right:20px;top:-50px;font-size:80px;opacity:.2;pointer-events:none;animation:float 4s ease-in-out infinite}
+.player-face{position:absolute;left:20px;top:-50px;font-size:70px;opacity:.15;pointer-events:none;animation:float 4s ease-in-out infinite 1s}
+
+/* ===== RESULT ===== */
+.res-scene{text-align:center;padding-top:40px}
+.res-badge{font-size:72px;margin-bottom:8px}
+.res-title{font-family:'Noto Serif TC',serif;font-size:36px;font-weight:900;color:#f0e8d8;letter-spacing:4px}
+.res-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:24px auto;max-width:500px}
+.rs{padding:14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}
+.rs .n{font-size:32px;font-weight:900;font-family:'Noto Serif TC',serif}.rs .l{font-size:13px;color:#908070;margin-top:3px}
+.res-bar-wrap{height:8px;border-radius:6px;background:rgba(255,255,255,.06);overflow:hidden;margin:4px auto 0;max-width:200px}
+.res-bar-fill{height:100%;border-radius:6px;transition:width 1s ease}
+.res-actions{display:flex;gap:10px;justify-content:center;margin-top:24px}
+.res-btn{padding:12px 28px;border:none;border-radius:14px;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Noto Sans TC',sans-serif;color:#fff}
+.res-btn.again{background:linear-gradient(135deg,var(--blue),#2a4a6a)}.res-btn.home{background:rgba(255,255,255,.08);color:#c0b098}.res-btn:hover{transform:translateY(-2px)}
+
+/* next-btn inline */
+.next-btn{margin-top:16px;padding:12px 36px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;color:#fff;transition:all .2s;background:var(--green);display:block;width:100%}
+.next-btn:hover{transform:translateY(-2px)}
+
+@media(max-width:500px){
+  .lesson-grid{grid-template-columns:repeat(2,1fr)}.lc-all{grid-column:span 2}
+  .hp-section{gap:6px}.q-text{font-size:16px}.opt{font-size:14px}
+  .res-stats{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- BG MOUNTAINS -->
+<div class="bg-mountains"></div>
+
+<!-- ===== HOME ===== -->
+<div class="screen active" id="home">
+  <div class="home-scene">
+    <div class="home-icon">⚔️</div>
+    <div class="home-title">江湖對決</div>
+    <div class="home-sub">康軒八下 · 段考複習</div>
+    <div class="home-rule">
+      <strong>🏮 規則</strong><br>
+      選定關卡，與課文BOSS對決。答對出招攻擊，答錯被BOSS反擊。<br>
+      連續命中可發動 <strong>🔥 combo</strong> 造成更多傷害！<br>
+      擊敗 BOSS 即過關，血量歸零則挑戰失敗。
+    </div>
+    <div class="lesson-grid" id="homeGrid">
+      <div class="lc" data-l="7"><div class="num">第七關</div><div class="name">陋室銘</div><div class="tag t7">劉禹錫</div></div>
+      <div class="lc" data-l="8"><div class="num">第八關</div><div class="name">成功是失敗之母</div><div class="tag t8">論說文</div></div>
+      <div class="lc" data-l="9"><div class="num">第九關</div><div class="name">罐頭由來</div><div class="tag t9">周惠民</div></div>
+      <div class="lc" data-l="10"><div class="num">第十關</div><div class="name">項鍊</div><div class="tag t10">莫泊桑</div></div>
+      <div class="lc" data-l="z3"><div class="num">自學三</div><div class="name">空城計</div><div class="tag tz">羅貫中</div></div>
+      <div class="lc lc-all" data-l="all"><div class="num">⚡ 終極</div><div class="name">大亂鬥</div><div class="tag" style="background:linear-gradient(90deg,#b53b2c,#c9a84c)">76題</div></div>
+    </div>
+    <button class="start-btn" id="homeStart">🤺 進入江湖</button>
+  </div>
+</div>
+
+<!-- ===== BATTLE ===== -->
+<div class="screen" id="battle">
+  <div class="battle-scene">
+    <!-- HP -->
+    <div class="hp-section">
+      <div class="hp-player"><div class="hp-label">👤 你 <span>HP</span></div><div class="hp-bar"><div class="fill hp-fill-player" id="playerHP" style="width:100%"></div></div><div class="hp-text" id="playerHPText">100</div></div>
+      <div class="vs-divider">VS</div>
+      <div class="hp-boss"><div class="hp-label"><span id="bossNameLabel">BOSS</span> <span>HP</span></div><div class="hp-bar"><div class="fill hp-fill-boss" id="bossHP" style="width:100%"></div></div><div class="hp-text" id="bossHPText">100</div></div>
+    </div>
+    <!-- Arena -->
+    <div class="battle-arena" id="arena">
+      <div class="battle-top">
+        <div class="bt-left">
+          <button class="back" id="battleBack">✕</button>
+          <span class="q-progress" id="qProgress">第 1 題</span>
+        </div>
+        <div class="streak-display off" id="streakDsp">🔥 0</div>
+      </div>
+      <div id="questionSlot"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div class="screen" id="result">
+  <div class="res-scene">
+    <div class="res-badge" id="resBadge">🏆</div>
+    <div class="res-title" id="resTitle">勝利！</div>
+    <div class="res-stats" id="resStats"></div>
+    <div class="res-actions">
+      <button class="res-btn again" id="resAgain">🔄 再戰一次</button>
+      <button class="res-btn home" id="resHome">🏠 回首頁</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ QUESTION BANK ============
+// 題型多元：選擇題(mc)、是非題(tf)
+// 涵蓋：字音字形、修辭辨析、文意理解、寫作手法、成語應用
+// 刪除：作者是誰、太淺的常識題
+// 注意：正確選項不一定是句子最長的
+const ALL_Q = {
+ 7: [
+{t:'mc',q:'「斯是陋室，惟吾德馨」的「馨」字讀音為何？',o:['ㄒㄧㄣ','ㄒㄧㄥ','ㄑㄧㄥ','ㄒㄧㄣˊ'],a:0},
+{t:'mc',q:'「苔痕上階綠」的「苔」與「 」字讀音相同？',o:['抬（ㄊㄞˊ）','怠（ㄉㄞˋ）','冶（ㄧㄝˇ）','始（ㄕˇ）'],a:0},
+{t:'mc',q:'「案牘」是借代，它借代的是什麼？',o:['公文書卷','桌椅家具','法院案件','經典書籍'],a:0},
+{t:'mc',q:'「無絲竹之亂耳」的「絲竹」運用何種修辭？',o:['借代—以樂器借代音樂','譬喻—將聲音比作絲竹','轉化—將無形聲音擬物','誇飾—誇大樂器聲響'],a:0},
+{t:'mc',q:'「白丁」一詞在文中運用借代，所指為何？',o:['無學問的俗人','不識字的平民','穿白衣的百姓','在家的閒人'],a:0,exp:'白丁借代「無學問的俗人」，非歧視平民，而是強調學術交流的對象。'},
+{t:'tf',q:'「苔痕上階綠」的「上」字和「草色入簾青」的「入」字，皆運用了轉化修辭（擬動）。',a:true,exp:'「上」和「入」將靜態的苔蘚和草色寫得具有動態感，是轉化中的擬動。'},
+{t:'mc',q:'「山不在高，有仙則名；水不在深，有龍則靈」在寫作上稱為：',o:['起興類比—以自然現象引發主旨','排比—三句以上結構整齊','誇飾—誇大山水的價值','設問—自問自答引思考'],a:0},
+{t:'mc',q:'「談笑有鴻儒，往來無白丁」使用了哪兩種修辭？',o:['對偶＋映襯','排比＋層遞','轉化＋擬人','引用＋設問'],a:0},
+{t:'mc',q:'劉禹錫寫「南陽諸葛廬，西蜀子雲亭」的用意為何？',o:['以古賢自比，暗指自己德行出眾','表達對諸葛亮和揚雄的崇拜','暗示自己也想搬到南方居住','引用典故來增加文章篇幅'],a:0},
+{t:'mc',q:'「何陋之有」屬於何種句型？',o:['反詰句，答案已在問中','疑問句，等待對方回答','設問句，自問自答','祈使句，要求他人行動'],a:0},
+{t:'mc',q:'劉禹錫引用「何陋之有」卻省略「君子居之」，效果為何？',o:['暗示自己就是君子，完成邏輯閉環','讓文章寫起來更加簡潔有力','避免直接抄襲孔子的原文','讓句子讀起來更有文言感'],a:0},
+{t:'mc',q:'〈陋室銘〉主要運用哪一種寫作手法來表達志向？',o:['藉陋室寄託安貧樂道的情懷','借物抒情抒發對自然喜愛','記敘手法記錄居住之環境','議論說理探討何謂君子'],a:0},
+{t:'mc',q:'下列哪一項不屬於劉禹錫「德馨」的展現？',o:['家中往來皆為達官顯貴','苔痕上階綠，草色入簾青','談笑有鴻儒，往來無白丁','可以調素琴，閱金經'],a:0,exp:'德馨三面向：環境清幽、交友高雅、生活閒適。往來達官顯貴非文中之意。'},
+{t:'mc',q:'「無案牘之勞形」的「形」字意思為何？',o:['身體','形狀','表現','形象'],a:0},
+{t:'mc',q:'「談笑有鴻儒」的「鴻儒」在修辭上屬於：',o:['借代—以特徵代本體','譬喻—將學者比作大雁','轉化—將學問具體化','映襯—對比鴻和儒'],a:0},
+{t:'mc',q:'〈陋室銘〉全文的論證邏輯為何？',o:['大前提類比→小前提→實證→聖人結語','提出問題→分析原因→提出解決方案','記敘時間→描寫空間→抒發情感','正反論證→層層遞進→歸納結論'],a:0},
+{t:'mc',q:'下列何者最接近〈陋室銘〉的核心精神？',o:['境隨心轉，內在德行決定生命價值','累積財富才是幸福生活的基礎','遠離塵囂是最好的生活方式','勤奮讀書為人生唯一出路'],a:0},
+{t:'mc',q:'「調素琴，閱金經」在文中的作用是？',o:['展現主人高雅脫俗的生活情趣','暗示主人貧困只能彈舊琴','暗示主人想靠讀經求取功名','描寫主人日常的閒暇活動'],a:0},
+],
+ 8: [
+{t:'mc',q:'〈成功是失敗之母〉以翻轉式標題開篇，這種「先引用舊說、再翻轉出新意」的開頭方式，在議論文寫作上有何效果？',o:['先喚起讀者對舊諺語熟悉感，再翻轉製造反差導出核心論點','直接否定傳統思維，展現作者批判性','讓題目更有記憶點，方便讀者背誦','暗示本文將比較成敗孰輕孰重'],a:0,exp:'議論文開頭「先鋪墊再翻轉」的策略：先喚起讀者對「失敗為成功之母」的共鳴，再翻轉為「成功是失敗之母」，製造反差並導出全文核心論點——成功後須戒驕。'},
+{t:'mc',q:'關於議論文的三要素——論點、論據、論證，下列何者正確符合〈成功是失敗之母〉一文？',o:['論點：成功後驕傲恐致失敗；論據：歷史人物事例；論證：歸納推理','論點：失敗為成功之母；論據：作者個人經歷；論證：演繹推理','論點：成功必然導致失敗；論據：報章雜誌報導；論證：數據分析','論點：驕傲是優良品質；論據：科學實驗結果；論證：類比推理'],a:0,exp:'議論文三要素：論點（本文主張「成功後驕傲恐致失敗」）、論據（引用歷史人物成功後因驕而敗的事例）、論證（從多個事例歸納出普遍道理——歸納推理）。'},
+{t:'mc',q:'「居安思危」與本文觀點最相通之處為何？',o:['成功時更須警惕，否則失敗可能隨之而來','身處危險之中反而要保持冷靜','安樂生活不需過度擔憂','多思考未來便可以致富'],a:0},
+{t:'tf',q:'〈成功是失敗之母〉主張成功者「必然」會遭遇失敗。',a:false,exp:'本文提醒成功後若驕傲自滿可能導致失敗，非主張必然失敗。'},
+{t:'mc',q:'本文主要運用哪一種論證方式？',o:['舉例論證—引用歷史人物事例','數據論證—用統計數字支持','比喻論證—用寓言故事說理','正反論證—只呈現反面案例'],a:0},
+{t:'mc',q:'〈成功是失敗之母〉在論證層次上依序為何？',o:['提出成功是失敗之母論點→列舉歷史事例→歸納成功後須戒驕','先詳細描述失敗者再說明成功者最後比較兩者','先舉反面例子再舉正面例子最後提出具體建議','先引用名人名言再解釋其意義最後呼籲實踐'],a:0,exp:'本文論證層次：首段翻轉標題提出論點，接著列舉歷史事例為論據，最後歸納出「成功後須保持警惕」。符合議論文「引論→本論→結論」的基本結構。'},
+{t:'mc',q:'「謙受益，滿招損」與本文觀點的共通點是：',o:['成功後驕傲自滿將會帶來損失','謙虛謹慎就一定能夠成功','驕傲自大沒有任何壞處','吃虧就是占便宜'],a:0},
+{t:'mc',q:'下列哪個成語的意涵與本文主旨最不相關？',o:['畫蛇添足（多此一舉）','驕兵必敗（驕則敗）','樂極生悲（樂極悲來）','滿招損謙受益（謙虛）'],a:0,exp:'畫蛇添足是指多此一舉，與成功後可能失敗的警惕主題無關。'},
+{t:'mc',q:'下列何者最可能是本文作者想傳達的訊息？',o:['成功之後比失敗時更需要警惕','成功本身沒有任何價值可言','失敗的經驗不需要被重視','成功必然會帶來快樂'],a:0},
+{t:'tf',q:'本文認為成功與失敗之間存在絕對的因果關係。',a:false,exp:'本文探討的是兩者之間的辯證關係，關鍵在於態度。'},
+{t:'mc',q:'下列何者最適合作為本文的副標題？',o:['成功者的警惕——驕傲是失敗的開端','如何從失敗的深淵邁向成功','成功人生的十大心法','失敗者的自我修養手冊'],a:0},
+{t:'mc',q:'〈成功是失敗之母》文中是否使用了「正反論證」？請根據文本分析。',o:['有：反面「驕傲→失敗」，暗示正面「謙虛→保持成功」，形成對比','沒有：全文只從正面論述成功可貴','有：作者並列正反事例相互對照','沒有：本文純屬抒情散文'],a:0,exp:'本文隱含正反論證：反面為「成功後驕傲→導致失敗」，正面暗示「成功後謙虛→維持成功」，雖未明寫正面案例，但透過正反對比強化論點。'},
+{t:'mc',q:'本文最可能被分類在哪一種書籍中？',o:['人生哲理／勵志','自然科學／生物','歷史／人物傳記','旅遊／飲食文化'],a:0},
+],
+ 9: [
+{t:'mc',q:'〈罐頭由來〉從個人留學經驗切入，再進入歷史說明，最後歸納科技發展模式。這種「個人→歷史→哲理」的遞進結構有何效果？',o:['由近到遠、由具體到抽象，引導讀者層層深入理解','純粹作者個人寫作習慣，無特殊效果','以個人經驗來掩蓋歷史知識的不足','用哲理歸納來取代歷史事實陳述'],a:0,exp:'本文採「漏斗式」結構：個人煮牛肉湯（具體經驗）→罐頭發展史（歷史脈絡）→科技螺旋式上升（哲理歸納），由近及遠，層層遞進。'},
+{t:'mc',q:'〈罐頭由來〉是一篇說明文，它主要依循何種說明順序來組織內容？',o:['時間順序：從18世紀軍糧到20世紀罐頭普及','空間順序：從法國到英國再到美國','因果順序：先寫結果再追溯其原因','分類順序：按罐頭材質分類介紹'],a:0,exp:'本文以時間順序為主軸：阿佩特（1804玻璃罐）→杜蘭（1810鐵皮罐）→業慈（1855開罐器）→20世紀工業發展，是典型的說明文時間序列結構。'},
+{t:'mc',q:'作者寫德國留學煮牛肉湯，用「香味」勾起興趣，這屬於哪種感官摹寫？',o:['嗅覺為主，輔以視覺和味覺','只有視覺方面摹寫','只有聽覺方面摹寫','僅有觸覺方面摹寫'],a:0},
+{t:'mc',q:'阿佩特如何研發出罐頭保存技術？',o:['觀察密封食品不易腐敗，反覆試驗歸納出作法','運用細菌理論進行科學計算','從遙遠的東方學到保存技術','參考英國專利文獻加以改良'],a:0},
+{t:'mc',q:'杜蘭將玻璃罐改為鐵皮罐，解決了易碎問題，卻帶來了什麼新困擾？',o:['罐頭難以開啟，催生開罐器發明','鐵皮罐反而更容易生鏽','罐頭內容物容易變質','鐵皮罐重量太輕了'],a:0},
+{t:'mc',q:'鐵皮罐（1810）和開罐器（1855）之間隔了45年，這說明了什麼？',o:['發明缺乏配套，產品需考慮使用者便利','當時的人完全不需要開罐器','鐵皮罐可以用手輕鬆打開','政府禁止開罐器買賣'],a:0},
+{t:'tf',q:'阿佩特是糕餅商，因拿破崙懸賞徵求軍糧保存方案而投入研究。',a:true},
+{t:'mc',q:'早期罐頭在士兵手中為何難以食用？',o:['沒有開罐工具，要用刺刀斧頭才能打開','罐頭內容物味道不好','罐頭體積太大攜帶不便','罐頭本身容易腐敗變質'],a:0},
+{t:'mc',q:'文中提到「皇帝不差餓兵」，這句話在文中的作用為何？',o:['強調糧食對軍隊重要性，帶出發明背景','說明古時候皇帝很體貼士兵','批評古代將領不重視伙食','讚美皇帝的寬厚與仁慈'],a:0},
+{t:'mc',q:'本文從罐頭演進史中揭示了科技發展的何種模式？',o:['解決問題又產生新問題，螺旋式上升','一路直線進步完全沒有阻礙','所有問題可以一次全部解決','科技發展與人類需求無關'],a:0},
+{t:'mc',q:'拿破崙懸賞徵求食品保存法，主要是為了解決什麼問題？',o:['軍隊遠征的糧食補給問題','法國國內的糧食短缺問題','食品口味單一化的問題','節省家庭烹飪時間'],a:0},
+{t:'mc',q:'開罐器是誰發明的？',o:['英國人業慈（西元1855）','阿佩特（玻璃罐之父）','杜蘭（鐵皮罐發明者）','拿破崙（法國軍事家）'],a:0},
+{t:'mc',q:'文中引用魯智深和項羽的故事，作用為何？',o:['用具體故事說明糧食對軍隊的重要性','比較魯智深和項羽誰力氣大','介紹古代英雄人物的事蹟','說明戰爭的殘酷與恐怖'],a:0},
+{t:'mc',q:'本文軟性開頭（煮牛肉湯）在寫作上稱為「魚鉤Hook」，其作用為：',o:['拉近讀者距離，消除科學史枯燥感','直接切入主題，節省篇幅','製造懸疑，讓讀者猜測','以抒情手法打動讀者'],a:0},
+{t:'mc',q:'下列「」中的字，何者讀音與其他三者不同？',o:['「董」事 ㄉㄨㄥˇ','「凍」結 ㄉㄨㄥˋ','「棟」樑 ㄉㄨㄥˋ','「動」作 ㄉㄨㄥˋ'],a:0,exp:'董為三聲，其餘皆為四聲。'},
+{t:'mc',q:'文中「破釜沉舟」指的是誰的故事？',o:['項羽','魯智深','拿破崙','阿佩特'],a:0},
+{t:'mc',q:'罐頭從軍用到普及民間的過程中，不包含下列何者？',o:['罐頭曾被政府禁止販售','鋁和塑膠擴大應用範圍','旅行者和登山客開始使用','後來進入太空食品領域'],a:0},
+],
+ 10: [
+{t:'mc',q:'「項鍊」的「鍊」與下列何者字形最相似？',o:['練習的「練」（部首不同）','選擇的「選」（辶部）','寒冷的「寒」（宀部）','戀愛的「戀」（心部）'],a:0,exp:'鍊（金部）與練（糸部）偏旁不同但讀音同為ㄌㄧㄢˋ。'},
+{t:'mc',q:'開頭連用多次「沒有……」，營造出什麼效果？',o:['強烈的匱乏感與對現實不滿','讚美瑪蒂達勤儉持家美德','說明她對物質毫不在意','表達她樂天知命的性格'],a:0},
+{t:'mc',q:'瑪蒂達拒絕戴鮮花，理由是「在闊太太們中間露出窮酸相太丟臉」。這表現她什麼心理？',o:['深層階級焦慮——怕被識破為窮人','單純不喜歡鮮花','覺得鮮花價格太貴','想替丈夫節省開銷'],a:0},
+{t:'mc',q:'「有了禮服→需要項鍊→想要更多」，這種慾望升級的現象稱為：',o:['狄德羅效應（慾望螺旋上升）','蝴蝶效應（連鎖反應）','霍桑效應（被關注效應）','比馬龍效應（自我預言）'],a:0},
+{t:'mc',q:'小說中多處暗示項鍊是假的，下列何者「不是」伏筆？',o:['瑪蒂達在舞會上大出風頭','珍娜借項鍊時態度隨便','珠寶商說只賣出盒子','還項鍊時珍娜沒檢查'],a:0},
+{t:'tf',q:'瑪蒂達為了賠償項鍊，付出二十年的青春代價。',a:false,exp:'是十年。文中寫「十年後，他們還清了所有債務」。'},
+{t:'mc',q:'結局揭曉項鍊是假的，這種結局手法稱為：',o:['歐亨利式結局','圓滿大結局','開放式結局','說教式結局'],a:0},
+{t:'mc',q:'瑪蒂達在舞會結束後急著逃跑，主要原因為何？',o:['怕被看到寒酸外套暴露貧窮真相','身體突然不舒服','趕最後一班夜間馬車','丈夫在門口催促她'],a:0},
+{t:'mc',q:'十年還債後，瑪蒂達的外貌和性格如何變化？',o:['外表粗糙樸實，但性格堅強有擔當','變得比從前更漂亮更有氣質','和十年前一模一樣沒有改變','變得比從前更有錢了'],a:0},
+{t:'mc',q:'瑪蒂達的丈夫在故事中的主要作用是什麼？',o:['襯托瑪蒂達的虛榮','推動劇情的工具人','代表社會道德標準','是故事旁觀者'],a:0},
+{t:'tf',q:'作者對瑪蒂達的態度是純粹的批判與嘲諷。',a:false,exp:'作者態度複雜：既批判虛榮，也對命運無常寄予同情。'},
+{t:'mc',q:'「包法利夫人症候群」在文中指的是什麼心理狀態？',o:['沉溺幻想、不滿現實、渴望奢華','對丈夫的厭惡與憎恨','憂鬱症或焦慮症','熱愛閱讀和學習'],a:0},
+{t:'mc',q:'小說取名為〈項鍊〉，項鍊的象徵意義為何？',o:['既是美夢的寄託，也是十年枷鎖的開端','只是故事中的一個重要道具','代表財富與社會地位','象徵友誼與愛情'],a:0},
+{t:'mc',q:'十年磨難對瑪蒂達最深刻的意義是什麼？',o:['失去美貌，找回人格的尊嚴','人生完全被毀滅','變得更虛榮更不滿','這段經歷毫無影響'],a:0},
+{t:'mc',q:'如果瑪蒂達選擇誠實告知，下列推測何者最合理？',o:['不會失去青春，也能保有尊嚴','珍娜會生氣絕交','她會被警察抓去關','故事會變得更好笑'],a:0},
+{t:'mc',q:'「她看著舞會上風光的自己，像看著陌生人。」這段運用了何種修辭？',o:['轉化——將心理距離具體化','譬喻——明喻','誇飾——擴張','排比——層層遞進'],a:0},
+],
+ z3: [
+{t:'mc',q:'「司馬懿」三字的正確讀音為：',o:['ㄙ ㄇㄚˇ ㄧˋ','ㄙˋ ㄇㄚˇ ㄧˋ','ㄙ ㄇㄚˇ ㄧˊ','ㄙˋ ㄇㄚˇ ㄧˊ'],a:0},
+{t:'mc',q:'〈空城計〉中，諸葛亮與司馬懿的性格形成強烈對比。這種人物對比手法在小說中有何作用？',o:['相互映襯：諸葛亮冷靜機智vs司馬懿多疑謹慎，強化角色推動情節','暗示諸葛亮比司馬懿聰明百倍以凸顯主角光環','讓讀者更容易判斷誰是好人誰是壞人','為了符合歷史事實而不得不這樣寫'],a:0,exp:'小說的人物對比（映襯法）：諸葛亮「反常開城」vs司馬懿「多疑退兵」，兩者性格互為因果，共同推動「空城計」經典情節的發展。'},
+{t:'mc',q:'諸葛亮以「焚香彈琴」迷惑敵軍，運用了何種心理戰術？',o:['利用司馬懿多疑性格，反常態而行','以武力威嚇敵軍','用音樂麻痺敵軍','以香菸作為信號'],a:0},
+{t:'mc',q:'司馬懿最終沒有進攻空城的最關鍵原因是：',o:['懷疑城中有埋伏，怕中誘敵之計','兵力不足無法攻城','士兵過於疲勞不想作戰','天氣惡劣不利行軍'],a:0},
+{t:'mc',q:'〈空城計》在敘事上採取「限制視角」——讀者只能透過司馬懿軍隊的視角觀察諸葛亮的行為。這樣的寫法效果為何？',o:['製造懸念：讀者與司馬懿同樣困惑，無法確定城內是否有伏兵，增加緊張感','讓讀者能更深入理解諸葛亮的內心想法','省略次要角色描寫以加快故事節奏','限制視角只是為了降低寫作難度'],a:0,exp:'作者刻意不揭露諸葛亮城內實情，讓讀者與司馬懿一起「猜測」。若用全知視角提前揭露城內空虛，故事的懸疑感將大打折扣。'},
+{t:'mc',q:'〈空城計〉情節的「轉折點」出現在何處？此轉折如何體現「情理之中，意料之外」的創作原則？',o:['司馬懿決定撤兵——反常開城奏效。基於其多疑性格，結局卻出人意料','諸葛亮下令打開城門——故事剛開始尚無轉折','司馬懿大軍抵達西城——衝突才剛建立','諸葛亮焚香彈琴——只是鋪墊非轉折'],a:0,exp:'轉折在司馬懿撤兵。情理之中：司馬懿性格多疑，反常反而像陷阱；意料之外：讀者預期大戰，卻以心理戰收場，此即小說轉折的魅力。'},
+{t:'mc',q:'從空城計可看出諸葛亮什麼樣的領導特質？',o:['臨危不亂、沉穩機智、善用心理戰','膽小謹慎不敢貿然應戰','衝動好戰喜歡冒險','優柔寡斷猶豫不決'],a:0},
+{t:'mc',q:'下列成語何者最適合形容空城計的情境？',o:['險中求勝','以逸待勞','聲東擊西','隔岸觀火'],a:0,exp:'空城計在極度劣勢下靠冷靜和智慧逆轉，屬敗戰計。'},
+{t:'mc',q:'〈空城計〉給現代人最大的啟示為何？',o:['危急時冷靜思考，善用智慧化解危機','打仗不一定需要很多兵力','做人誠實才是上策','逃跑是最好的策略'],a:0},
+{t:'mc',q:'下列各組「」中的字，讀音相同的是：',o:['「馨」ㄒㄧㄣ／「興」ㄒㄧㄥ','「琴」ㄑㄧㄣˊ／「矜」ㄐㄧㄣ','「牘」ㄉㄨˊ／「瀆」ㄉㄨˊ','「焚」ㄈㄣˊ／「紛」ㄈㄣ'],a:2,exp:'牘、瀆皆音ㄉㄨˊ。馨ㄒㄧㄣ/興ㄒㄧㄥ（前後鼻音）；琴ㄑㄧㄣˊ/矜ㄐㄧㄣ（聲母不同，皆有「今」易混淆）；焚ㄈㄣˊ/紛ㄈㄣ（不同調）。'},
+{t:'mc',q:'諸葛亮敢用空城計，是建立在對司馬懿什麼性格的判斷上？',o:['司馬懿生性多疑，反常反而像陷阱','司馬懿膽小怕事不敢進攻','司馬懿兵力不足只能撤退','司馬懿與諸葛亮有私交'],a:0},
+{t:'mc',q:'〈空城計〉在《三國演義》中表達的主題意涵為何？',o:['智慧與冷靜可以逆轉絕望的局面','人多就一定勝利','誠實比計謀更重要','戰爭中不需要運氣'],a:0},
+],
+};
+
+const BOSS_NAMES = {7:'劉禹錫',8:'黃永武',9:'周惠民',10:'莫泊桑',z3:'司馬懿',all:'終極Boss'};
+const LESSON_TAGS = {7:'l7',8:'l8',9:'l9',10:'l10',z3:'lz',all:'l7'};
+
+// BOSS 語錄
+const BOSS_LINES = {
+  7: {
+    intro: ['斯是陋室，惟吾德馨！汝且放馬過來！', '山不在高…但答錯可是會摔很慘的。', '苔痕上階綠，本官在此候教！', '談笑有鴻儒…你夠格嗎？', '無絲竹之亂耳，但答錯聲可是很刺耳的。', '南陽諸葛廬在此，還不速來挑戰！'],
+    hit: ['唔…尚可！', '孺子可教也！', '嗯…有幾分火候。', '不錯，不愧是讀過書的。', '可以調素琴了，你有這資格。', '君子之風，略有雛形。', '喔？倒是有幾分實力。', '苔痕上階綠，你開始上道了。'],
+    taunt: ['何陋之有？這等題目竟答錯！', '陋矣陋矣！此題不難啊！', '白丁！白丁！', '無絲竹之亂耳…但你亂了我的心！', '孔子云：何陋之有…我看你是有陋！', '鴻儒答對，白丁答錯，你是哪一種？', '案牘勞形我可以忍，但你答錯我忍不了。', '這題送分你都不要？'],
+    revive: ['山不在高，有仙則名！老夫豈能輕易倒下！', '君子居之，何懼之有！再來！', '南陽諸葛廬尚在，老夫也要再戰！', '西蜀子雲亭猶存，我豈能輸！', '調素琴，閱金經…養完精神再戰！'],
+    lowHP: ['惟吾德馨…尚可一戰！', '何陋之有？戰！', '苔痕雖淺，志氣猶高！', '斯是陋室，但本官可不陋！'],
+    win: ['哼…承讓了。回去多讀點書吧。', '你贏了…但德馨二字，你還得細細體會。']
+  },
+  8: {
+    intro: ['成功者，必先知其所以敗。你準備好了嗎？', '失敗為成功之母，但答錯就是失敗的開始。', '居安思危…你現在夠安嗎？', '成功是失敗之母——這題目你懂多少？', '自古驕兵必敗，你猜誰會是驕兵？', '歡迎來到成功與失敗的修羅場！'],
+    hit: ['善哉！真知灼見。', '不錯，此題答得有見地。', '嗯……你有在思考。', '謹慎的人果然不容易犯錯。', '看來你讀懂了「滿招損」的道理。', '此題答得好，未驕先勝。', '佩服佩服，你比歷史上那些驕將強。'],
+    taunt: ['失敗為成功之母…但你這是自取失敗啊。', '驕兵必敗！你太輕敵了。', '唉，答錯不可怕，可怕的是不知道錯在哪。', '你該不會以為成功之後就可以鬆懈了吧？', '滿招損…你現在就很滿嘛。', '失敗為成功之母，但你這是失敗它媽又失敗。', '樂極生悲啊！', '這題都錯，你要怎麼面對黃永武老師？'],
+    revive: ['成功是失敗之母…看來你還沒真正成功！', '一時的領先不代表永遠！再戰！', '從失敗中站起來，這本身就是成功！', '敗而不餒，才是真英雄！讓我復活再戰！'],
+    lowHP: ['居安思危…我還沒輸！', '滿招損…但我還能打！', '成功者豈能輕易言敗？', '不到最後，不知誰是成功誰是失敗。'],
+    win: ['謙受益…你還有得學呢。', '你贏了。記住：成功之後，更要謹慎。']
+  },
+  9: {
+    intro: ['軍糧補給乃致勝關鍵！放馬過來！', '罐頭學問大，你懂多少？', '皇帝不差餓兵，但本官可不會手下留情！', '從阿佩特到杜蘭，你認識幾個？', '破釜沉舟聽過嗎？沒聽過就去讀書！', '魯智深吃飽才打贏，你飽讀詩書了嗎？'],
+    hit: ['不錯！可入後勤部隊！', '好！有見地！', '看來你懂什麼叫「密封保存」。', '有料！這題答得好。', '軍糧交給你我放心了。', '比魯智深吃飽了還猛。', '阿佩特看了都鼓掌。', '開罐器發明前你就能打開這題，厲害！'],
+    taunt: ['看來你還沒搞懂罐頭的奧義！', '破釜沉舟都教你了，還答錯？', '你這樣怎麼行軍打戰！', '玻璃罐都比你堅固，你這麼容易就碎了？', '連開罐器都需要45年才發明，你需要多久？', '餓兵打不了仗，你沒讀書也答不了題！', '拿破崙懸賞的是答案，不是你的錯誤！', '杜蘭聽了都想把鐵皮罐扣你頭上！'],
+    revive: ['鐵皮罐雖封，戰意不滅！開罐再戰！', '玻璃瓶碎了可以重做，本官倒了可以再起！', '罐頭可以保存十年，本官豈止戰十分鐘！', '只要還有糧草，本官就能繼續作戰！'],
+    lowHP: ['尚有存糧，可戰三百回合！', '不到最後一刻，誰輸誰贏還不知道！', '軍用罐頭，越戰越勇！', '這點損傷…跟鐵皮罐的凹痕差不多。'],
+    win: ['你…你通過了軍糧考驗！', '罐頭的歷史你都掌握了，未來靠你了。']
+  },
+  10: {
+    intro: ['啊～一條項鍊就能改變人的一生，你信嗎？', '你可知道虛榮要付出多少代價？', '瑪蒂達的悲劇…你了解多少？', '項鍊是假的，但你對文學的愛是真的嗎？', '包法利夫人症候群…你得了嗎？', '舞會風光一時，還債十年…值得嗎？'],
+    hit: ['Bravo！你比瑪蒂達聰明多了！', '喔～有意思，你看出伏筆了。', '果然是細心的讀者。', '不錯，你有文學家的敏銳。', '珍娜看了都想幫你鼓掌。', '你的觀察力跟項鍊一樣閃耀！', '莫泊桑在九泉之下點頭了。'],
+    taunt: ['唉…你可憐的虛榮心啊～', '項鍊是假的，你的答案也是假的！', '你怎麼跟瑪蒂達一樣看不清真相？', '十年青春啊…你賠得起嗎？', '這題答錯，你的尊嚴跟那條項鍊一樣——是假的。', '瑪蒂達至少還有舞會，你有什麼？', '連伏筆都看不出來，你還是回去重讀吧。', '情境反諷都看不懂嗎？你本身就是個反諷。'],
+    revive: ['這結局真是意料之外，情理之中啊！再來！', '十年的磨難…本官豈能就此落幕！', '瑪蒂達用了十年還債，我只用十秒復活！', '命運無常，但本官的鬥志恆常！'],
+    lowHP: ['人生如小說，轉折才正要開始…', '嘿…還有好戲呢。', '這是歐亨利式結局的前奏啊！', '高潮之前，總有低谷。'],
+    win: ['了不起…你通過了我的考驗。但項鍊…是假的喔。', '你證明了你的實力比那條假項鍊更真實。']
+  },
+  z3: {
+    intro: ['哼…城中必有埋伏，待某試你一試！', '司馬懿在此！你莫非也想唱空城計？', '諸葛亮都不敢輕舉妄動，你倒是膽大！', '吾觀你面色，答題恐有失誤啊～', '街亭失守的教訓，你學到了嗎？', '焚香彈琴…我的心境可比諸葛亮從容。'],
+    hit: ['什麼！？莫非中計了！', '唔…此題我竟誤判了！', '將軍好本領！', '退兵！……啊不對，你答對了。', '我判斷錯誤…但下一次可不一定！', '難道你也在城裡埋伏了學問？', '厲害…看來你不是空城。'],
+    taunt: ['果然不出我所料！你中計了！', '哈哈哈！你以為我是司馬懿就大意了嗎？', '退兵？不，你先答錯再說！', '你中了我空城計中的空城計！', '多疑？不不不，這叫謹慎！你太不謹慎了！', '我看你城裡根本沒兵吧！', '諸葛亮當年都沒你這麼好騙。', '仲達用兵，虛虛實實，你虛了！'],
+    revive: ['仲達豈能如此輕易被擊敗！撤兵…才怪！', '多疑？不不不，這叫謹慎！再戰！', '你以為我真的退了嗎？那是誘敵之計！', '空城計能退敵，我司馬懿就能復活！'],
+    lowHP: ['吾觀星象…此戰尚可一搏！', '諸葛亮都能絕處逢生，何況我司馬懿！', '我征戰一生，豈會在此倒下！', '哼…你以為這樣就能攻破我的城？'],
+    win: ['我…我判斷錯誤了…撤兵！！', '你贏了…但下次，我可不會再中計了。']
+  },
+  all: {
+    intro: ['終極挑戰來了！你準備好了嗎？', '所有BOSS的功力集於一身！接招吧！', '大亂鬥開始！答錯就等著被連技！', '這不是單一課文，這是總決算！', '五課合一，你能撐到最後嗎？'],
+    hit: ['有點本事！', '不錯！繼續！', '好！', '水喔！', '有練過喔！', '這題也難不倒你？', '不錯嘛！', '再來再來！'],
+    taunt: ['太弱了！', '這樣也想挑戰終極BOSS？', '再回去練練吧！', '你是不是沒讀書？', '這種程度也想過關？', '連這都不會？', '下去！', '加油好嗎？'],
+    revive: ['還沒完呢！再來！', '終極BOSS沒那麼容易倒下！', '第二階段！開始！', '你以為我只有一條命？', '真正的戰鬥現在才開始！'],
+    lowHP: ['還早呢！', '這點程度也想打倒我？', '熱身結束了！', '我認真起來連我自己都怕！'],
+    win: ['你贏了…你是真正的強者…', '所有BOSS都臣服於你…你畢業了！']
+  }
+};
+
+function bossSay(lesson, type){
+  const lines = BOSS_LINES[lesson] || BOSS_LINES['all'];
+  const pool = lines[type] || lines.taunt;
+  const text = pool[Math.floor(Math.random() * pool.length)];
+  const bossName = BOSS_NAMES[lesson] || 'BOSS';
+
+  // Remove old speech bubble
+  const old = document.querySelector('.boss-speech');
+  if(old) old.remove();
+
+  const bubble = document.createElement('div');
+  bubble.className = 'boss-speech';
+  bubble.innerHTML = `<div class="bs-arrow"></div><div class="bs-name">${bossName}</div><div class="bs-text">${text}</div>`;
+  $('arena').appendChild(bubble);
+
+  // Auto remove after 3.5s
+  clearTimeout(window._bsTimer);
+  window._bsTimer = setTimeout(()=>{if(bubble.parentNode)bubble.remove()}, 3500);
+}
+
+let state = {
+  lesson: null, questions: [], idx: 0,
+  playerHP: 100, bossHP: 100, maxHP: 100,
+  correct: 0, wrong: 0, streak: 0, score: 0,
+  pending: false
+};
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function $(id){return document.getElementById(id)}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+}
+
+// HOME
+document.querySelectorAll('.lc').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.lc').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected');
+  });
+});
+$('homeStart').addEventListener('click',()=>{
+  const sel = document.querySelector('.lc.selected');
+  if(sel) startBattle(sel.dataset.l);
+  else startBattle('all');
+});
+
+function startBattle(lesson){
+  state.lesson = lesson;
+  state.playerHP = 100;
+  state.bossHP = 100;
+  state.maxHP = 100;
+  state.correct = 0;
+  state.wrong = 0;
+  state.streak = 0;
+  state.score = 0;
+  state.idx = 0;
+  state.pending = false;
+
+  if(lesson==='all'){
+    let pool=[];
+    for(let k of Object.keys(ALL_Q)) pool=pool.concat(ALL_Q[k].map(q=>({...q,src:k})));
+    state.questions = shuffle(pool);
+  } else {
+    state.questions = shuffle([...ALL_Q[lesson]]);
+  }
+
+  $('bossNameLabel').textContent = BOSS_NAMES[lesson]||'Boss';
+  showScreen('battle');
+  updateHP();
+  setTimeout(()=>bossSay(lesson,'intro'), 400);
+  renderQ();
+}
+
+function updateHP(){
+  $('playerHP').style.width = `${state.playerHP}%`;
+  $('playerHPText').textContent = Math.round(state.playerHP);
+  $('bossHP').style.width = `${state.bossHP}%`;
+  $('bossHPText').textContent = Math.round(state.bossHP);
+}
+
+function renderQ(){
+  if(state.idx >= state.questions.length || state.playerHP <= 0){
+    endBattle(); return;
+  }
+  const q = state.questions[state.idx];
+  state.pending = true;
+  const total = state.questions.length;
+
+  // Update streak display
+  const sd = $('streakDsp');
+  if(state.streak>=2){sd.className='streak-display on';sd.textContent=`🔥 ${state.streak}連擊`}
+  else {sd.className='streak-display off';sd.textContent='🔥 0'}
+
+  // Progress
+  $('qProgress').textContent = `第 ${state.idx+1}/${total} 題`;
+
+  // Lesson tag
+  let src = q.src || state.lesson;
+  let tagClass = LESSON_TAGS[src]||'l7';
+  let tagNames = {7:'陋室銘',8:'成功是失敗之母',9:'罐頭由來',10:'項鍊',z3:'空城計',all:'大亂鬥'};
+
+  let html = `<div class="q-badge ${tagClass}">📖 ${tagNames[src]||''}</div>`;
+  html += `<div class="q-type-badge">${q.t==='mc'?'選擇題':'是非題'}</div>`;
+  html += `<div class="q-text">${q.q}</div>`;
+
+  if(q.t==='mc'){
+    // Shuffle options but track correct answer position
+    let opts = [...q.o];
+    let correctText = opts[q.a];
+    let indices = opts.map((_,i)=>i);
+    // Fisher-Yates shuffle
+    for(let i=opts.length-1;i>0;i--){
+      let j=Math.floor(Math.random()*(i+1));
+      [opts[i],opts[j]]=[opts[j],opts[i]];
+    }
+    let newCorrectIdx = opts.indexOf(correctText);
+    
+    html += `<div class="options" data-correct="${newCorrectIdx}">`;
+    const letters = 'ABCD';
+    opts.forEach((o,i)=>{
+      html += `<div class="opt" data-i="${i}"><span class="l">${letters[i]}</span><span>${o}</span></div>`;
+    });
+    html += `</div>`;
+  } else {
+    html += `<div class="tf-grid"><div class="tf-btn" data-v="true">○ 正確</div><div class="tf-btn" data-v="false">✕ 錯誤</div></div>`;
+  }
+
+  // Boss face decoration
+  html += `<div class="boss-face">${state.lesson==='7'?'📜':state.lesson==='8'?'📖':state.lesson==='9'?'🥫':state.lesson==='10'?'💎':'⚔️'}</div>`;
+  html += `<div class="player-face">🤺</div>`;
+
+  $('questionSlot').innerHTML = html;
+
+  // Bind
+  if(q.t==='mc'){
+    $('questionSlot').querySelectorAll('.opt').forEach(el=>{
+      el.addEventListener('click',()=>handleMC(el,q));
+    });
+  } else {
+    $('questionSlot').querySelectorAll('.tf-btn').forEach(el=>{
+      el.addEventListener('click',()=>handleTF(el,q));
+    });
+  }
+}
+
+function handleMC(el,q){
+  if(!state.pending) return;
+  state.pending = false;
+  const container = $('questionSlot').querySelector('.options');
+  const correctIdx = parseInt(container.dataset.correct);
+  const opts = container.querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('disabled'));
+  const idx = parseInt(el.dataset.i);
+  const isCorrect = idx === correctIdx;
+
+  // Show answer
+  opts[correctIdx].classList.add('correct');
+  if(!isCorrect) el.classList.add('wrong');
+
+  afterAnswer(isCorrect, q);
+}
+
+function handleTF(el,q){
+  if(!state.pending) return;
+  state.pending = false;
+  const btns = $('questionSlot').querySelectorAll('.tf-btn');
+  btns.forEach(b=>b.classList.add('disabled'));
+  const val = el.dataset.v === 'true';
+  const isCorrect = val === q.a;
+
+  el.classList.add(isCorrect?'correct':'wrong');
+  btns.forEach(b=>{
+    if((b.dataset.v==='true')===q.a) b.classList.add('correct');
+  });
+
+  afterAnswer(isCorrect, q);
+}
+
+function afterAnswer(isCorrect, q){
+  const arena = $('arena');
+  const bossArea = $('bossHP').closest('.hp-boss');
+  const playerArea = $('playerHP').closest('.hp-player');
+
+  if(isCorrect){
+    state.correct++;
+    state.streak++;
+    // Damage: 15 base + streak bonus
+    let dmg = 15 + Math.min(state.streak * 3, 12);
+    state.bossHP = Math.max(0, state.bossHP - dmg);
+    state.score += dmg;
+
+    // Visual: damage to boss
+    bossArea.classList.remove('boss-shake');
+    void bossArea.offsetWidth;
+    bossArea.classList.add('boss-shake');
+    showHitEffect('⚔️');
+    showDamagePopup(bossArea, `-${dmg}`);
+    bossSay(state.lesson, 'hit');
+
+    if(state.streak >= 3){
+      setTimeout(()=>showHitEffect('💥'), 200);
+    }
+
+    // Boss revival — 浮誇復活動畫
+    if(state.bossHP <= 0 && state.idx < state.questions.length - 1){
+      const bossArea = $('bossHP').closest('.hp-boss');
+      // Screen flash
+      const flash = document.createElement('div');
+      flash.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle,rgba(255,215,0,0.4),rgba(255,100,0,0.2));z-index:98;pointer-events:none;animation:fbFlash .6s ease forwards';
+      document.body.appendChild(flash);
+      setTimeout(()=>document.body.removeChild(flash), 800);
+
+      // Multiple explosions
+      setTimeout(()=>showHitEffect('💥'), 100);
+      setTimeout(()=>showHitEffect('⚡'), 200);
+      setTimeout(()=>showHitEffect('🔥'), 350);
+
+      // Boss screen shake — extra dramatic
+      bossArea.classList.add('boss-shake');
+      setTimeout(()=>{
+        bossArea.classList.remove('boss-shake');
+        bossArea.classList.add('boss-shake');
+      }, 200);
+      setTimeout(()=>bossArea.classList.remove('boss-shake'), 600);
+
+      setTimeout(()=>{
+        state.bossHP = 100;
+        updateHP();
+        showHitEffect('💫');
+
+        // Dramatic revival overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'hit-effect';
+        overlay.style.cssText = 'font-size:100px;animation:slash .7s ease forwards;z-index:99';
+        overlay.textContent = '🔥💀🔥';
+        document.body.appendChild(overlay);
+        setTimeout(()=>overlay.remove(), 800);
+
+        const reviveMsg = document.createElement('div');
+        reviveMsg.className = 'explain-box';
+        reviveMsg.style.cssText = 'border-color:var(--gold);margin-top:8px;text-align:center;animation:pulse 0.5s ease 2';
+        reviveMsg.innerHTML = '<div class="e-label" style="text-align:center;font-size:18px;color:#ffd700">🔥💀 BOSS 復活！繼續挑戰！！ 💀🔥</div>';
+        bossSay(state.lesson, 'revive');
+        $('questionSlot').appendChild(reviveMsg);
+      }, 500);
+    }
+  } else {
+    state.wrong++;
+    state.streak = 0;
+    // Boss counterattack
+    let dmg = 10 + Math.floor(Math.random()*6);
+    state.playerHP = Math.max(0, state.playerHP - dmg);
+
+    playerArea.classList.remove('player-shake');
+    void playerArea.offsetWidth;
+    playerArea.classList.add('player-shake');
+    showHitEffect('💢');
+    showDamagePopup(playerArea, `-${dmg}`);
+    bossSay(state.lesson, 'taunt');
+  }
+
+  updateHP();
+  // Low HP taunt
+  if(state.playerHP <= 30 && state.playerHP > 0){
+    setTimeout(()=>bossSay(state.lesson, 'lowHP'), 800);
+  }
+
+  // Show explanation
+  if(q.exp){
+    let expDiv = document.createElement('div');
+    expDiv.className = 'explain-box';
+    expDiv.innerHTML = `<div class="e-label">${isCorrect?'✅ 解析':'💡 解析'}</div><div class="e-text">${q.exp}</div>`;
+    $('questionSlot').appendChild(expDiv);
+  }
+
+  // Show next btn
+  let nb = document.createElement('button');
+  nb.className = 'next-btn';
+  nb.textContent = isCorrect ? '➡️ 繼續出招' : '➡️ 重整旗鼓';
+  $('questionSlot').appendChild(nb);
+  nb.addEventListener('click',()=>{
+    state.idx++;
+    renderQ();
+  });
+}
+
+function showHitEffect(emoji){
+  const el = document.createElement('div');
+  el.className = 'hit-effect';
+  el.textContent = emoji;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 600);
+}
+
+function showDamagePopup(container, text){
+  const el = document.createElement('div');
+  el.className = 'damage-popup';
+  el.textContent = text;
+  el.style.color = text.startsWith('-') ? '#e85d4a' : '#5cb885';
+  el.style.right = '20px';
+  el.style.top = '20px';
+  container.style.position = 'relative';
+  container.appendChild(el);
+  setTimeout(()=>el.remove(), 900);
+}
+
+function endBattle(){
+  const won = state.bossHP <= 0;
+  const lost = state.playerHP <= 0;
+
+  let badge, title;
+  if(won){badge='🏆';title='BOSS 擊敗！'}
+  else if(lost){badge='💀';title='體力耗盡⋯'}
+  else {badge='📖';title='闖關完成！'}
+
+  const total = state.correct + state.wrong;
+  const pct = total ? Math.round((state.correct/total)*100) : 0;
+
+  showScreen('result');
+  $('resBadge').textContent = badge;
+  $('resTitle').textContent = title;
+  $('resTitle').style.color = won ? 'var(--gold)' : lost ? 'var(--red)' : '#c0b098';
+
+  $('resStats').innerHTML = `
+    <div class="rs"><div class="n" style="color:#5cb885">${state.correct}</div><div class="l">答對</div></div>
+    <div class="rs"><div class="n" style="color:#e85d4a">${state.wrong}</div><div class="l">答錯</div></div>
+    <div class="rs"><div class="n" style="color:var(--gold)">${pct}%</div><div class="l">正確率</div></div>
+    <div class="rs"><div class="n" style="color:#7ab0d4">${state.score}</div><div class="l">總傷害</div></div>
+    <div style="grid-column:span 4;margin-top:8px">
+      <div class="res-bar-wrap"><div class="res-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#b53b2c,${pct>=60?'#c9a84c':'#b53b2c'},${pct>=75?'#3a7d5a':'#c9a84c'})"></div></div>
+    </div>
+  `;
+
+  $('resAgain').onclick = ()=>startBattle(state.lesson);
+  $('resHome').onclick = ()=>showScreen('home');
+}
+
+// Back
+$('battleBack').addEventListener('click',()=>{
+  if(confirm('確定要逃離戰場嗎？（進度將遺失）')) showScreen('home');
+});
+</script>
+</body>
+</html>
