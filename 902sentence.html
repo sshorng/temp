@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>902 班國文代課特派：會考句式邏輯大解碼</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;800;900&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           16:9 水墨古風投影與平板優化大字版面系統
+           ========================================================================== */
+        :root {
+            --bg-color: #f7f6f2;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --primary-gold: #8c6d3b;
+            --accent-red: #bd2a2e;
+            --accent-bright-red: #d9383a;
+            --accent-green: #2d7a4c;
+            --accent-blue: #1f5f8b;
+            --text-light: #222222;
+            --text-muted: #5e5e5e;
+            --border-color: #d6d3cc;
+            --font-ancient: 'Noto Serif TC', 'Songti TC', 'PingFang TC', 'Microsoft JhengHei', serif;
+            --font-modern: 'Outfit', 'Noto Serif TC', 'Microsoft JhengHei', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #2b2b2b;
+            color: var(--text-light);
+            font-family: var(--font-modern);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* 外框鎖定 16:9 比例 */
+        .slide-container {
+            width: 96vw;
+            height: 54vw;
+            max-width: 177.78vh;
+            max-height: 90vh;
+            background-color: var(--bg-color);
+            border: 4px double var(--primary-gold);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2vh 3.5vw;
+            border-radius: 12px;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 8% 8%, rgba(189, 42, 46, 0.035) 0%, transparent 55%),
+                radial-gradient(circle at 92% 92%, rgba(140, 109, 59, 0.05) 0%, transparent 60%);
+        }
+
+        .ink-mist {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, transparent 65%, rgba(247, 246, 242, 0.7) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 標題列 */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--accent-red);
+            padding-bottom: 1.2vh;
+            height: 8.5vh;
+            z-index: 2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: baseline;
+            gap: 1.2vw;
+        }
+
+        .slide-title {
+            font-family: var(--font-ancient);
+            font-size: 4.2vh;
+            font-weight: 900;
+            color: var(--accent-red);
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(189, 42, 46, 0.12);
+        }
+
+        .slide-subtitle {
+            font-size: 2.5vh;
+            color: var(--primary-gold);
+            font-family: var(--font-ancient);
+            font-weight: 800;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.2vw;
+        }
+
+        .score-badge {
+            background: rgba(189, 42, 46, 0.08);
+            border: 2px solid var(--accent-red);
+            border-radius: 20px;
+            padding: 0.6vh 1.4vw;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            color: var(--accent-red);
+            font-size: 2.3vh;
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+        }
+
+        .sound-btn {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 5vh;
+            height: 5vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 2.4vh;
+            transition: all 0.2s;
+        }
+
+        .sound-btn:hover {
+            border-color: var(--accent-red);
+            transform: scale(1.05);
+        }
+
+        /* 內容區 */
+        .slide-body {
+            flex: 1;
+            height: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-y: auto;
+            z-index: 2;
+            padding-right: 0.8vw;
+            margin-top: 1vh;
+            margin-bottom: 1vh;
+        }
+
+        .slide-body::-webkit-scrollbar {
+            width: 7px;
+        }
+        .slide-body::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 4px;
+        }
+        .slide-body::-webkit-scrollbar-thumb {
+            background: var(--accent-red);
+            border-radius: 4px;
+        }
+
+        /* 幻燈片防溢出切換 */
+        .slide {
+            display: none;
+            min-height: 100%;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        /* 頁尾控制區 */
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2.5px solid var(--border-color);
+            padding-top: 1.2vh;
+            height: 8vh;
+            z-index: 50;
+            background: var(--bg-color);
+            position: relative;
+        }
+
+        .page-indicator {
+            font-size: 2.5vh;
+            color: var(--text-light);
+            font-weight: 900;
+            font-family: var(--font-ancient);
+        }
+
+        .nav-btn {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            color: var(--text-light);
+            padding: 1vh 2.2vw;
+            font-size: 2.5vh;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.25s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+            background: #fafafa;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+        }
+
+        .nav-btn.primary {
+            background: var(--accent-red);
+            color: #ffffff;
+            border-color: var(--accent-red);
+        }
+
+        .nav-btn.primary:hover:not(:disabled) {
+            background: #a02024;
+            box-shadow: 0 4px 12px rgba(189, 42, 46, 0.35);
+        }
+
+        /* 膠囊劃記工具列 */
+        .drawing-footer-toolbar {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            padding: 0.4vh 0.8vw;
+            gap: 0.6vw;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+            margin: 0 1vw;
+        }
+
+        .drawing-menu-btn {
+            background: transparent;
+            border: none;
+            width: 4.6vh;
+            height: 4.6vh;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+
+        .drawing-menu-btn svg {
+            width: 2.6vh;
+            height: 2.6vh;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .drawing-menu-btn:hover {
+            background: rgba(189, 42, 46, 0.08);
+            color: var(--accent-red);
+        }
+
+        .drawing-menu-btn.active {
+            background: var(--accent-red);
+            color: #ffffff;
+        }
+
+        .drawing-menu-btn.danger:hover {
+            background: rgba(217, 56, 58, 0.15);
+            color: var(--accent-bright-red);
+        }
+
+        /* 畫布劃記層 */
+        #drawing-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 40;
+            touch-action: none;
+        }
+
+        /* ==========================================================================
+           內容排版組件
+           ========================================================================== */
+        .story-hero {
+            text-align: center;
+            margin: auto 0;
+            padding: 2vh 2vw;
+        }
+
+        .hero-title {
+            font-family: var(--font-ancient);
+            font-size: 5.6vh;
+            color: var(--accent-red);
+            margin-bottom: 2.5vh;
+            font-weight: 900;
+            line-height: 1.35;
+            letter-spacing: 2px;
+        }
+
+        .hero-desc {
+            font-size: 3.2vh;
+            font-family: var(--font-ancient);
+            color: var(--text-light);
+            line-height: 1.8;
+            max-width: 1000px;
+            margin: 0 auto;
+            font-weight: 800;
+        }
+
+        .hero-badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 1.5vw;
+            margin-top: 3vh;
+        }
+
+        .hero-pill {
+            background: #ffffff;
+            border: 2px solid var(--primary-gold);
+            padding: 1vh 2vw;
+            border-radius: 25px;
+            font-size: 2.6vh;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            color: var(--primary-gold);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+        }
+
+        .hero-start-prompt {
+            font-size: 2.6vh;
+            color: var(--accent-red);
+            margin-top: 4vh;
+            font-weight: 900;
+            animation: pulseText 2s infinite ease-in-out;
+            font-family: var(--font-ancient);
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.65; transform: scale(1.02); }
+        }
+
+        /* 雙欄對決佈局 */
+        .split-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.8vw;
+            margin-bottom: 1.5vh;
+        }
+
+        .info-card {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2vh 1.8vw;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .info-card.highlight {
+            border-color: var(--accent-red);
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .card-tag {
+            display: inline-block;
+            background: var(--accent-red);
+            color: white;
+            padding: 0.4vh 1vw;
+            border-radius: 4px;
+            font-size: 2.2vh;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            margin-bottom: 1vh;
+            align-self: flex-start;
+        }
+
+        .card-tag.gold {
+            background: var(--primary-gold);
+        }
+
+        .card-tag.blue {
+            background: var(--accent-blue);
+        }
+
+        .card-title {
+            font-family: var(--font-ancient);
+            font-size: 3vh;
+            font-weight: 900;
+            color: var(--text-light);
+            margin-bottom: 1vh;
+            line-height: 1.3;
+        }
+
+        .card-content {
+            font-size: 2.4vh;
+            line-height: 1.65;
+            color: var(--text-light);
+            font-family: var(--font-ancient);
+            font-weight: 800;
+        }
+
+        .keyword-chip {
+            display: inline-block;
+            background: rgba(189, 42, 46, 0.1);
+            color: var(--accent-red);
+            padding: 0.2vh 0.6vw;
+            border-radius: 4px;
+            font-weight: 900;
+            margin: 0 0.2vw;
+            border: 1px solid rgba(189, 42, 46, 0.2);
+        }
+
+        .gold-chip {
+            display: inline-block;
+            background: rgba(140, 109, 59, 0.12);
+            color: var(--primary-gold);
+            padding: 0.2vh 0.6vw;
+            border-radius: 4px;
+            font-weight: 900;
+            margin: 0 0.2vw;
+            border: 1px solid rgba(140, 109, 59, 0.25);
+        }
+
+        /* 題目互動面板 */
+        .quiz-panel {
+            background: #ffffff;
+            border: 2.5px solid var(--accent-blue);
+            border-radius: 8px;
+            padding: 2vh 2vw;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 1vh;
+        }
+
+        .quiz-badge {
+            background: var(--accent-blue);
+            color: white;
+            padding: 0.4vh 1.2vw;
+            border-radius: 4px;
+            font-size: 2.2vh;
+            font-weight: 900;
+            font-family: var(--font-ancient);
+            display: inline-block;
+            margin-bottom: 1vh;
+        }
+
+        .quiz-question {
+            font-size: 2.6vh;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            color: var(--text-light);
+            line-height: 1.65;
+            margin-bottom: 1.5vh;
+            text-align: justify;
+        }
+
+        .quiz-options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1vw;
+            margin-bottom: 1vh;
+        }
+
+        .quiz-btn {
+            background: #fdfdfd;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.2vh 1.2vw;
+            font-size: 2.4vh;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            color: var(--text-light);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            line-height: 1.4;
+        }
+
+        .quiz-btn:hover:not(.answered) {
+            border-color: var(--accent-blue);
+            background: #f4f8fb;
+            transform: translateY(-1px);
+        }
+
+        .quiz-btn.correct {
+            background: rgba(45, 122, 76, 0.15) !important;
+            border-color: var(--accent-green) !important;
+            color: var(--accent-green) !important;
+        }
+
+        .quiz-btn.wrong {
+            background: rgba(217, 56, 58, 0.12) !important;
+            border-color: var(--accent-bright-red) !important;
+            color: var(--accent-bright-red) !important;
+        }
+
+        .quiz-reveal {
+            display: none;
+            background: rgba(45, 122, 76, 0.08);
+            border-left: 5px solid var(--accent-green);
+            padding: 1.5vh 1.8vw;
+            border-radius: 0 6px 6px 0;
+            margin-top: 1.2vh;
+            font-size: 2.4vh;
+            font-family: var(--font-ancient);
+            font-weight: 800;
+            line-height: 1.65;
+            color: var(--text-light);
+        }
+
+        .quiz-reveal em {
+            color: var(--accent-red);
+            font-style: normal;
+            font-weight: 900;
+        }
+
+        /* 11 句式羅盤網格 */
+        .compass-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.2vw;
+            margin-top: 1vh;
+        }
+
+        .compass-card {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.6vh 1.2vw;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.03);
+        }
+
+        .compass-card:hover {
+            border-color: var(--accent-red);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(189, 42, 46, 0.15);
+        }
+
+        .compass-card.active {
+            border-color: var(--accent-red);
+            background: rgba(189, 42, 46, 0.04);
+        }
+
+        .compass-num {
+            font-size: 2.1vh;
+            color: var(--accent-red);
+            font-weight: 900;
+            font-family: var(--font-ancient);
+            margin-bottom: 0.4vh;
+        }
+
+        .compass-name {
+            font-size: 2.6vh;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            color: var(--text-light);
+            margin-bottom: 0.6vh;
+        }
+
+        .compass-core {
+            font-size: 2.1vh;
+            color: var(--text-muted);
+            line-height: 1.4;
+            font-weight: 800;
+        }
+
+        /* 口訣表排版 */
+        .formula-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5vw;
+            margin-top: 1vh;
+        }
+
+        .formula-row {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.4vh 1.5vw;
+            display: flex;
+            align-items: center;
+            gap: 1.2vw;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.03);
+        }
+
+        .formula-badge {
+            background: var(--accent-red);
+            color: white;
+            font-family: var(--font-ancient);
+            font-weight: 900;
+            padding: 0.6vh 1vw;
+            border-radius: 6px;
+            font-size: 2.4vh;
+            white-space: nowrap;
+        }
+
+        .formula-text {
+            font-family: var(--font-ancient);
+            font-size: 2.6vh;
+            font-weight: 900;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* 四大文言翻牌卡 */
+        .quad-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5vw;
+            margin-top: 1vh;
+        }
+
+        .quad-card {
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.8vh 1.5vw;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .quad-card:hover {
+            border-color: var(--primary-gold);
+            transform: translateY(-2px);
+        }
+
+        .quad-card.revealed {
+            border-color: var(--accent-green);
+            background: rgba(45, 122, 76, 0.03);
+        }
+
+        .quad-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1.5px dashed var(--border-color);
+            padding-bottom: 0.8vh;
+            margin-bottom: 1vh;
+        }
+
+        .quad-title {
+            font-family: var(--font-ancient);
+            font-size: 2.6vh;
+            font-weight: 900;
+            color: var(--accent-red);
+        }
+
+        .quad-hint {
+            font-size: 2vh;
+            color: var(--text-muted);
+            font-weight: 800;
+        }
+
+        .quad-quote {
+            font-family: var(--font-ancient);
+            font-size: 2.4vh;
+            font-weight: 900;
+            line-height: 1.65;
+            color: var(--text-light);
+            margin-bottom: 1vh;
+        }
+
+        .quad-analysis {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 4px;
+            padding: 1vh 1.2vw;
+            font-size: 2.2vh;
+            font-family: var(--font-ancient);
+            font-weight: 800;
+            color: var(--accent-green);
+            line-height: 1.55;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slide-container">
+        <div class="ink-mist"></div>
+
+        <!-- 頂端標題列 -->
+        <div class="slide-header">
+            <div class="header-left">
+                <div class="slide-title" id="header-title">國三會考國文・句式邏輯解碼</div>
+                <div class="slide-subtitle" id="header-subtitle">902 班特派代課課堂</div>
+            </div>
+            <div class="header-right">
+                <div class="score-badge" id="score-display">
+                    <span>🏆 902 解碼分：</span>
+                    <span id="score-val" style="font-size: 2.8vh; color: var(--accent-red);">0</span>
+                </div>
+                <button class="sound-btn" onclick="toggleMute()" id="sound-toggle" title="切換音效">🔊</button>
+            </div>
+        </div>
+
+        <!-- 簡報內容主體 -->
+        <div class="slide-body">
+
+            <!-- ============================== SLIDE 1: 開場啟航 ============================== -->
+            <div id="slide-1" class="slide active" data-title="國三會考國文・句式邏輯解碼" data-sub="902 班特派代課課堂・單元拾壹">
+                <div class="story-hero">
+                    <h1 class="hero-title">會考文意理解的隱藏密碼<br>單元拾壹：11 大句式邏輯</h1>
+                    <p class="hero-desc">
+                        「很多同學以為會考國文全靠語感盲猜，但真正的高手看的是『句式骨架』！」<br>
+                        國中會考四大必考關卡排行：第 4 名「領會句義」，歷屆命題率高達 70%！<br>
+                        今日特派代課任務：帶領 902 班同學在 45 分鐘內掌握 11 大句式邏輯，秒殺會考魔王陷阱題。
+                    </p>
+                    <div class="hero-badge-row">
+                        <div class="hero-pill">🎯 命題率 70% 必考焦點</div>
+                        <div class="hero-pill">💡 11 大句型邏輯秒殺法</div>
+                        <div class="hero-pill">⚔️ 歷屆會考魔王題現場對決</div>
+                    </div>
+                    <p class="hero-start-prompt">【請點擊右下方「下一頁」或按鍵盤空白鍵啟航】</p>
+                </div>
+            </div>
+
+                        <!-- ============================== SLIDE 2: 全景羅盤（例句盲猜挑戰） ============================== -->
+            <div id="slide-2" class="slide" data-title="句式邏輯全景羅盤" data-sub="講義第 172 與 173 頁・例句盲猜挑戰">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1vh;">
+                    <div style="display: flex; align-items: center; gap: 0.8vw;">
+                        <span class="card-tag">課堂盲猜任務</span>
+                        <span style="font-family: var(--font-ancient); font-size: 2.3vh; font-weight: 900;">
+                            請 902 同學翻開講義第 172 與 173 頁！先讀例句猜句型，點選即可翻牌揭曉正解與定義：
+                        </span>
+                    </div>
+                    <div style="background: rgba(140, 109, 59, 0.1); border: 1.5px solid var(--primary-gold); padding: 0.4vh 1.2vw; border-radius: 20px; font-family: var(--font-ancient); font-weight: 900; color: var(--primary-gold); font-size: 2.1vh; white-space: nowrap;">
+                        🔍 已解密進度：<span id="revealed-count" style="color: var(--accent-red); font-size: 2.5vh;">0</span> / 11
+                    </div>
+                </div>
+                <div class="compass-grid">
+                    <div class="compass-card" id="compass-card-0" onclick="openCompassCard(0)">
+                        <div class="compass-num">線索 01</div>
+                        <div class="card-revealed-badge" style="display: none; background: var(--accent-red); color: white; padding: 0.2vh 0.6vw; border-radius: 3px; font-size: 1.9vh; font-weight: 900; margin-bottom: 0.5vh;"></div>
+                        <div class="compass-core" style="font-size: 2.1vh; color: var(--text-light); font-weight: 900; line-height: 1.5;">「不畏浮雲遮望眼，自緣身在最高層。」</div>
+                        <div style="font-size: 1.9vh; color: var(--primary-gold); font-weight: 800; margin-top: 0.6vh;">❓ 這是哪種句式？點擊揭曉 🔍</div>
+                    </div>
+                    <div class="compass-card" id="compass-card-1" onclick="openCompassCard(1)">
+                        <div class="compass-num">線索 02</div>
+                        <div class="card-revealed-badge" style="display: none; background: var(--accent-red); color: white; padding: 0.2vh 0.6vw; border-radius: 3px; font-size: 1.9vh; font-weight: 900; margin-bottom: 0.5vh;"></div>
+                        <div class="compass-core" style="font-size: 2.1vh; color: var(--text-light); font-weight: 900; line-height: 1.5;">「大禹之聖且惜寸陰，陶侃之賢且惜分陰，又況賢聖不若彼者乎？」</div>
+                        <div style="font-size: 1.9vh; color: var(--primary-gold); font-weight: 800; margin-top: 0.6vh;">❓ 這是哪種句式？點擊揭曉 🔍</div>
+                    </div>
+                    <div class="compass-card" id="compass-card-2" onclick="openCompassCard(2)">
+                        <div class="compass-num">線索 03</div>
+                        <div class="card-revealed-badge" style="display: none; background: var(--accent-red); color: white; padding: 0.2vh 0.6vw; border-radius: 3px; font-size: 1.9vh; font-weight: 900; margin-bottom: 0.5vh;"></div>
+                        <div class="compass-core" style="font-size: 2.1vh; color: var(--text-light); font-weight: 900; line-height: 1.5;">「諸軍各守城鋪，如有妄行出入及高聲言語者，立斬！」</div>
+                        <div style="font-size: 1.9vh; color: var(--primary-gold); font-weight: 800; margin-top: 0.6vh;">❓ 這是哪種句式？點擊揭曉 🔍</div>
+                    </div>
+                    <div class="compass-card" id="compass-card-3" onclick="openCompassCard(3)">
+                        <div class="compass-num">線索 04</div>
+                        <div class="card-revealed-badge" style="display: none; background: var(--accent-red); color: white; padding: 0.2vh 0.6vw; border-radius: 3px; font-size: 1.9vh; font-weight: 900; margin-bottom: 0.5vh;"></div>
+                        <div class="compass-core" style="font-size: 2vh; color: var(--text-light); font-weight: 900; line-height: 1.5;">「有些傳統是在保護你，不想讓你陷入危險；有些傳統卻是在束縛你，要你屈從於過時的想法。」</div>
+                        <div style="font-size: 1.9vh; color: var(--primary-gold); font-weight: 800; margin-top: 0.6vh;">❓ 這是哪種句式？點擊揭曉 🔍</div>
+                    </div>
+                    <div class="compass-card" id="compass-card-4" onclick="openCompassCard(4)">
+                        <div class="compass-num">線索 05</div>
+                        <div class="card-revealed-badge" style="display: none; background: var(--accent-red); color: white; padding: 0.2vh 0.6vw; border-radius: 3px; font-size: 1.9vh; font-weight: 900; margin-bottom: 0.5vh;"></div>
+                        <div class="compass-core" style="font-size: 2.1vh; color: var(--text-light); font-weight: 900; line-height: 1.5;">「兩兔傍地走，安能辨我是雄雌？」</div>
+                        <div style="font-size: 1.9vh; color: var(--primary-gold); font-weight: 800; margin-top: 0.6vh;">❓ 這是哪種句式？點擊揭曉 🔍</div>
+                    </div>
+                    <div class="compass-card" id="compass-card-5" onclick="openCompassCard(5)">
+                        <div class="compass-num">線索 06</div>
+                        <div class="card-revealed-badge" style="display: none; background: var(--accent-red); color: white; padding: 0.2vh 0.6vw; border-radius: 3px; font-size: 1.9vh; font-weight: 900; margin-bottom: 0.5vh;"></div>
+                        <div class="compass-core" style="font-size: 2.1vh; color: var(--text-light); font-weight: 900; line-height: 1.5;">「願意練習，微小的進步也能成功；不願練習，過人的才華終將平凡。」</div>
+                        <div style="font-size: 1.9vh; color: var(--primary-gold); font-weight: 800; margin-top: 0.6vh;">❓ 這是哪種句式？點擊揭曉 🔍</div>
+                    </div>
+                    <div class="compass-card" id="compass-card-6" onclick="openCompassCard(6)">
+                        <div class="compass-num">線索 07</div>
+                        <div class="card-revealed-badge" style="display: none; background: var(--accent-red); color: white; padding: 0.2vh 0.6vw; border-radius: 3px; font-size: 1.9vh; font-weight: 900; margin-bottom: 0.5vh;"></div>
+                        <div class="compass-core" style="font-size: 2.1vh; color: var(--text-light); font-weight: 900; line-height: 1.5;">「我亦無他，惟手熟爾。」</div>
+                        <div style="font-size: 1.9vh; color: var(--primary-gold); font-weight: 800; margin-top: 0.6vh;">❓ 這是哪種句式？點擊揭曉 🔍</div>
+                    </div>
+                    <div class="compass-card" id="compass-card-7" onclick="openCompassCard(7)">
+                        <div class="compass-num">線索 08</div>
+                        <div class="card-revealed-badge" style="display: none; background: var(--accent-red); color: white; padding: 0.2vh 0.6vw; border-radius: 3px; font-size: 1.9vh; font-weight: 900; margin-bottom: 0.5vh;"></div>
+                        <div class="compass-core" style="font-size: 2.1vh; color: var(--text-light); font-weight: 900; line-height: 1.5;">「與其埋怨毫無資源，不如自己創造資源。」</div>
+                        <div style="font-size: 1.9vh; color: var(--primary-gold); font-weight: 800; margin-top: 0.6vh;">❓ 這是哪種句式？點擊揭曉 🔍</div>
+                    </div>
+                    <div class="compass-card" id="compass-card-8" onclick="openCompassCard(8)">
+                        <div class="compass-num">線索 09</div>
+                        <div class="card-revealed-badge" style="display: none; background: var(--accent-red); color: white; padding: 0.2vh 0.6vw; border-radius: 3px; font-size: 1.9vh; font-weight: 900; margin-bottom: 0.5vh;"></div>
+                        <div class="compass-core" style="font-size: 2.1vh; color: var(--text-light); font-weight: 900; line-height: 1.5;">「游泳讓身心平靜；跑步讓意志堅韌；跳高讓視野開闊。」</div>
+                        <div style="font-size: 1.9vh; color: var(--primary-gold); font-weight: 800; margin-top: 0.6vh;">❓ 這是哪種句式？點擊揭曉 🔍</div>
+                    </div>
+                    <div class="compass-card" id="compass-card-9" onclick="openCompassCard(9)">
+                        <div class="compass-num">線索 10</div>
+                        <div class="card-revealed-badge" style="display: none; background: var(--accent-red); color: white; padding: 0.2vh 0.6vw; border-radius: 3px; font-size: 1.9vh; font-weight: 900; margin-bottom: 0.5vh;"></div>
+                        <div class="compass-core" style="font-size: 2.1vh; color: var(--text-light); font-weight: 900; line-height: 1.5;">「凡事不宜痴，若行善則不可不痴。」</div>
+                        <div style="font-size: 1.9vh; color: var(--primary-gold); font-weight: 800; margin-top: 0.6vh;">❓ 這是哪種句式？點擊揭曉 🔍</div>
+                    </div>
+                    <div class="compass-card" id="compass-card-10" onclick="openCompassCard(10)">
+                        <div class="compass-num">線索 11</div>
+                        <div class="card-revealed-badge" style="display: none; background: var(--accent-red); color: white; padding: 0.2vh 0.6vw; border-radius: 3px; font-size: 1.9vh; font-weight: 900; margin-bottom: 0.5vh;"></div>
+                        <div class="compass-core" style="font-size: 2.1vh; color: var(--text-light); font-weight: 900; line-height: 1.5;">「我雖然喜歡游泳，但更擅長跑步。」</div>
+                        <div style="font-size: 1.9vh; color: var(--primary-gold); font-weight: 800; margin-top: 0.6vh;">❓ 這是哪種句式？點擊揭曉 🔍</div>
+                    </div>
+                    <div class="compass-card" style="background: rgba(140, 109, 59, 0.08); border-color: var(--primary-gold); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;" onclick="checkAllCompass()">
+                        <div class="compass-num" style="color: var(--primary-gold); font-size: 2.4vh;">🏆 902 班</div>
+                        <div class="compass-name" style="color: var(--accent-red); font-size: 2.8vh; margin: 0.5vh 0;">全解密彩蛋</div>
+                        <div class="compass-core" style="font-size: 2vh; color: var(--text-muted);">解開 11 組線索後<br>點擊此處領取全勝榮耀！</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 3: 並列 vs 排比 ============================== -->
+            <div id="slide-3" class="slide" data-title="第 1 & 2 式：並列與排比" data-sub="兩者皆重 vs 強調共同核心">
+                <div class="split-row">
+                    <div class="info-card">
+                        <span class="card-tag">第 1 式・並列句</span>
+                        <div class="card-title">前後分句都強調（兩者兼備・雙句結構）</div>
+                        <div class="card-content">
+                            📍 <b>結構特色</b>：必須由<b>兩個或多個分句</b>並列組成，前後兩句同等重要！<br>
+                            📍 <b>標誌連詞</b>：<span class="keyword-chip">而且</span><span class="keyword-chip">還有</span><span class="keyword-chip">也</span><span class="keyword-chip">既……也……</span><span class="keyword-chip">有些……有些……</span><br>
+                            📍 <b>會考實例</b>：「有些傳統是在保護你，不想讓你陷入危險；有些傳統卻是在束縛你，要你屈從於過時想法。」（保護與束縛兩分句並列，兩者都強調！）。
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-tag gold">第 2 式・排比句</span>
+                        <div class="card-title">三組相似句型（抽取出共同點）</div>
+                        <div class="card-content">
+                            📍 <b>結構特徵</b>：三個以上文意相近、結構相似的短句。<br>
+                            📍 <b>邏輯本質</b>：藉由多重鋪陳，凸顯其背後唯一的「共同本質」！<br>
+                            📍 <b>教材經典</b>：「游泳讓心平靜；跑步讓身堅韌；跳高讓視野開闊」（共同點：運動的好處）。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-panel">
+                    <span class="quiz-badge">902 獨家原創實戰・並列句辨析</span>
+                    <div class="quiz-question">
+                        題目：建築學者在論壇演講中指出：「一座真正宜居的現代城市，既要有日新月異的智慧科技建設，以提升公共生活的便利與效能；也要有溫潤厚重的人文歷史古蹟，以安頓市民的心靈與集體記憶。」根據這段話的句式邏輯，作者所主張的城市發展核心理念為何？
+                    </div>
+                    <div class="quiz-options-grid">
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q1', '作者強調兩者兼備，並非只偏重科技與經濟。')">A. 全力追求尖端科技以擴大經濟效能</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, true, 'q1', '精準破案！運用了標準的「既要……也要……」雙分句並列結構，前後兩句同等重要，強調智慧科技與歷史人文兩者不可偏廢、必須兼籌並顧！')">B. 智慧建設與人文保存兼籌並顧</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q1', '文中主張兩者並存，而非為了古蹟阻礙發展。')">C. 為了保護歷史古蹟應全面放緩建設</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q1', '此選項與作者「安頓心靈記憶」的肯定態度背道而馳。')">D. 科技進步最終將自然淘汰古老建築</button>
+                    </div>
+                    <div class="quiz-reveal" id="q1-reveal"></div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 4: 轉折 vs 映襯 ============================== -->
+            <div id="slide-4" class="slide" data-title="第 3 & 4 式：轉折與映襯" data-sub="逆轉重心在後 vs 正反對比彰顯正面">
+                <div class="split-row">
+                    <div class="info-card">
+                        <span class="card-tag">第 3 式・轉折句</span>
+                        <div class="card-title">聚光燈打在轉折詞之後</div>
+                        <div class="card-content">
+                            📍 <b>標誌連詞</b>：<span class="keyword-chip">但是</span><span class="keyword-chip">然而</span><span class="keyword-chip">還是</span><span class="keyword-chip">不過</span><span class="keyword-chip">其實</span><br>
+                            📍 <b>秒殺鐵則</b>：作者前面說的都是鋪墊，轉折詞後面的話才是真正的核心立場！<br>
+                            📍 <b>會考題型</b>：「吹泡泡會破，其實不需要太在意。」（重點在過程滿滿的收穫）。
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-tag gold">第 4 式・映襯句</span>
+                        <div class="card-title">兩相背馳，主打正面意涵</div>
+                        <div class="card-content">
+                            📍 <b>結構特徵</b>：兩組文意相反的事物並列對比。<br>
+                            📍 <b>秒殺鐵則</b>：作者並非客觀陳列，而是透過「負面」來烘托「正面」的價值！<br>
+                            📍 <b>會考題型</b>：「君子如抱美玉而深藏不市，小人則以石為玉而又炫之」（強調君子真實坦率、不張揚的正面美德）。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-panel">
+                    <span class="quiz-badge">902 獨家原創實戰・轉折句辨析</span>
+                    <div class="quiz-question">
+                        題目：文藝評論家寫道：「浮華的讚美與掌聲固然令人心曠神怡，然而，唯有那些刺耳的批評與質疑，才能真正照見我們創作思維的盲區與不足。」根據這段話的邏輯，作者最想傳達的核心觀點為何？
+                    </div>
+                    <div class="quiz-options-grid">
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q2', '讚美只是轉折前的讓步鋪陳，並非作者核心訴求。')">A. 掌聲與讚美是創作者最重要的動力源泉</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q2', '作者肯定批評的警醒價值，並未指責其出於惡意。')">B. 嚴厲的批評多半出於對創作者的嫉妒</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, true, 'q2', '秒殺成功！轉折句的聚光燈永遠打在「然而」之後！作者前半句承認掌聲美好，但轉折後的後半句才是真正重心：刺耳的批評才能照見盲區，故應珍視批評的警醒價值！')">C. 應珍視嚴苛批判以突破思維盲點</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q2', '作者主張虛心省思批判，並非無動於衷。')">D. 面對外界評價應保持超然冷漠的態度</button>
+                    </div>
+                    <div class="quiz-reveal" id="q2-reveal"></div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 5: 假設 vs 條件 ============================== -->
+            <div id="slide-5" class="slide" data-title="第 5 & 6 式：假設與條件" data-sub="會考高頻雙子星・情境推想 vs 唯一門檻">
+                <div class="split-row">
+                    <div class="info-card">
+                        <span class="card-tag">第 5 式・假設句</span>
+                        <div class="card-title">設定未發生的虛擬情境</div>
+                        <div class="card-content">
+                            📍 <b>白話連詞</b>：<span class="keyword-chip">如果</span><span class="keyword-chip">假如</span><span class="keyword-chip">要是</span><span class="keyword-chip">一旦</span><span class="keyword-chip">倘若</span><br>
+                            📍 <b>文言密碼</b>：<span class="gold-chip">若</span><span class="gold-chip">如</span><span class="gold-chip">假</span><span class="gold-chip">使</span><span class="gold-chip">苟</span><span class="gold-chip">令</span>（均解作「如果」）<br>
+                            📍 <b>經典考點</b>：「倘若讀者無類似體驗，作品就失去效力」（強調假設情境中的先決條件）。
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-tag gold">第 6 式・條件句</span>
+                        <div class="card-title">設定達成目標的必要門檻</div>
+                        <div class="card-content">
+                            📍 <b>白話連詞</b>：<span class="keyword-chip">只要</span><span class="keyword-chip">只有</span><span class="keyword-chip">除非</span><br>
+                            📍 <b>文言密碼</b>：<span class="gold-chip">惟</span><span class="gold-chip">唯</span><span class="gold-chip">僅</span><span class="gold-chip">但</span>（解作「只有、只要」）<br>
+                            📍 <b>經典考點</b>：「我亦無他，惟手熟爾。」（強調達標的唯一條件就是反覆熟練）。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-panel">
+                    <span class="quiz-badge">902 獨家原創實戰・條件句辨析</span>
+                    <div class="quiz-question">
+                        題目：資深航海家對見習水手說：「平靜無波的海灣固然令人留戀，但唯有敢於迎向驚濤駭浪的舵手，才能開闢出嶄新的航道。」根據這段話的邏輯，作者認為開闢嶄新航道的「關鍵條件」為何？
+                    </div>
+                    <div class="quiz-options-grid">
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q3', '平靜的海灣是讓步鋪陳，並非開創新航道的條件。')">A. 身處風平浪靜的安全海域</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, true, 'q3', '完全正確！「唯有……才能……」屬於條件句，核心關鍵在於「敢於迎向驚濤駭浪」，強調勇於承擔未知風險與挑戰，才是開創新局不可或缺的必備條件！')">B. 勇於面對未知挑戰與風險</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q3', '文中並未提及船隻結構或航行設備。')">C. 擁有性能卓越的航海船隻</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q3', '聽從指揮只是常規紀律，未觸及開闢新航道之條件核心。')">D. 嚴格聽從資深前輩的指示</button>
+                    </div>
+                    <div class="quiz-reveal" id="q3-reveal"></div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 6: 因果句 ============================== -->
+            <div id="slide-6" class="slide" data-title="第 7 式：因果句" data-sub="邏輯順序莫顛倒・警惕文言先果後因">
+                <div class="split-row">
+                    <div class="info-card highlight">
+                        <span class="card-tag">因果鐵則</span>
+                        <div class="card-title">前後推導關係・不可倒果為因</div>
+                        <div class="card-content">
+                            📍 <b>白話連詞</b>：因為、由於……所以、因此、就、便。<br>
+                            📍 <b>文言密碼</b>：<br>
+                            ・表原因：<span class="gold-chip">因</span><span class="gold-chip">以</span><span class="gold-chip">緣</span>（解作「因為」）<br>
+                            ・表結果：<span class="gold-chip">故</span><span class="gold-chip">則</span><span class="gold-chip">便</span><span class="gold-chip">是以</span>（解作「所以」）
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-tag gold">會考大陷阱</span>
+                        <div class="card-title">先果後因倒裝句（自緣身在最高層）</div>
+                        <div class="card-content">
+                            📍 <b>經典實例</b>：王安石《登飛來峰》<br>
+                            「不畏浮雲遮望眼，自緣身在最高層。」<br>
+                            ・前句「不畏浮雲遮望眼」是<b>結果</b>！<br>
+                            ・後句「自緣身在最高層」（因為自身站在最高處）才是<b>原因</b>！
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-panel">
+                    <span class="quiz-badge">902 獨家原創實戰・因果句辨析</span>
+                    <div class="quiz-question">
+                        題目：學者勉勵後進：「正因為智者深知自身所知有限，所以時刻抱持虛懷若谷的態度；而狂妄自滿之人，往往正是因為誤將井底天空當成了整個浩瀚蒼穹。」這段文字的主要因果推論為何？
+                    </div>
+                    <div class="quiz-options-grid">
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q4', '文中智者反而更加謙卑，因果顛倒。')">A. 見識愈廣博的人愈容易陷入傲慢</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q4', '文中肯定虛懷若谷的態度，並非安於盲點。')">B. 智者安於自身的有限而不再探求真理</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, true, 'q4', '因果鏈條清晰！「正因為深知自身所知有限（原因），所以時刻抱持虛懷若谷（結果）」，自知不足正是促使智者持續謙遜向學的真正根源！')">C. 自知見聞有限促使人恆常謙遜向學</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q4', '蒼穹只是比喻，並非檢驗狂妄的標準。')">D. 浩瀚的蒼穹是檢驗狂妄程度的客觀標準</button>
+                    </div>
+                    <div class="quiz-reveal" id="q4-reveal"></div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 7: 遞進句 ============================== -->
+            <div id="slide-7" class="slide" data-title="第 8 式：遞進句" data-sub="步步登高・作者強調重心永遠在後者">
+                <div class="split-row">
+                    <div class="info-card">
+                        <span class="card-tag">遞進原理</span>
+                        <div class="card-title">後句語意比前句更進一層</div>
+                        <div class="card-content">
+                            📍 <b>白話連詞</b>：<span class="keyword-chip">不但……還</span><span class="keyword-chip">何況</span><span class="keyword-chip">更是</span><span class="keyword-chip">甚至</span><br>
+                            📍 <b>文言關鍵字</b>：<span class="gold-chip">況</span>（解作「更何況」）、<span class="gold-chip">且……又況……</span><br>
+                            📍 <b>文言名句</b>：「大禹之聖，且惜寸陰；陶侃之賢，且惜分陰；又況賢聖不若彼者乎？」（連大禹陶侃尚且珍惜光陰，何況才能不如他們的人，更應惜時！）。
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-tag gold">會考解密視角</span>
+                        <div class="card-title">底線思維：退一步說 vs 進一步做</div>
+                        <div class="card-content">
+                            📍 遞進句常常用於展現<b>道德底線</b>或<b>價值層次</b>。<br>
+                            📍 往前是理想，往後是底線。<br>
+                            📍 作者最用力批判的，往往就是突破了最後一層底線的行為！
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-panel">
+                    <span class="quiz-badge">902 獨家原創實戰・遞進句辨析</span>
+                    <div class="quiz-question">
+                        題目：教育家告誡學子：「在漫長的求學路上，未能拔得頭籌固然令人遺憾，但更可悲的是因畏懼挫折而放棄探索；甚至為了虛榮而採取作弊欺瞞的手段。」根據遞進邏輯，作者最深惡痛絕、視為底線全失的行為為何？
+                    </div>
+                    <div class="quiz-options-grid">
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q5', '未能奪冠只是成績上的遺憾，位於遞進鏈的最前端。')">A. 在同儕競爭中未能名列前茅</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q5', '放棄探索雖更可悲，但仍非作者語意遞進至極點的最惡劣行為。')">B. 因害怕失敗而失去求知熱情</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, true, 'q5', '邏輯層次分明！遞進句「未能……但更……甚至……」語氣層層加重，作者批判的重心永遠落在最後一層，最不齒、最痛絕的行為正是徹底摧毀誠信的「為了虛榮弄虛作假」！')">C. 為了滿足虛榮而弄虛作假</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q5', '文意聚焦於個人道德底線，非同儕人際相處。')">D. 難以在同儕團體中建立自信</button>
+                    </div>
+                    <div class="quiz-reveal" id="q5-reveal"></div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 8: 比較句 ============================== -->
+            <div id="slide-8" class="slide" data-title="第 9 式：比較句" data-sub="兩相權衡・精準鎖定作者立場優劣">
+                <div class="split-row">
+                    <div class="info-card">
+                        <span class="card-tag">類型甲：後者更好</span>
+                        <div class="card-title">不如、不及、比不上</div>
+                        <div class="card-content">
+                            📍 <b>白話</b>：與其抱怨環境，<b>不如</b>自己創造機會。<br>
+                            📍 <b>文言密碼</b>：<span class="gold-chip">不若</span><span class="gold-chip">未若</span><span class="gold-chip">莫若</span><span class="gold-chip">何如</span><br>
+                            📍 <b>考題實例</b>：「遠親不若近鄰」（強調後者近鄰更為實用親切）。
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-tag gold">類型乙：前者更好</span>
+                        <div class="card-title">寧可……絕不…… / 寧……毋……</div>
+                        <div class="card-content">
+                            📍 <b>白話</b>：<b>寧可</b>有光明的失敗，<b>絕不要</b>不光彩的成功。<br>
+                            📍 <b>文言密碼</b>：<span class="gold-chip">寧……毋……</span>（寧願……不要……）<br>
+                            📍 <b>會考題型</b>：「寧可讓學得快的人等，也不能讓不會的人繼續不會」（強調堅持不放棄任何一個學生）。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-panel">
+                    <span class="quiz-badge">902 獨家原創實戰・比較句辨析</span>
+                    <div class="quiz-question">
+                        題目：先賢家訓有云：「寧可安貧以守道，不可貪利而敗名；與其苟且偷安以求榮，不如正道直行而無愧於天地。」這段文字所傳達的人生取捨原則為何？
+                    </div>
+                    <div class="quiz-options-grid">
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q6', '作者主張寧安貧守道，反對隨機迎合世俗貪利。')">A. 順應時勢變化，機變求全以求生存</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, true, 'q6', '精準辨析！本題兼具「寧可……不可……（肯定前者，否定後者）」與「與其……不如……（否定前者，肯定後者）」兩大比較模型，兩相較量之下，皆強力主張堅守品德操守遠重於追求世俗名利！')">B. 堅守道德操守遠勝於追求富貴榮華</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q6', '作者著重在自我良知無愧，並非消極避世。')">C. 遠離塵俗紛擾以保全個人身家性命</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q6', '文意明確否定苟且求榮的行為。')">D. 為了追求家族榮耀可以適度權衡妥協</button>
+                    </div>
+                    <div class="quiz-reveal" id="q6-reveal"></div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 9: 反詰句 ============================== -->
+            <div id="slide-9" class="slide" data-title="第 10 式：反詰句（激問）" data-sub="明知故問・答案就在問題的反面">
+                <div class="split-row">
+                    <div class="info-card">
+                        <span class="card-tag">激問本質</span>
+                        <div class="card-title">形式在問，骨子在答</div>
+                        <div class="card-content">
+                            📍 <b>判定原則</b>：<br>
+                            ・問句是「肯定」，答案就是<b>強烈否定</b>！<br>
+                            ・問句是「否定」，答案就是<b>強烈肯定</b>！<br>
+                            📍 <b>白話連詞</b>：<span class="keyword-chip">難道</span><span class="keyword-chip">怎麼</span><span class="keyword-chip">何必</span><br>
+                            📍 <b>口語實例</b>：「凡事盡力就好，何必太在乎勝負呢？」（意指：不必在乎！）。
+                        </div>
+                    </div>
+                    <div class="info-card highlight">
+                        <span class="card-tag gold">文言 10 大反詰神字</span>
+                        <div class="card-title">見字即秒殺・均解作難道、怎麼</div>
+                        <div class="card-content">
+                            📍 請 902 同學齊聲朗讀這十個金字：<br>
+                            <span class="gold-chip">豈</span><span class="gold-chip">安</span><span class="gold-chip">何</span><span class="gold-chip">焉</span><span class="gold-chip">奚</span><span class="gold-chip">其</span><span class="gold-chip">惡</span><span class="gold-chip">不亦</span><span class="gold-chip">孰</span><span class="gold-chip">固</span><br>
+                            📍 《木蘭詩》：「兩兔傍地走，安能辨我是雄雌？」（安能＝怎麼能，意思是：根本不能！）。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-panel">
+                    <span class="quiz-badge">902 獨家原創實戰・反詰句辨析</span>
+                    <div class="quiz-question">
+                        題目：史官記載名臣直諫：「天下百姓嗷嗷待哺，朝廷若不思賑濟安民，反倒大興土木修築遊憩宮苑，此豈非本末倒置、有違仁政之道乎？」這句話的真實意圖為何？
+                    </div>
+                    <div class="quiz-options-grid">
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q7', '大臣語氣嚴肅痛切，絕非單純詢問宮苑工程。')">A. 詢問君王修築宮苑的工期與具體預算</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, true, 'q7', '答案就在反面！「此豈非……乎？」是文言標準反詰句，形式為反問，實質為強烈肯定：這「絕對是」本末倒置、嚴重違背仁政！臣子的真正意圖是痛切規勸君王立即停建宮苑、優先賑濟百姓！')">B. 痛陳大興土木之非，力勸君王賑民為先</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q7', '臣子極力反對興建宮苑，並無肯定讚賞之意。')">C. 讚許君王興辦公共建設以帶動就業</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q7', '焦點在於君王決策是否當行，非僅描述百姓困境。')">D. 感嘆百姓生計艱難並期望上蒼垂憐</button>
+                    </div>
+                    <div class="quiz-reveal" id="q7-reveal"></div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 10: 雙重否定句 ============================== -->
+            <div id="slide-10" class="slide" data-title="第 11 式：雙重否定句" data-sub="負負得正・語氣最強烈的必然肯定">
+                <div class="split-row">
+                    <div class="info-card">
+                        <span class="card-tag">白話雙重否定</span>
+                        <div class="card-title">雙否定連用，轉化為絕對必然</div>
+                        <div class="card-content">
+                            📍 <b>標誌連詞</b>：<span class="keyword-chip">沒有不</span><span class="keyword-chip">不能不</span><span class="keyword-chip">非……不可</span><br>
+                            📍 <b>語氣效果</b>：比起單純的肯定句，雙重否定具有不可動搖的堅定決心！<br>
+                            📍 <b>白話實例</b>：「人生沒有跳不過的火焰山」（只要肯跨出腳步，一定能超越困難！）。
+                        </div>
+                    </div>
+                    <div class="info-card highlight">
+                        <span class="card-tag gold">文言雙重否定三巨頭</span>
+                        <div class="card-title">會考文言解讀必背口訣</div>
+                        <div class="card-content">
+                            📍 <span class="gold-chip">不可不</span> ＝ 不可不要（一定要）<br>
+                            📍 <span class="gold-chip">未有不</span> ＝ 沒有不是（必定是）<br>
+                            📍 <span class="gold-chip">莫不</span> ＝ 沒有一個不（全都是、皆是）<br>
+                            📍 《老子》：「為無為，則無不治。」（順應自然之道，天下沒有治理不好的，即必然大治！）。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-panel">
+                    <span class="quiz-badge">902 獨家原創實戰・雙重否定句辨析</span>
+                    <div class="quiz-question">
+                        題目：先賢論學問工夫：「求學問道如溯江逆舟，日日精進猶恐不及，為學者不可不竭力深思，亦莫不自恆久苦練中得之。天下之事，未有不歷經淬鍊而能成大器者也。」這段話的核心涵義為何？
+                    </div>
+                    <div class="quiz-options-grid">
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q8', '文中強調努力深思與苦練，並未歸因於天賦資質。')">A. 天資聰穎者往往能在短時間內成就大業</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, true, 'q8', '負負得正真功夫！文中連用「不可不（一定要）」、「莫不（全都是）」、「未有不（必定是）」三大文言雙重否定，語氣無比堅決：天下成就大器者，必然要歷經恆久的深思磨練與淬鍊！')">B. 卓越成就必然建立在持續的深思與磨礪之上</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q8', '文中強調的是恆久淬鍊的必然性，非學習方法的選擇。')">C. 讀書的方法因人而異，不宜強求一律</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q8', '文中「溯江逆舟」只是比喻求學之難，並非主張順其自然。')">D. 求學應順應本性，過度苦練反而有害身心</button>
+                    </div>
+                    <div class="quiz-reveal" id="q8-reveal"></div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 11: 會考魔王一 ============================== -->
+            <div id="slide-11" class="slide" data-title="會考歷屆實戰擂台一" data-sub="113 會考第 2 題・通過率僅 47% 魔王題">
+                <div class="info-card" style="margin-bottom: 1.5vh;">
+                    <span class="card-tag">排比＋因果綜合擂台</span>
+                    <div class="card-title">902 全真模擬魔王題一・物類排比求同</div>
+                    <div class="card-content" style="font-size: 2.7vh; line-height: 1.7; color: var(--accent-red);">
+                        「鷙鳥以爪烈見射，駟馬以駿足見勒，美木以直幹見伐。故抱道者，不鬻燿世之名。」
+                    </div>
+                </div>
+
+                <div class="quiz-panel">
+                    <span class="quiz-badge">902 獨家原創實戰・排比求同深度思辨</span>
+                    <div class="quiz-question">
+                        這段古代哲理文句的深層涵義，與下列何者最相契合？
+                    </div>
+                    <div class="quiz-options-grid">
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q9', '此選項鼓勵追求名譽，與原文「不鬻燿世之名」完全相反。')">A. 人過留名，雁過留聲，當立功立言以揚名後世</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, true, 'q9', '抽絲剝繭！鷙鳥因爪利遭獵射、良馬因足駿被拘勒、佳木因幹直遭砍伐，三個分句排比鋪陳，共同點在於「自身外顯的特長反而招致殺身拘禁之禍」！因此「抱道者不鬻燿世之名」，正強調鋒芒過盛、貪求虛名往往招來禍患！')">B. 鋒芒太盛易招摧折，智者不以虛顯自炫</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q9', '原文非討論成名難易，而在警惕名盛招禍。')">C. 卓越才能須歷經千錘百鍊方能成器</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q9', '文意非批評不思進取，而是在闡述避禍保身之道。')">D. 藏鋒守拙是不求上進者的消極遁詞</button>
+                    </div>
+                    <div class="quiz-reveal" id="q9-reveal"></div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 12: 會考魔王二 ============================== -->
+            <div id="slide-12" class="slide" data-title="會考歷屆實戰擂台二" data-sub="108 會考第 10 題・通過率 56% 反詰與代詞">
+                <div class="info-card" style="margin-bottom: 1.5vh;">
+                    <span class="card-tag">反詰激問＋代詞追蹤</span>
+                    <div class="card-title">902 全真模擬魔王題二・政論反詰與代詞解碼</div>
+                    <div class="card-content" style="font-size: 2.5vh; line-height: 1.65;">
+                        「古者官職以授賢能，爵祿以賞軍功。今世風澆薄，朝廷若任憑私恩拔擢庸劣之徒，致使天下寒門志士報國無門，<em>上位者將何以收海內之人心？其革之。</em>」
+                    </div>
+                </div>
+
+                <div class="quiz-panel">
+                    <span class="quiz-badge">902 獨家原創實戰・反詰判讀與代詞破案</span>
+                    <div class="quiz-question">
+                        文末「其革之」的「革」為革除、除去之意，「之」字所代稱的對象為何？
+                    </div>
+                    <div class="quiz-options-grid">
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q10', '官職爵祿是國家的名器制度，並非應當革除之弊端。')">A. 官職爵祿之制</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q10', '寒門志士是國家亟需的人才，朝廷應予拔擢而非革除。')">B. 天下寒門志士</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, true, 'q10', '神級破案！前句「上位者將何以收海內之人心？」為反詰句（意指根本無法收服人心！）。而造成志士寒心、人心渙散的元凶正是「以私恩拔擢庸劣的弊政」，因此文末疾呼「其革之」，此「之」字正代指「私恩濫拔之弊」！')">C. 私恩濫拔之弊政</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q10', '海內人心是國家穩固的根基，絕不可革除。')">D. 海內歸向之人心</button>
+                    </div>
+                    <div class="quiz-reveal" id="q10-reveal"></div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 13: 會考魔王三 ============================== -->
+            <div id="slide-13" class="slide" data-title="會考歷屆實戰擂台三" data-sub="106 會考第 5 題・通過率 51% 複合句拆解">
+                <div class="info-card" style="margin-bottom: 1.5vh;">
+                    <span class="card-tag">轉折＋假設多重骨架</span>
+                    <div class="card-title">902 全真模擬魔王題三・多重句式前提鎖定</div>
+                    <div class="card-content" style="font-size: 2.6vh; line-height: 1.7;">
+                        「科學理論雖然具備嚴密的邏輯體系，但終究須面對客觀事實的嚴格檢驗；<em>研究者倘若無法提供可重複驗證的實證數據，再精妙的假說也將失去其學術說服力。</em>」
+                    </div>
+                </div>
+
+                <div class="quiz-panel">
+                    <span class="quiz-badge">902 獨家原創實戰・假設結構前提推論</span>
+                    <div class="quiz-question">
+                        根據這段話的複合句邏輯，一項科學假說要能確立其「學術說服力」，不可或缺的關鍵前提為何？
+                    </div>
+                    <div class="quiz-options-grid">
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q11', '推導邏輯只是基礎，文意強調仍須受實證檢驗。')">A. 假說具備深奧複雜的數學推導</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, true, 'q11', '精準抓出前提！此句採用「倘若……也將……」的假設結構。假定沒有可重複驗證的數據就會失去說服力，逆向推導即可得出：確立說服力的核心關鍵前提，正是「必須具備可重複驗證的客觀實證數據」！')">B. 具備經得起重複驗證的客觀數據</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q11', '文中完全未提及研究團隊或學術權威名望。')">C. 獲得國際知名學術權威的一致認可</button>
+                        <button class="quiz-btn" onclick="checkQuiz(this, false, 'q11', '假說精妙並不等於具備實證說服力。')">D. 假說構想必須突破所有既有理論框架</button>
+                    </div>
+                    <div class="quiz-reveal" id="q11-reveal"></div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 14: 文言文沙盤 ============================== -->
+            <div id="slide-14" class="slide" data-title="文言文句式速攻沙盤" data-sub="課堂翻牌對決・四大學科名句直擊">
+                <div style="margin-bottom: 1vh;">
+                    <span class="card-tag">點擊卡片解密</span>
+                    <span style="font-family: var(--font-ancient); font-size: 2.5vh; font-weight: 900; margin-left: 0.8vw;">
+                        國中會考最愛考的四句文言名篇，點擊下方卡片揭開隱藏句式邏輯：
+                    </span>
+                </div>
+                <div class="quad-grid">
+                    <div class="quad-card" onclick="toggleQuad(this)">
+                        <div class="quad-header">
+                            <span class="quad-title">《墨子．親士》</span>
+                            <span class="quad-hint">點擊翻牌 🔄</span>
+                        </div>
+                        <div class="quad-quote">「良馬難乘，然可以任重致遠；良才難求，然可以致君見尊。」</div>
+                        <div class="quad-analysis">
+                            💡 <b>轉折句</b>：「然」解作然而。雖然良馬難馴、人才難尋，但轉折後強調其具備能致遠、能輔政尊君的無上價值！
+                        </div>
+                    </div>
+
+                    <div class="quad-card" onclick="toggleQuad(this)">
+                        <div class="quad-header">
+                            <span class="quad-title">蘇軾《上神宗皇帝書》</span>
+                            <span class="quad-hint">點擊翻牌 🔄</span>
+                        </div>
+                        <div class="quad-quote">「陛下苟誠心乎為民，則人信之；苟誠心乎為利，則雖辯人亦不服。」</div>
+                        <div class="quad-analysis">
+                            💡 <b>假設句＋映襯句</b>：「苟」解作如果。如果真心為民，天下歸心；如果一心求利，口才再好也無人信服。
+                        </div>
+                    </div>
+
+                    <div class="quad-card" onclick="toggleQuad(this)">
+                        <div class="quad-header">
+                            <span class="quad-title">宋濂《送東陽馬生序》</span>
+                            <span class="quad-hint">點擊翻牌 🔄</span>
+                        </div>
+                        <div class="quad-quote">「錄畢，走送之，不敢稍逾約。以是人多以書假余。」</div>
+                        <div class="quad-analysis">
+                            💡 <b>因果句</b>：「以是」解作因此（所以）。因為自己信守承諾不敢逾期，因此別人才願意把藏書借給他！
+                        </div>
+                    </div>
+
+                    <div class="quad-card" onclick="toggleQuad(this)">
+                        <div class="quad-header">
+                            <span class="quad-title">《老子．道德經》</span>
+                            <span class="quad-hint">點擊翻牌 🔄</span>
+                        </div>
+                        <div class="quad-quote">「常使民無知無欲，使夫智者不敢為也。為無為，則無不治。」</div>
+                        <div class="quad-analysis">
+                            💡 <b>雙重否定句</b>：「無不治」＝沒有治理不好的。以雙重否定表達道家順應自然、天下必然獲得長治久安的強烈肯定！
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 15: 終極速記口訣 ============================== -->
+            <div id="slide-15" class="slide" data-title="會考終極神裝：速記口訣表" data-sub="考前 30 秒快速回想卡・全域劃記重點">
+                <div style="margin-bottom: 1vh;">
+                    <span class="card-tag">秒殺錦囊</span>
+                    <span style="font-family: var(--font-ancient); font-size: 2.5vh; font-weight: 900; margin-left: 0.8vw;">
+                        902 同學請將這六句速記歌訣牢記在心，亦可使用下方劃記筆在螢幕畫重點：
+                    </span>
+                </div>
+                <div class="formula-grid">
+                    <div class="formula-row">
+                        <span class="formula-badge">並列與排比</span>
+                        <div class="formula-text">並列前後皆重要，排比連三抓同道。</div>
+                    </div>
+                    <div class="formula-row">
+                        <span class="formula-badge">轉折與映襯</span>
+                        <div class="formula-text">轉折精華在之後，映襯正向是主角。</div>
+                    </div>
+                    <div class="formula-row">
+                        <span class="formula-badge">假設與條件</span>
+                        <div class="formula-text">假設前提是如果，條件唯有一條路。</div>
+                    </div>
+                    <div class="formula-row">
+                        <span class="formula-badge">因果與遞進</span>
+                        <div class="formula-text">因果順序莫顛倒，遞進更上一層高。</div>
+                    </div>
+                    <div class="formula-row">
+                        <span class="formula-badge">比較與反詰</span>
+                        <div class="formula-text">比較孰優與孰劣，反詰答案在反面。</div>
+                    </div>
+                    <div class="formula-row">
+                        <span class="formula-badge">雙重否定句</span>
+                        <div class="formula-text">雙重否定變肯定，會考破案不踩雷！</div>
+                    </div>
+                </div>
+                <div style="margin-top: 2vh; text-align: center;">
+                    <button class="nav-btn primary" style="font-size: 2.6vh; padding: 1vh 2.5vw;" onclick="playFanfareSound();">
+                        🔔 敲響會考得勝金鐘！
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 16: 結算與祝福 ============================== -->
+            <div id="slide-16" class="slide" data-title="代課任務圓滿達成" data-sub="902 班會考戰力滿點・旗開得勝">
+                <div class="story-hero">
+                    <h1 class="hero-title" style="color: var(--accent-green);">🎉 902 班：句式解碼神探認證！</h1>
+                    <p class="hero-desc">
+                        恭喜 902 班全體同學順利通關今日特派任務！<br>
+                        語言是思想的載體，邏輯是文意的骨架。<br>
+                        在會考的考場上，遇到落落長的文章不要害怕，<br>
+                        只要圈出關鍵連詞，看破句式結構，作者的真心話立刻無所遁形！
+                    </p>
+                    <div class="hero-badge-row">
+                        <div class="hero-pill" style="border-color: var(--accent-green); color: var(--accent-green);">🎖️ 句式邏輯解碼官徽章</div>
+                        <div class="hero-pill" style="border-color: var(--accent-green); color: var(--accent-green);">💯 11 大句式融會貫通</div>
+                        <div class="hero-pill" style="border-color: var(--accent-green); color: var(--accent-green);">🔥 會考國文奪 A++ 滿分</div>
+                    </div>
+                    <div style="margin-top: 4vh; display: flex; justify-content: center; gap: 2vw;">
+                        <button class="nav-btn primary" style="font-size: 2.8vh; padding: 1.4vh 3.5vw;" onclick="resetAllSlides()">
+                            重新啟航 🔄
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 畫布劃記層 -->
+        <canvas id="drawing-canvas"></canvas>
+
+        <!-- 頁尾控制列 -->
+        <div class="slide-footer">
+            <button class="nav-btn" id="prev-btn" onclick="navigateSlide(-1)">上一頁</button>
+            <div class="page-indicator" id="slide-indicator">第 1 / 16 頁</div>
+            
+            <div style="display: flex; align-items: center;">
+                <!-- 膠囊劃記工具列 -->
+                <div class="drawing-footer-toolbar">
+                    <button class="drawing-menu-btn active" id="tool-pointer" onclick="setDrawingTool('pointer')" title="滑鼠模式（雙擊此列或畫布可快速切換筆與滑鼠）">
+                        <svg viewBox="0 0 24 24"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path><path d="M13 13l6 6"></path></svg>
+                    </button>
+                    <button class="drawing-menu-btn" id="tool-pen" onclick="setDrawingTool('pen')" title="靛青畫筆">
+                        <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    </button>
+                    <button class="drawing-menu-btn" id="tool-eraser" onclick="setDrawingTool('eraser')" title="橡皮擦">
+                        <svg viewBox="0 0 24 24"><path d="M20 20H7L3 16c-1.5-1.5-1.5-3.5 0-5l8.5-8.5c1.5-1.5 3.5-1.5 5 0l4 4c1.5 1.5 1.5 3.5 0 5L12 20"></path><line x1="6" y1="12" x2="16" y2="2"></line></svg>
+                    </button>
+                    <button class="drawing-menu-btn" onclick="clearCurrentDrawing()" title="清空本頁劃記">
+                        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    </button>
+                    <button class="drawing-menu-btn danger" onclick="clearAllDrawings()" title="清空所有頁面劃記">
+                        <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </button>
+                </div>
+                <button class="nav-btn primary" id="next-btn" onclick="navigateSlide(1)">下一頁</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自訂古典彈窗（完全取代原生 alert，避免阻擋進程與跨域安全限制） -->
+    <div id="compass-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center;" onclick="closeModal(event)">
+        <div style="background: #ffffff; border: 3px double var(--accent-red); border-radius: 12px; padding: 3vh 3vw; max-width: 720px; width: 88%; box-shadow: 0 12px 35px rgba(0,0,0,0.35); font-family: var(--font-ancient);" onclick="event.stopPropagation()">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-red); padding-bottom: 1.2vh; margin-bottom: 2vh;">
+                <div id="modal-title" style="font-size: 3.4vh; font-weight: 900; color: var(--accent-red);"></div>
+                <button onclick="closeModal()" style="background: transparent; border: none; font-size: 3vh; cursor: pointer; color: var(--text-muted); padding: 0.5vh 1vw;">✕</button>
+            </div>
+            <div id="modal-body" style="font-size: 2.6vh; line-height: 1.8; color: var(--text-light); font-weight: 800; text-align: justify;"></div>
+            <div style="text-align: right; margin-top: 2.5vh;">
+                <button class="nav-btn primary" onclick="closeModal()" style="font-size: 2.2vh; padding: 0.8vh 2.5vw;">我知道了 ✓</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 腳本邏輯 -->
+    <script>
+        // Web Audio API 音效無外部依賴
+        let audioCtx = null;
+        let isMuted = false;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioClass) {
+                    audioCtx = new AudioClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSuccessSound() {
+            if (isMuted) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+                
+                const osc1 = ctx.createOscillator();
+                const gain1 = ctx.createGain();
+                osc1.type = 'triangle';
+                osc1.frequency.setValueAtTime(523.25, now);
+                gain1.gain.setValueAtTime(0.18, now);
+                gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc1.connect(gain1);
+                gain1.connect(ctx.destination);
+                osc1.start(now);
+                osc1.stop(now + 0.35);
+
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                osc2.type = 'triangle';
+                osc2.frequency.setValueAtTime(659.25, now + 0.12);
+                gain2.gain.setValueAtTime(0.2, now + 0.12);
+                gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
+                osc2.connect(gain2);
+                gain2.connect(ctx.destination);
+                osc2.start(now + 0.12);
+                osc2.stop(now + 0.55);
+            } catch(e) {}
+        }
+
+        function playErrorSound() {
+            if (isMuted) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(160, now);
+                osc.frequency.exponentialRampToValueAtTime(110, now + 0.3);
+                gain.gain.setValueAtTime(0.16, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } catch(e) {}
+        }
+
+        function playClickSound() {
+            if (isMuted) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(360, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } catch(e) {}
+        }
+
+        function playFanfareSound() {
+            if (isMuted) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const notes = [523.25, 659.25, 783.99, 1046.5];
+                notes.forEach((freq, idx) => {
+                    const now = ctx.currentTime + (idx * 0.12);
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.6);
+                });
+            } catch(e) {}
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('sound-toggle').innerText = isMuted ? '🔇' : '🔊';
+        }
+
+        const compassData = [
+            {
+                name: '因果句（第 7 式）',
+                quote: '「不畏浮雲遮望眼，自緣身在最高層。」',
+                desc: '前後句具備因果推導關係，因果順序不可顛倒。',
+                tip: '會考必考陷阱：此句為「先果後因」倒裝句！前句「不畏浮雲」是結果，後句「自緣身在最高層」是原因（緣＝因為）。文言密碼：因、以、緣（表原因）；故、則、便、是以（表結果）。'
+            },
+            {
+                name: '遞進句（第 8 式）',
+                quote: '「大禹之聖且惜寸陰，陶侃之賢且惜分陰，又況賢聖不若彼者乎？」',
+                desc: '後句比前句語意更進一層，作者強調的重心永遠在「後者」！',
+                tip: '連古代聖賢大禹、陶侃尚且珍惜微小的光陰，何況才能不如他們的平凡人，更應該珍惜時間！文言密碼：況（解作「更何況」）。'
+            },
+            {
+                name: '假設句（第 5 式）',
+                quote: '「諸軍各守城鋪，如有妄行出入及高聲言語者，立斬！」',
+                desc: '設定尚未發生的虛擬情境，強調「如果出現這個情境，會產生何種結果」。',
+                tip: '出自《三國演義．空城計》。「如」解作「如果」。文言六大假設密碼：若、如、假、使、苟、令（均解作「如果」）。'
+            },
+            {
+                name: '並列句（第 1 式）',
+                quote: '「有些傳統是在保護你，不想讓你陷入危險；有些傳統卻是在束縛你，要你屈從於過時的想法。」',
+                desc: '前後兩個分句都重要，缺一不可，兩者同等強調（兼備兩種面向）。',
+                tip: '語法關鍵：並列複句必須由兩個或兩個以上分句構成！出自會考歷屆考題，以「有些……；有些……」連綴兩大分句，前後並重，說明傳統兼具「保護」與「束縛」兩種特性。'
+            },
+            {
+                name: '反詰句／激問（第 10 式）',
+                quote: '「兩兔傍地走，安能辨我是雄雌？」',
+                desc: '表面是提問，骨子裡答案就在問題的反面！心中早有明確定論。',
+                tip: '「安能」解作「怎麼能」，意思是：根本不能辨別雄雌！文言十神字：豈、安、何、焉、奚、其、惡、不亦、孰、固（均解作「難道、怎麼」）。'
+            },
+            {
+                name: '映襯句（第 4 式）',
+                quote: '「願意練習，微小的進步也能成功；不願練習，過人的才華終將平凡。」',
+                desc: '兩組文句文意相反對立。透過負面反襯，目的是強烈烘托正面、積極的意涵！',
+                tip: '作者並非客觀並列，而是透過「不願練習終歸平凡」來反襯讚揚「願意練習之珍貴」！'
+            },
+            {
+                name: '條件句（第 6 式）',
+                quote: '「我亦無他，惟手熟爾。」',
+                desc: '設定達成目標的必要門檻，強調「只要具備此條件，就必定能如何」。',
+                tip: '歐陽脩《賣油翁》名句。「惟」解作「只有、只要」。達成百步穿楊神技的唯一條件，就是反覆熟練！文言密碼：惟、唯、僅、但。'
+            },
+            {
+                name: '比較句（第 9 式）',
+                quote: '「與其埋怨毫無資源，不如自己創造資源。」',
+                desc: '兩相權衡定優劣，明確傳達作者對於事物高下的價值立場。',
+                tip: '句型結構為「與其……不如……」，強調「後者更好」！文言密碼：不若、未若、莫若、何如（後者好）；寧可、寧（前者好）。'
+            },
+            {
+                name: '排比句（第 2 式）',
+                quote: '「游泳讓身心平靜；跑步讓意志堅韌；跳高讓視野開闊。」',
+                desc: '三組以上文意相近、句型相似的文句鋪陳，核心在於抽取出「共同本質」。',
+                tip: '透過三組運動效果的連續排比，強烈歸納出它們的共同點：運動帶給人身心視野的全面好處！'
+            },
+            {
+                name: '雙重否定句（第 11 式）',
+                quote: '「凡事不宜痴，若行善則不可不痴。」',
+                desc: '兩個否定詞連用，否定相互抵消後轉化為無比堅決的「肯定」語氣！',
+                tip: '「不可不」＝不可不要，即「一定要」！平日待人不宜過度執迷，但行善濟世則一定要執著堅持！文言三巨頭：不可不、未有不、莫不。'
+            },
+            {
+                name: '轉折句（第 3 式）',
+                quote: '「我雖然喜歡游泳，但更擅長跑步。」',
+                desc: '作者真正的心聲永遠藏在「轉折詞之後」，前面皆為鋪墊，後半句才是焦點！',
+                tip: '看到「但是、然而、其實、不過」，聚光燈直接打在後半句！本句的核心強調點就是作者「更擅長跑步」。'
+            }
+        ];
+
+        let revealedCompassSet = new Set();
+
+        function openCompassCard(index) {
+            playSuccessSound();
+            const item = compassData[index];
+            revealedCompassSet.add(index);
+            document.getElementById('revealed-count').innerText = revealedCompassSet.size;
+
+            const cardEl = document.getElementById('compass-card-' + index);
+            if (cardEl) {
+                cardEl.classList.add('active');
+                cardEl.style.borderColor = 'var(--accent-green)';
+                cardEl.style.background = 'rgba(45, 122, 76, 0.05)';
+                const badgeEl = cardEl.querySelector('.card-revealed-badge');
+                if (badgeEl) {
+                    badgeEl.style.display = 'inline-block';
+                    badgeEl.innerText = '【' + item.name + '】✓ 已解密';
+                }
+            }
+
+            const modal = document.getElementById('compass-modal');
+            if (modal) {
+                document.getElementById('modal-title').innerText = '【正解揭曉：' + item.name + '】';
+                document.getElementById('modal-body').innerHTML = 
+                    '<div style="margin-bottom: 1.5vh; color: var(--accent-red); font-size: 2.7vh; font-weight: 900;">📜 經典例句：' + item.quote + '</div>' +
+                    '<div style="margin-bottom: 1.2vh; font-size: 2.5vh;">💡 <b>邏輯定義</b>：' + item.desc + '</div>' +
+                    '<div style="background: rgba(140, 109, 59, 0.08); padding: 1.2vh 1.5vw; border-radius: 6px; border-left: 4px solid var(--primary-gold); color: var(--text-light); font-size: 2.3vh; line-height: 1.6;">' +
+                    '🔑 <b>會考解密關鍵</b>：' + item.tip + '</div>';
+                modal.style.display = 'flex';
+            }
+
+            if (revealedCompassSet.size === 11) {
+                setTimeout(() => { playFanfareSound(); }, 400);
+            }
+        }
+
+        function checkAllCompass() {
+            const modal = document.getElementById('compass-modal');
+            if (!modal) return;
+            if (revealedCompassSet.size >= 11) {
+                playFanfareSound();
+                document.getElementById('modal-title').innerText = '🎉 恭喜 902 班全數破解 11 大句式密碼！';
+                document.getElementById('modal-body').innerHTML = 
+                    '<div style="font-size: 2.6vh; color: var(--accent-green); font-weight: 900; line-height: 1.8;">' +
+                    '同學們太厲害了！全班已精準辨識出所有打亂順序的經典例句，<br>' +
+                    '成功掌握因果、遞進、假設、並列、反詰、映襯、條件、比較、排比、雙重否定與轉折 11 大邏輯！<br>' +
+                    '請點擊右下方「下一頁」，準備迎接實戰挑戰！' +
+                    '</div>';
+                modal.style.display = 'flex';
+            } else {
+                playClickSound();
+                document.getElementById('modal-title').innerText = '🔍 還有線索尚未解開喔！';
+                document.getElementById('modal-body').innerHTML = 
+                    '<div style="font-size: 2.5vh; line-height: 1.7;">' +
+                    '目前已解密：<b style="color: var(--accent-red);">' + revealedCompassSet.size + '</b> / 11 組句式。<br>' +
+                    '請 902 同學翻開講義第 172 與 173 頁，對照各類句型定義，把剩餘的神秘例句卡片逐一破解吧！' +
+                    '</div>';
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('compass-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function toggleQuad(card) {
+            playClickSound();
+            card.classList.toggle('revealed');
+            const analysis = card.querySelector('.quad-analysis');
+            if (analysis) {
+                analysis.style.display = (analysis.style.display === 'block') ? 'none' : 'block';
+            }
+        }
+
+        // ============================== 簡報切換邏輯 ==============================
+        let currentSlide = 1;
+        const totalSlides = 16;
+        let score = 0;
+
+        function updateSlideUI() {
+            for (let i = 1; i <= totalSlides; i++) {
+                const el = document.getElementById('slide-' + i);
+                if (el) el.classList.remove('active');
+            }
+            const activeEl = document.getElementById('slide-' + currentSlide);
+            if (activeEl) {
+                activeEl.classList.add('active');
+                const title = activeEl.getAttribute('data-title') || '902 班國文代課特派';
+                const sub = activeEl.getAttribute('data-sub') || '會考句式邏輯大解碼';
+                document.getElementById('header-title').innerText = title;
+                document.getElementById('header-subtitle').innerText = sub;
+            }
+
+            document.getElementById('slide-indicator').innerText = '第 ' + currentSlide + ' / ' + totalSlides + ' 頁';
+            document.getElementById('prev-btn').disabled = (currentSlide === 1);
+            document.getElementById('next-btn').disabled = (currentSlide === totalSlides);
+
+            if (typeof loadCurrentSlideDrawing === 'function') {
+                loadCurrentSlideDrawing();
+            }
+        }
+
+        function navigateSlide(dir) {
+            const next = currentSlide + dir;
+            if (next >= 1 && next <= totalSlides) {
+                currentSlide = next;
+                playClickSound();
+                updateSlideUI();
+            }
+        }
+
+        // 鍵盤導航
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (currentSlide < totalSlides) navigateSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                if (currentSlide > 1) navigateSlide(-1);
+            } else if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // 答題系統
+        function checkQuiz(btn, isCorrect, qId, feedback) {
+            const parentPanel = btn.closest('.quiz-panel');
+            const allBtns = parentPanel.querySelectorAll('.quiz-btn');
+            
+            if (isCorrect) {
+                playSuccessSound();
+                btn.classList.add('correct');
+                allBtns.forEach(b => b.classList.add('answered'));
+                score += 100;
+                document.getElementById('score-val').innerText = score;
+            } else {
+                playErrorSound();
+                btn.classList.add('wrong');
+            }
+
+            const revealEl = document.getElementById(qId + '-reveal');
+            if (revealEl) {
+                revealEl.style.display = 'block';
+                revealEl.innerHTML = feedback;
+            }
+        }
+
+        function resetAllSlides() {
+            playFanfareSound();
+            currentSlide = 1;
+            score = 0;
+            document.getElementById('score-val').innerText = '0';
+            document.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('correct', 'wrong', 'answered'));
+            document.querySelectorAll('.quiz-reveal').forEach(r => { r.style.display = 'none'; r.innerHTML = ''; });
+            document.querySelectorAll('.quad-card').forEach(q => {
+                q.classList.remove('revealed');
+                const a = q.querySelector('.quad-analysis');
+                if (a) a.style.display = 'none';
+            });
+            clearAllDrawings(false);
+            updateSlideUI();
+        }
+
+        // ============================== 平板全域劃記系統 ==============================
+        const drawCanvas = document.getElementById('drawing-canvas');
+        let isDrawing = false;
+        let drawingTool = 'pointer';
+        let lastX = 0;
+        let lastY = 0;
+        let slideDrawings = {};
+
+        try {
+            const saved = localStorage.getItem('class902-slide-drawings');
+            if (saved) slideDrawings = JSON.parse(saved);
+        } catch(e) {}
+
+        function initDrawingCanvas() {
+            if (!drawCanvas) return;
+            const rect = drawCanvas.getBoundingClientRect();
+            drawCanvas.width = Math.round(rect.width) || 800;
+            drawCanvas.height = Math.round(rect.height) || 450;
+            loadCurrentSlideDrawing();
+        }
+
+        window.addEventListener('resize', () => {
+            saveCurrentSlideDrawing();
+            initDrawingCanvas();
+        });
+
+        function setDrawingTool(tool) {
+            drawingTool = tool;
+            document.querySelectorAll('.drawing-menu-btn').forEach(b => b.classList.remove('active'));
+            if (tool === 'pointer') {
+                const btn = document.getElementById('tool-pointer');
+                if (btn) btn.classList.add('active');
+                drawCanvas.style.pointerEvents = 'none';
+            } else if (tool === 'pen') {
+                const btn = document.getElementById('tool-pen');
+                if (btn) btn.classList.add('active');
+                drawCanvas.style.pointerEvents = 'auto';
+            } else if (tool === 'eraser') {
+                const btn = document.getElementById('tool-eraser');
+                if (btn) btn.classList.add('active');
+                drawCanvas.style.pointerEvents = 'auto';
+            }
+        }
+
+        function getCoords(e) {
+            const rect = drawCanvas.getBoundingClientRect();
+            const scaleX = drawCanvas.width / rect.width;
+            const scaleY = drawCanvas.height / rect.height;
+            return {
+                x: (e.clientX - rect.left) * scaleX,
+                y: (e.clientY - rect.top) * scaleY
+            };
+        }
+
+        function startDrawing(e) {
+            if (drawingTool === 'pointer') return;
+            isDrawing = true;
+            if (e.cancelable !== false) e.preventDefault();
+            if (e.pointerId !== undefined) {
+                try { drawCanvas.setPointerCapture(e.pointerId); } catch(_) {}
+            }
+            const coords = getCoords(e);
+            lastX = coords.x;
+            lastY = coords.y;
+
+            const ctx = drawCanvas.getContext('2d');
+            if (ctx && drawingTool === 'pen') {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.fillStyle = '#1f5f8b';
+                ctx.beginPath();
+                ctx.arc(lastX, lastY, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function draw(e) {
+            if (!isDrawing || drawingTool === 'pointer') return;
+            if (e.cancelable !== false) e.preventDefault();
+            const ctx = drawCanvas.getContext('2d');
+            if (!ctx) return;
+            const coords = getCoords(e);
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(coords.x, coords.y);
+
+            if (drawingTool === 'pen') {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = '#1f5f8b';
+                ctx.lineWidth = 3.5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+            } else if (drawingTool === 'eraser') {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.lineWidth = 36;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+            }
+            ctx.stroke();
+            lastX = coords.x;
+            lastY = coords.y;
+        }
+
+        function stopDrawing(e) {
+            if (isDrawing) {
+                isDrawing = false;
+                if (e && e.pointerId !== undefined) {
+                    try { drawCanvas.releasePointerCapture(e.pointerId); } catch(_) {}
+                }
+                saveCurrentSlideDrawing();
+            }
+        }
+
+        if (drawCanvas) {
+            drawCanvas.addEventListener('pointerdown', startDrawing);
+            drawCanvas.addEventListener('pointermove', draw);
+            drawCanvas.addEventListener('pointerup', stopDrawing);
+            drawCanvas.addEventListener('pointercancel', stopDrawing);
+        }
+
+        // 雙擊快速切換工具
+        const footerToolbar = document.querySelector('.drawing-footer-toolbar');
+        if (footerToolbar) {
+            let lastTap = 0;
+            footerToolbar.addEventListener('pointerdown', (e) => {
+                const now = Date.now();
+                if (now - lastTap < 300) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDrawingTool(drawingTool === 'pointer' ? 'pen' : 'pointer');
+                }
+                lastTap = now;
+            });
+        }
+
+        function saveCurrentSlideDrawing() {
+            if (!drawCanvas) return;
+            const ctx = drawCanvas.getContext('2d');
+            if (!ctx) return;
+            const buffer = new Uint32Array(ctx.getImageData(0, 0, drawCanvas.width, drawCanvas.height).data.buffer);
+            const isEmpty = !buffer.some(color => color !== 0);
+            if (isEmpty) {
+                delete slideDrawings['slide-' + currentSlide];
+            } else {
+                slideDrawings['slide-' + currentSlide] = drawCanvas.toDataURL();
+            }
+            try {
+                localStorage.setItem('class902-slide-drawings', JSON.stringify(slideDrawings));
+            } catch(e) {}
+        }
+
+        function loadCurrentSlideDrawing() {
+            if (!drawCanvas) return;
+            const ctx = drawCanvas.getContext('2d');
+            if (!ctx) return;
+            ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+            const dataUrl = slideDrawings['slide-' + currentSlide];
+            if (dataUrl) {
+                const img = new Image();
+                img.onload = function() {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.drawImage(img, 0, 0, drawCanvas.width, drawCanvas.height);
+                };
+                img.src = dataUrl;
+            }
+        }
+
+        function clearCurrentDrawing() {
+            if (!drawCanvas) return;
+            const ctx = drawCanvas.getContext('2d');
+            if (ctx) ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+            delete slideDrawings['slide-' + currentSlide];
+            try {
+                localStorage.setItem('class902-slide-drawings', JSON.stringify(slideDrawings));
+            } catch(e) {}
+        }
+
+        function clearAllDrawings(askConfirm = true) {
+            if (askConfirm && !confirm('確定要清除所有頁面的劃記嗎？')) return;
+            if (drawCanvas) {
+                const ctx = drawCanvas.getContext('2d');
+                if (ctx) ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+            }
+            slideDrawings = {};
+            try {
+                localStorage.removeItem('class902-slide-drawings');
+            } catch(e) {}
+        }
+
+        // 啟動初始化
+        updateSlideUI();
+        setTimeout(initDrawingCanvas, 150);
+    </script>
+</body>
+</html>
