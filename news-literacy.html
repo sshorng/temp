@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資訊特工局：演算法迷霧突圍行動｜康軒九上自學一〈養成新聞判讀力，迎向更美好的生活〉</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Noto+Serif+TC:wght@700;900&family=Outfit:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           16:9 旗艦數位情報【超大字投影版面系統】
+           ========================================================================== */
+        :root {
+            --bg-color: #ffffff;
+            --card-bg: #f8fafc;
+            --primary-navy: #070f1e;
+            --cyber-blue: #0284c7;
+            --cyber-blue-hover: #0369a1;
+            --cyber-light: #e0f2fe;
+            --accent-crimson: #be123c;
+            --crimson-light: #ffe4e6;
+            --accent-green: #047857;
+            --green-light: #d1fae5;
+            --accent-amber: #b45309;
+            --amber-light: #fef3c7;
+            --text-main: #0a1120;
+            --text-muted: #2d3748;
+            --border-color: #94a3b8;
+            --font-title: 'Noto Serif TC', serif;
+            --font-body: 'Noto Sans TC', sans-serif;
+            --font-code: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #94a3b8;
+            color: var(--text-main);
+            font-family: var(--font-body);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* 鎖定 16:9 比例外框 */
+        .slide-container {
+            width: 96vw;
+            height: 54vw;
+            max-width: 177.78vh;
+            max-height: 90vh;
+            background-color: var(--bg-color);
+            border: 4.5px solid var(--primary-navy);
+            box-shadow: 0 30px 70px rgba(7, 15, 30, 0.35);
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2vh 3.5vw;
+            border-radius: 12px;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 4% 4%, rgba(2, 132, 199, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 96% 96%, rgba(190, 18, 60, 0.05) 0%, transparent 40%);
+        }
+
+        /* 頂部標題列（加大字） */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--cyber-blue);
+            padding-bottom: 1.2vh;
+            height: 10vh;
+            z-index: 20;
+        }
+
+        .slide-title {
+            font-family: var(--font-title);
+            font-size: 5.0vh;
+            font-weight: 900;
+            color: var(--primary-navy);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 1.2vw;
+        }
+
+        .slide-title .badge {
+            background: var(--cyber-blue);
+            color: #ffffff;
+            font-size: 2.6vh;
+            padding: 0.4vh 1.4vw;
+            border-radius: 8px;
+            font-family: var(--font-code);
+            font-weight: 900;
+        }
+
+        .slide-subtitle {
+            font-size: 3.2vh;
+            color: var(--text-muted);
+            font-weight: 900;
+        }
+
+        /* 中間滾動內容區（自適應下拉，防止吃字跑版） */
+        .slide-body {
+            flex: 1;
+            height: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-y: auto;
+            z-index: 20;
+            padding-right: 0.8vw;
+            padding-top: 1.8vh;
+            margin-bottom: 1.2vh;
+        }
+
+        .slide-body::-webkit-scrollbar {
+            width: 10px;
+        }
+        .slide-body::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.06);
+            border-radius: 5px;
+        }
+        .slide-body::-webkit-scrollbar-thumb {
+            background: var(--cyber-blue);
+            border-radius: 5px;
+        }
+
+        /* 單頁 Slide 樣式 */
+        .slide {
+            display: none;
+            min-height: 100%;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        /* 頁尾導覽列 */
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 3px solid var(--border-color);
+            padding-top: 1.2vh;
+            height: 9vh;
+            z-index: 50;
+            background: var(--bg-color);
+            position: relative;
+        }
+
+        .page-indicator {
+            font-size: 3.0vh;
+            color: var(--primary-navy);
+            font-weight: 900;
+            font-family: var(--font-code);
+        }
+
+        .nav-btn {
+            background: #ffffff;
+            border: 3px solid var(--primary-navy);
+            color: var(--primary-navy);
+            padding: 1vh 2.6vw;
+            font-size: 3.0vh;
+            font-family: var(--font-body);
+            font-weight: 900;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--primary-navy);
+            color: #ffffff;
+        }
+
+        .nav-btn.primary {
+            background: var(--cyber-blue);
+            color: #ffffff;
+            border-color: var(--cyber-blue);
+        }
+
+        .nav-btn.primary:hover:not(:disabled) {
+            background: var(--cyber-blue-hover);
+            border-color: var(--cyber-blue-hover);
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+
+        /* 課堂超大字排版（標題 5.0vh~6.0vh、正文 3.8vh~4.4vh） */
+        .narrative-text {
+            font-size: 3.8vh;
+            font-weight: 900;
+            line-height: 1.68;
+            color: var(--text-main);
+            margin-bottom: 1.6vh;
+            text-align: justify;
+        }
+
+        .narrative-text em {
+            color: var(--accent-crimson);
+            font-style: normal;
+            font-weight: 900;
+        }
+
+        .narrative-text .highlight {
+            background: linear-gradient(120deg, rgba(2, 132, 199, 0.18) 0%, rgba(2, 132, 199, 0.32) 100%);
+            padding: 0.1vh 0.4vw;
+            border-radius: 4px;
+            color: var(--cyber-blue);
+            font-weight: 900;
+        }
+
+        /* 警示與任務提示卡（大字化） */
+        .task-card {
+            background: #f1f5f9;
+            border-left: 8px solid var(--cyber-blue);
+            padding: 1.8vh 2vw;
+            border-radius: 8px;
+            font-size: 3.2vh;
+            font-weight: 900;
+            line-height: 1.6;
+            color: var(--primary-navy);
+            margin-bottom: 1.6vh;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 1.4vw;
+        }
+
+        .task-tag {
+            background: var(--cyber-blue);
+            color: #ffffff;
+            padding: 0.5vh 1.4vw;
+            border-radius: 6px;
+            font-size: 2.6vh;
+            font-weight: 900;
+            flex-shrink: 0;
+            margin-top: 0.2vh;
+        }
+
+        .task-tag.crimson {
+            background: var(--accent-crimson);
+        }
+
+        .task-tag.amber {
+            background: var(--accent-amber);
+        }
+
+        .task-tag.green {
+            background: var(--accent-green);
+        }
+
+        /* 雙欄實戰對照佈局 */
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2vw;
+            margin-bottom: 1.6vh;
+        }
+
+        .content-panel {
+            background: #ffffff;
+            border: 3px solid var(--border-color);
+            border-radius: 10px;
+            padding: 2.2vh 2vw;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .panel-header {
+            font-size: 3.3vh;
+            font-weight: 900;
+            color: var(--primary-navy);
+            margin-bottom: 1.4vh;
+            padding-bottom: 0.8vh;
+            border-bottom: 2px dashed var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .content-panel p {
+            font-size: 3.0vh;
+            line-height: 1.65;
+            font-weight: 800;
+        }
+
+        /* 學思達階梯提問盤（大字化） */
+        .ladder-box {
+            background: #f8fafc;
+            border: 2.5px solid #64748b;
+            border-radius: 8px;
+            padding: 1.8vh 2vw;
+            margin-top: 1.6vh;
+        }
+
+        .ladder-title {
+            font-size: 3.0vh;
+            font-weight: 900;
+            color: var(--primary-navy);
+            margin-bottom: 1.2vh;
+            display: flex;
+            align-items: center;
+            gap: 0.8vw;
+        }
+
+        .ladder-step {
+            font-size: 2.8vh;
+            line-height: 1.65;
+            font-weight: 800;
+            margin-bottom: 1vh;
+            color: var(--text-main);
+        }
+
+        .ladder-step b {
+            color: var(--cyber-blue);
+        }
+
+        /* 全班情境決策模擬器專用樣式 */
+        .sim-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.4vh;
+            margin: 1.6vh 0;
+        }
+
+        .sim-btn {
+            background: #ffffff;
+            border: 3px solid var(--border-color);
+            color: var(--text-main);
+            padding: 1.8vh 2.2vw;
+            font-size: 3.0vh;
+            font-weight: 900;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sim-btn:hover {
+            border-color: var(--cyber-blue);
+            background: var(--cyber-light);
+            transform: translateX(4px);
+        }
+
+        .sim-btn.selected {
+            background: #e0f2fe;
+            border-color: var(--cyber-blue);
+            color: #0369a1;
+        }
+
+        .outcome-box {
+            display: none;
+            border-radius: 8px;
+            padding: 2vh 2.2vw;
+            margin-top: 1.6vh;
+            font-size: 3.1vh;
+            font-weight: 900;
+            line-height: 1.65;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 劃記工具列（膠囊樣式） */
+        .drawing-footer-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f1f5f9;
+            padding: 0.6vh 1vw;
+            border-radius: 35px;
+            border: 2.5px solid var(--border-color);
+            margin-right: 1.5vw;
+        }
+
+        .drawing-tool-btn {
+            background: transparent;
+            border: none;
+            width: 5.2vh;
+            height: 5.2vh;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .drawing-tool-btn svg {
+            width: 2.8vh;
+            height: 2.8vh;
+            stroke: var(--primary-navy);
+            stroke-width: 2.4;
+            fill: none;
+        }
+
+        .drawing-tool-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .drawing-tool-btn.active {
+            background: var(--cyber-blue);
+        }
+
+        .drawing-tool-btn.active svg {
+            stroke: #ffffff;
+        }
+
+        .drawing-tool-btn.danger:hover svg {
+            stroke: var(--accent-crimson);
+        }
+
+        /* 全域劃記 Canvas 層 */
+        #drawing-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 35;
+            pointer-events: none;
+        }
+
+        #drawing-canvas.pen-active {
+            pointer-events: auto;
+            cursor: crosshair;
+        }
+
+        #drawing-canvas.eraser-active {
+            pointer-events: auto;
+            cursor: cell;
+        }
+
+        /* 音效徽章 */
+        .sound-toggle-badge {
+            position: absolute;
+            top: 2.5vh;
+            right: 3.5vw;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2.5px solid var(--cyber-blue);
+            color: var(--cyber-blue);
+            padding: 0.6vh 1.4vw;
+            border-radius: 20px;
+            font-size: 2.4vh;
+            font-weight: 900;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 簡報投影主容器 -->
+    <div class="slide-container">
+        
+        <!-- 音效開關徽章 -->
+        <button class="sound-toggle-badge" id="sound-btn" onclick="toggleSound()">
+            <span id="sound-icon">🔊</span>
+            <span id="sound-text">音效開啟</span>
+        </button>
+
+        <!-- 簡報頭 -->
+        <div class="slide-header">
+            <div class="slide-title" id="header-title">
+                <span>資訊特工局</span>
+                <span class="badge" id="header-badge">CASE 00</span>
+            </div>
+            <div class="slide-subtitle" id="header-subtitle">演算法迷霧突圍行動</div>
+        </div>
+
+        <!-- 簡報身 -->
+        <div class="slide-body">
+
+            <!-- ============================== SLIDE 1: 序幕封面 ============================== -->
+            <div id="slide-1" class="slide active" data-title="資訊特工局" data-badge="CASE 00" data-sub="序幕：九年級特工集結與架構地圖">
+                <div style="text-align: center; margin: auto 0; padding: 2vh 2vw;">
+                    <div style="display: inline-block; background: rgba(2, 132, 199, 0.1); border: 2.5px solid var(--cyber-blue); color: var(--cyber-blue); font-size: 2.8vh; font-weight: 900; padding: 0.8vh 2.5vw; border-radius: 30px; margin-bottom: 2vh;">
+                        國中國文九上自學一｜黃俊儒〈養成新聞判讀力，迎向更美好的生活〉
+                    </div>
+                    <h1 style="font-family: var(--font-title); font-size: 6.0vh; color: var(--primary-navy); margin-bottom: 2.5vh; font-weight: 900; letter-spacing: 1px;">
+                        資訊特工局：演算法迷霧突圍行動
+                    </h1>
+                    <p style="font-size: 3.8vh; color: var(--text-muted); font-weight: 900; line-height: 1.75; max-width: 1050px; margin: 0 auto 3.5vh auto;">
+                        當你在螢幕前滑動手指，你看見的是真實的世界，還是被演算法精心收割的幻象？<br>
+                        面對假新聞、造謠風向與同溫層風暴，你具備突破重圍的「新聞判讀力」嗎？
+                    </p>
+                    <div style="font-size: 3.2vh; color: var(--accent-crimson); font-weight: 900;">
+                        【請點擊下方「下一頁」直擊臺灣三大真實重大新聞血案】
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 2: 暖身實案一（真實新聞：愛莉莎莎抖音作票事件） ============================== -->
+            <div id="slide-2" class="slide" data-title="真實新聞案一" data-badge="CASE 01" data-sub="2024總統大選：百萬網紅轉發抖音作票影音風暴">
+                <div class="task-card" style="border-left-color: var(--accent-crimson); background: #fff1f2;">
+                    <span class="task-tag crimson">臺灣真實歷史案件</span>
+                    <div style="font-size: 3.2vh; line-height: 1.6; color: #9f1239;">
+                        <b>【事件記錄】2024年1月總統大選開票之夜｜百萬網紅指控作票事件</b>
+                    </div>
+                </div>
+
+                <div class="narrative-text">
+                    開票當晚，擁有百萬追蹤的網紅在個人 IG 連續轉發多段抖音短影音，公開指控：<br>
+                    <em>「因為作票才輸我真的無法」、「作票作得太明目張膽了！」</em>指稱選務人員「用紙箱夾層偷藏選票、違法灌票」。
+                </div>
+
+                <div class="split-grid">
+                    <div class="content-panel" style="border-color: var(--accent-crimson); background: #fff8f8;">
+                        <div class="panel-header" style="color: var(--accent-crimson);">
+                            <span>🌪️ 恐慌引爆與社會撕裂</span>
+                            <span class="task-tag crimson">未求證瘋傳</span>
+                        </div>
+                        <p style="color: var(--text-main);">
+                            影片一小時內湧入<b>數十萬次瘋狂轉載</b>！無數支持者激憤包圍選務機關抗議，質疑民主選舉公正性，社會陷入劇烈對立與動盪！
+                        </p>
+                    </div>
+
+                    <div class="content-panel" style="border-color: var(--accent-green); background: #f0fdf4;">
+                        <div class="panel-header" style="color: var(--accent-green);">
+                            <span>⚖️ 查核中心鑑定與司法介入</span>
+                            <span class="task-tag green">事實還原</span>
+                        </div>
+                        <p style="color: var(--text-main);">
+                            <b>臺灣事實查核中心逐幀比對現場監票員紀錄</b>：開票前紙箱皆由民眾與各黨監票員當場翻轉檢驗，影片全為常規整票程序遭<b>惡意掐頭去尾、錯置因果</b>！中選會依法蒐證移送法辦！
+                        </p>
+                    </div>
+                </div>
+
+                <div class="task-card">
+                    <span class="task-tag">特工警醒</span>
+                    <div style="font-size: 3.0vh; line-height: 1.6;">
+                        即使是擁有巨大影響力的公眾人物，在政治狂熱與情緒主導下，也會成為假訊息的擴音器！<em>「轉傳未經查證的指控，正在摧毀整個社會對民主機制的信任基石！」</em>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 3: 暖身實案二（真實新聞：全台衛生紙之亂造謠案） ============================== -->
+            <div id="slide-3" class="slide" data-title="真實新聞案二" data-badge="CASE 02" data-sub="2020年2月：全臺大賣場貨架搬空的「衛生紙之亂」">
+                <div class="task-card" style="border-left-color: var(--accent-amber); background: #fffbeb;">
+                    <span class="task-tag amber">臺灣真實歷史案件</span>
+                    <div style="font-size: 3.2vh; line-height: 1.6; color: #92400e;">
+                        <b>【事件記錄】2020年2月防疫期間｜全臺衛生紙瘋搶空架謠言案</b>
+                    </div>
+                </div>
+
+                <div class="narrative-text">
+                    疫情初期，LINE 團購群組瘋傳一張匿名爆料截圖：<br>
+                    <em>「因口罩原料嚴重短缺，政府已下令紙廠全面停產衛生紙改做口罩，衛生紙即將徹底斷貨，大家趕快去搶！」</em>
+                </div>
+
+                <div class="split-grid">
+                    <div class="content-panel" style="border-color: var(--accent-amber); background: #fffcf0;">
+                        <div class="panel-header" style="color: var(--accent-amber);">
+                            <span>🛒 全臺恐慌：貨架幾小時搬空</span>
+                            <span class="task-tag amber">羊群效應</span>
+                        </div>
+                        <p style="color: var(--text-main);">
+                            短短半天內，全臺量販店、超市湧現數十萬瘋狂搶購人潮！推車堆成小山、大打出手，貨架被掃蕩一空，各大電商網站集體當機！
+                        </p>
+                    </div>
+
+                    <div class="content-panel" style="border-color: var(--cyber-blue); background: #f0f9ff;">
+                        <div class="panel-header" style="color: var(--cyber-blue);">
+                            <span>🚨 刑事局破案：商人謀利黑幕</span>
+                            <span class="task-tag">真相大白</span>
+                        </div>
+                        <p style="color: var(--text-main);">
+                            刑事局火速逮捕造謠者，竟是<b>某貿易商紙品業務員</b>！為衝高自家產品業績故意造謠！經濟部嚴正澄清：<b>口罩原料是不織布（石化原料 PP），衛生紙是木漿</b>，兩者根本風馬牛不相及！
+                        </p>
+                    </div>
+                </div>
+
+                <div class="task-card" style="background: #e0f2fe; border-left-color: var(--cyber-blue);">
+                    <span class="task-tag">商業真相</span>
+                    <div style="font-size: 3.0vh; line-height: 1.6; font-weight: 900;">
+                        商人利用大眾的恐懼進行恐慌行銷來發大財！這正是課文第一段所揭露的殘酷真相：<em>「免費的最貴！」</em>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 4: 暖身實案三（真實新聞：關西機場蘇處長殉職案） ============================== -->
+            <div id="slide-4" class="slide" data-title="真實新聞案三" data-badge="CASE 03" data-sub="2018年9月關西機場事件：未查證新聞真的會殺人！">
+                <div class="task-card" style="border-left-color: var(--accent-crimson); background: #fff1f2;">
+                    <span class="task-tag crimson">重大歷史血案</span>
+                    <div style="font-size: 3.2vh; line-height: 1.6; color: #9f1239;">
+                        <b>【事件記錄】2018年9月日本關西機場事件｜蘇啟誠處長殉職悲劇</b>
+                    </div>
+                </div>
+
+                <div class="narrative-text">
+                    強颱燕子重創關西機場，數千名旅客受困。網路論壇突然出現一則未經查證的爆料：<br>
+                    <em>「中國大使館派專車接走受困陸客，台灣旅客只要自稱中國人就能上車！反觀台灣駐日代表處態度冰冷，見死不救！」</em>
+                </div>
+
+                <div class="split-grid">
+                    <div class="content-panel" style="border-color: var(--accent-crimson); background: #fff5f5;">
+                        <div class="panel-header" style="color: var(--accent-crimson);">
+                            <span>🔥 媒體搶發與網路集體霸凌</span>
+                            <span class="task-tag crimson">未求證</span>
+                        </div>
+                        <p style="color: var(--text-main);">
+                            主流媒體為了爭搶點閱率，<b>未向日本官方求證</b>即全天候播放；名嘴在電視瘋狂痛罵，排山倒海的輿論暴力全面砸向第一線外交人員！
+                        </p>
+                    </div>
+
+                    <div class="content-panel" style="border-color: var(--accent-green); background: #f0fdf4;">
+                        <div class="panel-header" style="color: var(--accent-green);">
+                            <span>⚖️ 無法挽回的逝去與殘酷真相</span>
+                            <span class="task-tag green">歷史血淚</span>
+                        </div>
+                        <p style="color: var(--text-main);">
+                            數天後，駐大阪處長<b>蘇啟誠以死明志自縊殉職</b>！事後日本官方證實：<b>機場全面封閉，根本沒有任何中國專車進入！</b>整起事件是一場網路謠言引發的資訊殺人！
+                        </p>
+                    </div>
+                </div>
+
+                <div class="narrative-text" style="font-size: 3.8vh; color: var(--accent-crimson); margin-top: 1vh; font-weight: 900; text-align: center;">
+                    每一次不經查證的點擊與轉傳，都是砸向無辜者的一顆石頭！
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 5: 課文解碼室（作者與篇章） ============================== -->
+            <div id="slide-5" class="slide" data-title="課文解碼室" data-badge="TEXT 01" data-sub="作者檔案與篇章寫作密碼">
+                <div class="split-grid">
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>👨‍🏫 作家檔案：黃俊儒 特聘教授</span>
+                            <span class="task-tag">科學傳播專家</span>
+                        </div>
+                        <p style="margin-bottom: 1.2vh;">
+                            📍 <b>現任</b>：國立中正大學通識教育中心特聘教授。<br>
+                            📍 <b>學歷</b>：中央大學物理系、中正大學物理碩士、臺灣師範大學科學教育博士。<br>
+                            📍 <b>志業</b>：成立「科學傳播教育研究室」，長期解剖新聞中的偽科學，曾獲教育部傑出通識教育教師獎、科技部傑出研究獎。
+                        </p>
+                    </div>
+
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>📖 篇章定位：說理自序的典範</span>
+                            <span class="task-tag amber">邏輯示範</span>
+                        </div>
+                        <p style="margin-bottom: 1.2vh;">
+                            📍 <b>出處</b>：節選自《新生活判讀力：別讓科學偽新聞誤導你的人生》之<b>書前自序</b>。<br>
+                            📍 <b>筆風</b>：文字淺白幽默、緊扣生活，運用日常小事層層推導至宏大議論。<br>
+                            📍 <b>章法</b>：本文不僅是介紹理念的序言，本身更是一套<em>「批判性思維與說理邏輯」</em>的絕佳示範！
+                        </p>
+                    </div>
+                </div>
+
+                <div class="ladder-box">
+                    <div class="ladder-title">🧗 學思達階梯提問盤【題解與作者】</div>
+                    <div class="ladder-step"><b>[What]</b> 本文題目標舉「養成新聞判讀力」，作者認為最終要迎向什麼樣的目標？</div>
+                    <div class="ladder-step"><b>[How]</b> 作者身為物理學者，為什麼能將生硬的媒體識讀寫得如此引人入勝？運用了哪些筆調特色？</div>
+                    <div class="ladder-step"><b>[Why]</b> 為什麼作者認為在科技高速發展的當代，新聞判讀力是每個現代人必備的「新生活」能力？</div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 6: 第一段引論（免費的最貴） ============================== -->
+            <div id="slide-6" class="slide" data-title="引論探究" data-badge="TEXT 02" data-sub="第一段：免費的最貴？演算法的甜蜜牢籠">
+                <div class="narrative-text">
+                    「每天我們都有看不完的訊息，學習不完的知識，不僅很多都是免費的，還會自己搶著送上門……但長久以來的經驗法則也告誡過我們<em>『免費的最貴』</em>！」
+                </div>
+
+                <div class="split-grid">
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>💡 修辭解碼：反襯手法</span>
+                        </div>
+                        <p>
+                            作者以新媒體看似提供「免費自由、自我解放」的美好假象，反襯出「免費的最貴」這一硬道理，引發讀者對社群網路商業本質的深刻警惕。
+                        </p>
+                    </div>
+
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>⚠️ 詞彙深意：為什麼用「支配」？</span>
+                        </div>
+                        <p>
+                            作者不用「影響」而用「支配」，揭示演算法並非中立工具，它像一隻看不見的黑手，在幕後決定我們能看見什麼、看不見什麼！
+                        </p>
+                    </div>
+                </div>
+
+                <div class="ladder-box">
+                    <div class="ladder-title">🧗 學思達階梯提問盤【第一段引論】</div>
+                    <div class="ladder-step"><b>[What]</b> 現代社群媒體與過去主流媒體相比，在資訊傳播模式上最大的改變是什麼？</div>
+                    <div class="ladder-step"><b>[How]</b> 作者使用「免費的最貴」作為論證轉折，這在說理手法上有什麼震撼效果？</div>
+                    <div class="ladder-step"><b>[Why]</b> 當你免費享受推播服務時，你自身付出的無形代價是什麼？演算法究竟在支配什麼？</div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 7: 第二、三段本論（關窗簡訊） ============================== -->
+            <div id="slide-7" class="slide" data-title="本論案發現場" data-badge="TEXT 03" data-sub="第二、三段：那則穿越時空的關窗簡訊">
+                <div class="task-card" style="background: #f8fafc; border-left-color: var(--accent-amber);">
+                    <span class="task-tag amber">文本證據直擊</span>
+                    <div style="font-size: 3.2vh; line-height: 1.6;">
+                        「快通知北部親友趕緊關窗，中南部也要，因霾害嚴重。<b>中研院陳伶志博士表示</b>，這波主力在晚上九點登陸北部，約凌晨兩點會到臺中……這幾天最好戴口罩！」
+                    </div>
+                </div>
+
+                <div class="split-grid">
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>🔎 案件事實重現</span>
+                        </div>
+                        <p>
+                            作者在幾天之內，連續在親戚與朋友群組收到三次一模一樣的簡訊。內容確由陳伶志博士發表於個人臉書，但被熱心網友抽離了發布時間！
+                        </p>
+                    </div>
+
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>❌ 致命盲點揭密</span>
+                        </div>
+                        <p style="color: var(--accent-crimson);">
+                            <b>它沒有說明「晚上」是哪一天晚上！</b>作者第一次收到時，距離陳博士發文已過三天！過期訊息造成全臺在無霾夜晚空轉恐慌！
+                        </p>
+                    </div>
+                </div>
+
+                <div class="ladder-box">
+                    <div class="ladder-title">🧗 學思達階梯提問盤【第二至三段】</div>
+                    <div class="ladder-step"><b>[What]</b> 作者收到的關窗簡訊，引述了哪位學術機構的專家說法？</div>
+                    <div class="ladder-step"><b>[How]</b> 這則簡訊在邏輯與事實上最致命的謬誤是什麼？作者如何一步步發現破綻？</div>
+                    <div class="ladder-step"><b>[Why]</b> 為什麼專家真實發表的言論，一旦抽離了時間脈絡，反而會淪為擾亂社會的假新聞？</div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 8: 第四段手法（搶救失火與金句） ============================== -->
+            <div id="slide-8" class="slide" data-title="手法與意圖" data-badge="TEXT 04" data-sub="第四段：搶救失火的善意陷阱與核心金句">
+                <div class="narrative-text">
+                    轉傳簡訊的朋友們難道是壞人嗎？作者深刻剖析轉傳者的心理：<br>
+                    「著急的口吻就像是要<em>搶救失火</em>那樣的緊急，深怕慢了一個時辰就讓親朋好友蒙受健康上的不測風險。」
+                </div>
+
+                <div class="split-grid">
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>🔥 形象化比喻修辭</span>
+                        </div>
+                        <p>
+                            將發送訊息的急迫情緒比喻為「搶救失火」，生動描摹出大眾在接收到恐慌資訊時，缺乏求證、只求快發的心浮氣躁與善意衝動。
+                        </p>
+                    </div>
+
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>⏳ 作者十年的恐懼</span>
+                        </div>
+                        <p>
+                            「我好害怕在一年後、五年後，甚至十年後，還收到這則關窗簡訊！」作者道出數位謠言如殭屍般不死輪迴的恐怖宿命。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="task-card" style="border-left-color: var(--accent-crimson); background: #fff1f2;">
+                    <span class="task-tag crimson">全文核心金句</span>
+                    <div style="font-size: 3.4vh; line-height: 1.6; font-weight: 900; color: #9f1239;">
+                        「關心空汙沒有錯，滿滿的愛心沒有錯，即時的走告沒有錯，但是這些好事與美德都需要建立在<em>『訊息無誤』</em>的基本前提之下，否則就是大家白忙一場！」
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 9: 第五段守則（八字真言） ============================== -->
+            <div id="slide-9" class="slide" data-title="結論守則" data-badge="TEXT 05" data-sub="第五段：智者必備守則與現代焦慮">
+                <div class="narrative-text">
+                    古人說「謠言止於智者」，但在這個資訊焦慮的時代，當智者可不容易！首要澈底遵行的守則是什麼？
+                </div>
+
+                <div style="text-align: center; margin: 2vh 0;">
+                    <div style="display: inline-block; background: var(--primary-navy); color: #ffffff; padding: 2vh 4vw; border-radius: 12px; font-size: 5.2vh; font-family: var(--font-title); font-weight: 900; letter-spacing: 4px; box-shadow: 0 10px 25px rgba(7, 15, 30, 0.3);">
+                        「不確定的，不分享」
+                    </div>
+                </div>
+
+                <div class="split-grid">
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>🛒 趣味生活譬喻：光棍節</span>
+                        </div>
+                        <p>
+                            作者提到連沒有搶到雙十一促銷商品都讓人輾轉難眠，幽默呈現現代人深刻的「錯失恐懼」（FOMO），點出資訊狂潮帶來的普遍浮躁。
+                        </p>
+                    </div>
+
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>🛑 特工煞車標準作業 SOP</span>
+                        </div>
+                        <p>
+                            收到震撼消息欲按下轉發前：<br>
+                            ① 停三秒：情緒是否被標題牽著走？<br>
+                            ② 查來源：有無具體日期與官方機構？<br>
+                            ③ 未確認：果斷封印在自己手中！
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 10: 【新增專屬頁】同溫層效應深層解剖 ============================== -->
+            <div id="slide-10" class="slide" data-title="同溫層解剖" data-badge="SPECIAL" data-sub="專題解碼：回音室效應與演算法過濾氣泡">
+                <div class="task-card" style="border-left-color: var(--cyber-blue); background: #f0f9ff;">
+                    <span class="task-tag">課文核心概念</span>
+                    <div style="font-size: 3.2vh; line-height: 1.6; color: var(--primary-navy);">
+                        作者在文末特別警示：社群媒體最可怕的陷阱，正是打造了固步自封的<b>「同溫層效應」</b>！
+                    </div>
+                </div>
+
+                <div class="split-grid">
+                    <div class="content-panel" style="border-color: var(--cyber-blue);">
+                        <div class="panel-header" style="color: var(--cyber-blue);">
+                            <span>🔊 概念一：回音室效應（Echo Chamber）</span>
+                        </div>
+                        <p style="margin-bottom: 1.2vh;">
+                            在封閉的社群圈子裡，只迴盪著<b>立場相同的聲音</b>！不同意見被排斥在外，人們在回音中不斷聽見自己的看法，<b>誤以為自己的偏見就是全世界的全貌</b>，進而喪失反思能力。
+                        </p>
+                        <div style="background: #f1f5f9; padding: 1vh 1.2vw; border-radius: 6px; font-size: 2.6vh; font-weight: 800; color: var(--text-muted);">
+                            💬 現象：轉傳關窗簡訊的中年群組，彼此取暖打氣，無人質疑日期！
+                        </div>
+                    </div>
+
+                    <div class="content-panel" style="border-color: var(--accent-amber);">
+                        <div class="panel-header" style="color: var(--accent-amber);">
+                            <span>🫧 概念二：過濾氣泡（Filter Bubble）</span>
+                        </div>
+                        <p style="margin-bottom: 1.2vh;">
+                            演算法像一堵<b>量身打造的隱形高牆</b>，根據你的點擊喜好，只推播你想看、你認同的內容，自動過濾掉客觀事實。<b>你以為你在瀏覽全世界，其實你只是被困在自己的氣泡裡！</b>
+                        </p>
+                        <div style="background: #fef3c7; padding: 1vh 1.2vw; border-radius: 6px; font-size: 2.6vh; font-weight: 800; color: #92400e;">
+                            🧠 心理盲點：人性喜歡被認同（確認偏誤），假新聞正是投餵偏見的毒藥！
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-card" style="border-left-color: var(--accent-green); background: #ecfdf5;">
+                    <span class="task-tag green">特工破繭指南</span>
+                    <div style="font-size: 2.9vh; line-height: 1.6;">
+                        如何掙脫同溫層？① 主動訂閱多元不同立場的媒體；② 定期清除網路瀏覽 Cookie；③ 看到深得你心的震撼消息時，先懷疑三分、查證五分！
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 11: 第六段批判（同溫層與國安） ============================== -->
+            <div id="slide-11" class="slide" data-title="深層批判" data-badge="TEXT 06" data-sub="第六段：同溫層風暴、回音室與國安危機">
+                <div class="narrative-text">
+                    蘋果執行長庫克指出，社群媒體已淪為散播不實消息和操縱輿論的工具，尤其是所謂的<em>「同溫層效應」</em>！
+                </div>
+
+                <div class="split-grid">
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>👵 中年人群組：狂熱取暖</span>
+                            <span class="task-tag amber">回音室Ａ</span>
+                        </div>
+                        <p>
+                            互傳關窗簡訊、養生秘方，每個人在回音中不斷聽見自己的聲音，誤以為這就是世界的全貌，偏見被無限鞏固！
+                        </p>
+                    </div>
+
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>🧑‍🎓 年輕人群組：乏人問津</span>
+                            <span class="task-tag">回音室Ｂ</span>
+                        </div>
+                        <p>
+                            大學課堂民調完全沒人收過關窗簡訊！演算法將不同世代分別鎖進不同的孤島，彼此失去溝通對話的可能。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="task-card" style="border-left-color: var(--accent-crimson); background: #fff5f5;">
+                    <span class="task-tag crimson">國安危機</span>
+                    <div style="font-size: 3.0vh; line-height: 1.6; font-weight: 900;">
+                        當社會分裂為互不信任的極端同溫層，民粹言論與認知作戰就能乘虛而入，動搖國家安全！作者在文末把突圍的希望，深切寄託在年輕世代身上！
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 12: 全班情境決策模擬器（極限救災思辨） ============================== -->
+            <div id="slide-12" class="slide" data-title="決策模擬器" data-badge="SIM 01" data-sub="極限救災思辨：挑戰「不確定就不分享」的邊界">
+                <div class="task-card" style="border-left-color: var(--accent-amber); background: #fffbeb;">
+                    <span class="task-tag amber">極限情境挑戰</span>
+                    <div style="font-size: 3.0vh; line-height: 1.6;">
+                        <b>情境設定</b>：深夜暴雨，你收到下游居民私訊傳來一張模糊照片：「水庫大壩似乎出現裂縫，隨時可能潰堤！」官方尚未證實。此時你該怎麼做？
+                    </div>
+                </div>
+
+                <div class="sim-btn-group">
+                    <button class="sim-btn" onclick="runSim(1, this)">
+                        <span>方案Ａ：死守課本教條「不確定就不分享」，等到明早官方公布再說</span>
+                        <span>[點擊模擬後果]</span>
+                    </button>
+                    <button class="sim-btn" onclick="runSim(2, this)">
+                        <span>方案Ｂ：不管真假，立刻轉發到所有群組「大壩要塌了，快逃！」</span>
+                        <span>[點擊模擬後果]</span>
+                    </button>
+                    <button class="sim-btn" onclick="runSim(3, this)">
+                        <span>方案Ｃ：通報防汛專線求證，並轉發「未經官方證實，請鄰近居民保持警覺」</span>
+                        <span>[點擊模擬後果]</span>
+                    </button>
+                </div>
+
+                <div id="sim-outcome" class="outcome-box"></div>
+            </div>
+
+            <!-- ============================== SLIDE 13: 實戰鑑定挑戰（課本圖表） ============================== -->
+            <div id="slide-13" class="slide" data-title="實戰鑑定" data-badge="LAB 01" data-sub="資訊特工鑑定所：睡姿假新聞大解碼">
+                <div class="task-card">
+                    <span class="task-tag">受測新聞標題</span>
+                    <div style="font-size: 3.0vh; font-weight: 900;">
+                        【震驚！「這睡姿」竟是失智元凶？專家警告：長期仰睡大腦毒素淤積，失智風險飆升四倍！】
+                    </div>
+                </div>
+
+                <div class="split-grid">
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>👵 王奶奶：盲目輕信</span>
+                            <span class="task-tag crimson">無識讀力</span>
+                        </div>
+                        <p>
+                            「我丈夫習慣仰睡，難怪最近反應遲鈍，真的受損了！」<br>
+                            👉 <b>診斷</b>：憑個人直覺對號入座，盲目輕信，缺乏查證。
+                        </p>
+                    </div>
+
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>👩 張小姐：警覺查證</span>
+                            <span class="task-tag green">具備識讀力</span>
+                        </div>
+                        <p>
+                            「標題大量驚嘆號過於聳動，我想去其他專業健康網站比對。」<br>
+                            👉 <b>診斷</b>：敏銳察覺聳動修辭，主動跨平台交叉比對求真！
+                        </p>
+                    </div>
+
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>🧑 陳同學：檢驗出處</span>
+                            <span class="task-tag green">具備識讀力</span>
+                        </div>
+                        <p>
+                            「內文只模糊提到國外研究，沒有具體專家名字，非常可疑！」<br>
+                            👉 <b>診斷</b>：精準抓住「匿名權威」破綻，洞察造假跡象！
+                        </p>
+                    </div>
+
+                    <div class="content-panel">
+                        <div class="panel-header">
+                            <span>👦 林小弟：善意衝動</span>
+                            <span class="task-tag crimson">無識讀力</span>
+                        </div>
+                        <p>
+                            「好擔心爸媽生病，我要趕快把新聞轉傳給他們提醒側睡！」<br>
+                            👉 <b>診斷</b>：孝心動機良善，但未查證即散播恐慌，白忙一場！
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================== SLIDE 14: 終幕授勳（總結） ============================== -->
+            <div id="slide-14" class="slide" data-title="終幕授勳" data-badge="FINISH" data-sub="迎向更美好的生活：特工誓詞">
+                <div style="text-align: center; margin: auto 0; padding: 1vh 2vw;">
+                    <div style="font-size: 3.4vh; color: var(--cyber-blue); font-weight: 900; margin-bottom: 1.5vh;">
+                        🏆 全體特工結業檢核通過 🏆
+                    </div>
+                    <h2 style="font-family: var(--font-title); font-size: 5.2vh; color: var(--primary-navy); margin-bottom: 2vh; font-weight: 900;">
+                        從一則關窗簡訊，看懂一個時代的突圍之道
+                    </h2>
+                    
+                    <div style="display: flex; justify-content: center; gap: 2vw; margin-bottom: 3vh;">
+                        <div style="background: #f8fafc; border: 3px solid var(--border-color); padding: 2vh 2vw; border-radius: 8px; width: 28vw; text-align: left;">
+                            <div style="color: var(--cyber-blue); font-size: 3.0vh; font-weight: 900; margin-bottom: 0.8vh;">① 引論：以小見大</div>
+                            <p style="font-size: 2.6vh; line-height: 1.6; font-weight: 800;">看破新媒體「免費的最貴」商業本質，洞察演算法對資訊的無聲支配。</p>
+                        </div>
+                        <div style="background: #f8fafc; border: 3px solid var(--border-color); padding: 2vh 2vw; border-radius: 8px; width: 28vw; text-align: left;">
+                            <div style="color: var(--accent-amber); font-size: 3.0vh; font-weight: 900; margin-bottom: 0.8vh;">② 本論：善意前提</div>
+                            <p style="font-size: 2.6vh; line-height: 1.6; font-weight: 800;">所有的關心與熱心走告，都必須建立在「訊息無誤」的前提之下。</p>
+                        </div>
+                        <div style="background: #f8fafc; border: 3px solid var(--border-color); padding: 2vh 2vw; border-radius: 8px; width: 28vw; text-align: left;">
+                            <div style="color: var(--accent-crimson); font-size: 3.0vh; font-weight: 900; margin-bottom: 0.8vh;">③ 結論：掙脫同溫層</div>
+                            <p style="font-size: 2.6vh; line-height: 1.6; font-weight: 800;">徹底遵行「不確定的，不分享」，主動跨出回音室，迎向美好生活。</p>
+                        </div>
+                    </div>
+
+                    <button class="nav-btn primary" style="font-size: 3.2vh; padding: 1.6vh 4vw;" onclick="resetPresentation()">
+                        🔄 重新啟動特工任務沙盤
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 畫布劃記層 -->
+        <canvas id="drawing-canvas"></canvas>
+
+        <!-- 簡報底部導覽列 -->
+        <div class="slide-footer">
+            <button class="nav-btn" id="prev-btn" onclick="navigateSlide(-1)">上一頁</button>
+            <div class="page-indicator" id="slide-indicator">第 1 / 14 頁</div>
+            
+            <div style="display: flex; align-items: center;">
+                <!-- 膠囊劃記工具列 -->
+                <div class="drawing-footer-toolbar">
+                    <button class="drawing-tool-btn active" id="tool-pointer" onclick="setDrawingTool('pointer')" title="滑鼠模式">
+                        <svg viewBox="0 0 24 24"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path><path d="M13 13l6 6"></path></svg>
+                    </button>
+                    <button class="drawing-tool-btn" id="tool-pen" onclick="setDrawingTool('pen')" title="特工靛藍畫筆">
+                        <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    </button>
+                    <button class="drawing-tool-btn" id="tool-eraser" onclick="setDrawingTool('eraser')" title="橡皮擦">
+                        <svg viewBox="0 0 24 24"><path d="M20 20H7L3 16c-1.5-1.5-1.5-3.5 0-5l8.5-8.5c1.5-1.5 3.5-1.5 5 0l4 4c1.5 1.5 1.5 3.5 0 5L12 20"></path><line x1="6" y1="12" x2="16" y2="2"></line></svg>
+                    </button>
+                    <button class="drawing-tool-btn" onclick="clearCurrentDrawing()" title="清空本頁劃記">
+                        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    </button>
+                    <button class="drawing-tool-btn danger" onclick="clearAllDrawings()" title="清空所有劃記">
+                        <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </button>
+                </div>
+                <button class="nav-btn primary" id="next-btn" onclick="navigateSlide(1)">下一頁</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 邏輯腳本 -->
+    <script>
+        // 音效系統 (Web Audio API 免外部依賴)
+        let audioContext = null;
+        let isMuted = false;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playTone(freq, type = 'sine', duration = 0.2, gainLevel = 0.12) {
+            if (isMuted) return;
+            try {
+                initAudio();
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+                gain.gain.setValueAtTime(gainLevel, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.start();
+                osc.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                console.warn("Audio Context blocked", e);
+            }
+        }
+
+        function playSuccess() {
+            playTone(440, 'triangle', 0.15, 0.15);
+            setTimeout(() => playTone(660, 'triangle', 0.25, 0.18), 120);
+        }
+
+        function playFail() {
+            playTone(220, 'sawtooth', 0.25, 0.12);
+        }
+
+        function playClick() {
+            playTone(330, 'sine', 0.08, 0.08);
+        }
+
+        function toggleSound() {
+            isMuted = !isMuted;
+            document.getElementById('sound-icon').innerText = isMuted ? '🔇' : '🔊';
+            document.getElementById('sound-text').innerText = isMuted ? '音效靜音' : '音效開啟';
+        }
+
+        // 簡報導覽狀態 (共 14 頁)
+        let currentSlide = 1;
+        const totalSlides = 14;
+
+        function updateSlideUI() {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(s => s.classList.remove('active'));
+
+            const target = document.getElementById(`slide-${currentSlide}`);
+            if (target) {
+                target.classList.add('active');
+                document.getElementById('header-title').querySelector('span:first-child').innerText = target.getAttribute('data-title');
+                document.getElementById('header-badge').innerText = target.getAttribute('data-badge');
+                document.getElementById('header-subtitle').innerText = target.getAttribute('data-sub');
+            }
+
+            document.getElementById('slide-indicator').innerText = `第 ${currentSlide} / ${totalSlides} 頁`;
+            document.getElementById('prev-btn').disabled = (currentSlide === 1);
+            document.getElementById('next-btn').disabled = (currentSlide === totalSlides);
+
+            loadCurrentSlideDrawing();
+        }
+
+        function navigateSlide(direction) {
+            playClick();
+            currentSlide += direction;
+            if (currentSlide < 1) currentSlide = 1;
+            if (currentSlide > totalSlides) currentSlide = totalSlides;
+            updateSlideUI();
+        }
+
+        function resetPresentation() {
+            playSuccess();
+            currentSlide = 1;
+            updateSlideUI();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (currentSlide < totalSlides) navigateSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                if (currentSlide > 1) navigateSlide(-1);
+            }
+        });
+
+        // 決策模擬器邏輯
+        function runSim(choice, btn) {
+            const btns = btn.parentElement.querySelectorAll('.sim-btn');
+            btns.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+
+            const box = document.getElementById('sim-outcome');
+            box.style.display = 'block';
+
+            if (choice === 1) {
+                playFail();
+                box.style.background = '#fff1f2';
+                box.style.border = '3px solid var(--accent-crimson)';
+                box.innerHTML = `<span style="color: var(--accent-crimson); font-weight: 900;">⚠️ 模擬結果：死守教條的代價</span><br>
+                若大壩真的潰堤，下游數百戶居民在睡夢中慘遭淹沒！這說明：在人命關天的極限情境下，若機械式死守「不確定就不分享」，可能導致人道悲劇！面對危機，更需要的是主動求證與責任承擔。`;
+            } else if (choice === 2) {
+                playFail();
+                box.style.background = '#fff1f2';
+                box.style.border = '3px solid var(--accent-crimson)';
+                box.innerHTML = `<span style="color: var(--accent-crimson); font-weight: 900;">⚠️ 模擬結果：恐慌踩踏與社會癱瘓</span><br>
+                若大壩只是假消息，深夜數千名恐慌居民湧上公路引發嚴重車禍與踩踏事故，救災體系陷入大混亂！這正是未查證即轉發的恐慌代價。`;
+            } else if (choice === 3) {
+                playSuccess();
+                box.style.background = '#ecfdf5';
+                box.style.border = '3px solid var(--accent-green)';
+                box.innerHTML = `<span style="color: var(--accent-green); font-weight: 900;">🎯 最佳決策：兼顧求真與人道的高階思維</span><br>
+                立即通報防汛官方核實，同時若必須轉發，明確加註「未經證實，僅供警戒」，既不製造盲目恐慌，也不讓生命陷於無防備之境！這展現了最高境界的新聞判讀與公民責任。`;
+            }
+        }
+
+        // ============================== 全域劃記 Canvas 模組 ==============================
+        const canvas = document.getElementById('drawing-canvas');
+        const ctx = canvas.getContext('2d');
+        let currentTool = 'pointer';
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        const slideDrawings = {};
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            loadCurrentSlideDrawing();
+        }
+        window.addEventListener('resize', resizeCanvas);
+        setTimeout(resizeCanvas, 100);
+
+        function setDrawingTool(tool) {
+            currentTool = tool;
+            playClick();
+            document.querySelectorAll('.drawing-tool-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById(`tool-${tool}`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            canvas.classList.remove('pen-active', 'eraser-active');
+            if (tool === 'pen') {
+                canvas.classList.add('pen-active');
+            } else if (tool === 'eraser') {
+                canvas.classList.add('eraser-active');
+            }
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (currentTool === 'pointer') return;
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            lastX = e.clientX - rect.left;
+            lastY = e.clientY - rect.top;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing || currentTool === 'pointer') return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+
+            if (currentTool === 'pen') {
+                ctx.strokeStyle = '#0284c7';
+                ctx.lineWidth = 4.0;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.globalCompositeOperation = 'source-over';
+            } else if (currentTool === 'eraser') {
+                ctx.strokeStyle = 'rgba(0,0,0,1)';
+                ctx.lineWidth = 30;
+                ctx.lineCap = 'round';
+                ctx.globalCompositeOperation = 'destination-out';
+            }
+            ctx.stroke();
+
+            lastX = x;
+            lastY = y;
+        });
+
+        function stopDrawing() {
+            if (isDrawing) {
+                isDrawing = false;
+                saveCurrentSlideDrawing();
+            }
+        }
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseleave', stopDrawing);
+
+        function saveCurrentSlideDrawing() {
+            slideDrawings[currentSlide] = canvas.toDataURL();
+        }
+
+        function loadCurrentSlideDrawing() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const dataUrl = slideDrawings[currentSlide];
+            if (dataUrl) {
+                const img = new Image();
+                img.onload = () => {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = dataUrl;
+            }
+        }
+
+        function clearCurrentDrawing() {
+            playClick();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            delete slideDrawings[currentSlide];
+        }
+
+        function clearAllDrawings() {
+            playClick();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let s in slideDrawings) {
+                delete slideDrawings[s];
+            }
+        }
+    </script>
+</body>
+</html>
